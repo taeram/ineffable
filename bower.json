@@ -1,0 +1,10 @@
+{
+  "name": "ineffable",
+  "dependencies": {
+    "bootstrap": "3.*",
+    "font-awesome": "4.*",
+    "jquery": "*",
+    "react": "v0.8.0",
+    "requirejs": "*"
+  }
+}

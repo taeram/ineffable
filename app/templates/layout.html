@@ -1,0 +1,59 @@
+<!doctype html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/bootstrap/dist/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/font-awesome/css/font-awesome.min.css') }}">
+    <script data-main="{{ url_for('static', filename='js/app') }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
+</head>
+<div>
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('home') }}">{{ config.SITE_NAME }}</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    {% for endpoint in [
+                      'home',
+                      'logout' if current_user.is_authenticated() else 'login',
+                    ] %}
+                        <li {% if endpoint == request.endpoint %} class="active" {% endif %}>
+                            <a href="{{ url_for(endpoint) }}">{{ endpoint.capitalize() }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ 'alert-%s' % category if category != 'message' else '' }}">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-16">
+                <h1>{{ self.title() }}</h1>
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+
+<form class="form form-horizontal col-sm-4 col-sm-offset-4" action="{{ url_for('login', next=request.args.next) }}" method="post">
+    {{ form.csrf_token }}
+
+    <div class="form-group">
+        {{ form.username.label }}
+        {{ form.username(class="form-control", placeholder="Username") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.password.label }}
+        {{ form.password(class="form-control", placeholder="Password") }}
+    </div>
+
+    <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="remember"> Remember me
+          </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+</form>
+{% endblock %}
