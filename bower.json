@@ -1,9 +1,15 @@
 {
   "name": "ineffable",
   "dependencies": {
+    "angular": "// Dependencies for the uploader. To be refactored to use React",
+    "angular": "https://github.com/angular/bower-angular.git#1.*",
+    "jquery-serialize-object": "1.0.0",
+    "phpjs": "https://github.com/kvz/phpjs.git",
+    "underscore": "*",
+
     "bootstrap": "3.*",
     "font-awesome": "4.*",
-    "jquery": "*",
+    "jquery": "2.*",
     "react": "v0.8.0",
     "requirejs": "*"
   }

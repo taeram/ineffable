@@ -51,6 +51,14 @@ def find_user_by_name(name):
                      filter(User.name == name).\
                      first()
 
+def find_gallery_all():
+    return db.session.query(Gallery).all()
+
+def find_gallery_by_id(id):
+    return db.session.query(Gallery).\
+                     filter(Gallery.id == id).\
+                     first()
+
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
@@ -60,7 +68,7 @@ class Photo(db.Model):
     aspect_ratio = db.Column(db.Float, nullable=False)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
-    def __init__(self, name, ext, user_id, aspect_ratio):
+    def __init__(self, name, ext, aspect_ratio, user_id, gallery_id):
         self.name = name
         self.ext = ext
         self.user_id = user_id
@@ -74,6 +82,13 @@ class Gallery(db.Model):
 
     def __init__(self, name):
         self.name = name
+
+    def to_object(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
+        }
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

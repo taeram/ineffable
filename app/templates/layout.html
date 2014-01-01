@@ -6,9 +6,10 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='components/bootstrap/dist/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='components/font-awesome/css/font-awesome.min.css') }}">
+    {% block head %}{% endblock %}
     <script data-main="{{ url_for('static', filename='js/app') }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
 </head>
-<div>
+<body>
     <div class="navbar navbar-default" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -56,4 +57,6 @@
             </div>
         </div>
     </div>
-</div>
+    {% block script %}{% endblock %}
+</body>
+</html>

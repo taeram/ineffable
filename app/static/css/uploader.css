@@ -1,0 +1,52 @@
+/**
+ * angular.js
+ */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none;
+}
+
+/**
+ * buttons.less
+ */
+.uploader [class^="fa-"],
+.uploader [class*=" fa-"] {
+    padding-right: 5px;
+}
+
+.uploader .btn {
+    margin-right: 5px;
+}
+
+.uploader .btn-icon {
+    margin-right: 0;
+    padding: 2px 3px;
+}
+
+    .uploader .btn-icon i {
+        display: inline-block;
+        margin: 0;
+        padding: 0 2px;
+    }
+
+/**
+ * forms.less
+ */
+.uploader input[type=file] {
+    position: absolute;
+    opacity: 0;
+}
+
+/**
+ * thumbnails.less
+ */
+.uploader .img-thumbnail {
+    max-height: 100px;
+    max-width: 100px;
+}
+
+/**
+ * progress-bars.less
+ */
+.uploader .progress {
+    margin-bottom: 0;
+}

@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uploader.css') }}">
+{% endblock %}
+
+{% block body %}
+<div ng-app="uploaderApp" ng-cloak="ng-cloak">
+    <div ng-controller="UploaderCtrl" class="uploader">
+        <form action="https://{{ s3bucket }}.s3.amazonaws.com/" method="POST" enctype="multipart/form-data" class="form-upload">
+            <input type="hidden" name="key" value="{{ s3folder }}${filename}"/>
+            <input type="hidden" name="AWSAccessKeyId" value="{{awsAccessKeyId}}"/>
+            <input type="hidden" name="acl" value="{{s3Acl}}"/>
+            <input type="hidden" name="policy" value="{{s3Policy}}"/>
+            <input type="hidden" name="signature" value="{{s3Signature}}"/>
+            <input type="hidden" name="success_action_status" value="{{s3SuccessActionStatus}}"/>
+            <div ng-disabled="getFilesToUpload() > 0 && getUploadProgress() > 0" class="btn btn-success">
+                <input type="file" name="file" file-change="addFiles" class="input-file"/><i class="fa fa-plus"></i>Add files...
+            </div>
+            <button type="submit" ng-click="uploadFiles($event)" ng-disabled="getFilesToUpload() == 0 || getUploadProgress() > 0" class="btn btn-primary"><i class="fa fa-upload"></i>Start upload</button>
+            <button type="reset" ng-click="clearFiles()" class="btn btn-warning"><i class="fa fa-ban"></i>Cancel upload</button>
+            <table ng-hide="files.length == 0" ng-cloak="ng-cloak" class="table table-striped">
+                <colgroup>
+                    <col/>
+                    <col style="width: 50%"/>
+                    <col style="width: 150px"/>
+                    <col style="width: 6px"/>
+                </colgroup>
+                <caption>{{ '{{getFilesToUpload()}}' }} Files in the Queue
+                    <div ng-hide="getUploadProgress() == 0">
+                        <div ng-class="{'active': getFilesToUpload() > 0}" class="progress progress-striped">
+                            <div style="width: {{ '{{getUploadProgress()}}' }}%" ng-class="{'progress-bar-success': getFilesToUpload() == 0}" class="progress-bar"></div>
+                        </div>
+                    </div>
+                </caption>
+                <thead>
+                    <th>Name</th>
+                    <th>Upload Progress</th>
+                    <th>Size (bytes)</th>
+                    <th>&nbsp;</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="file in files">
+                        <td>
+                            <div ng-hide="file.url || file.imgUrl">{{ '{{file.name}}' }}</div>
+                            <div>
+                                <div ng-hide="!file.imgUrl"><img ng-src="{{ '{{file.imgUrl}}' }}" class="img-thumbnail"/></div><span ng-hide="!file.url"><a href="{{ '{{file.url}}' }}">{{ '{{file.name}}' }}</a></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress progress-striped">
+                                <div style="width: {{ '{{file.progress}}' }}%" ng-class="{'progress-bar-info': !file.isUploaded && !file.isUploadError, 'progress-bar-success': file.isUploaded && !file.isUploadError, 'progress-bar-danger': file.isUploadError}" class="progress-bar"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div ng-hide="file.isTooBig">{{ '{{file.sizeFormatted}}' }}</div>
+                            <div ng-hide="!file.isTooBig"><span data-toggle="tooltip" class="text-danger">File too large</span></div>
+                        </td>
+                        <td>
+                            <button ng-click="removeFile(file)" class="btn btn-icon btn-danger"><i class="fa fa-trash-o"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    Config = {};
+    Config.maxUploadSize = {{ maxUploadSize }};
+</script>
+{% endblock %}
