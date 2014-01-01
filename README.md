@@ -54,6 +54,9 @@ Heroku setup:
     heroku apps:create
     heroku addons:add heroku-postgresql
 
+    # Tell Heroku we need a custom buildpack (for python + nodejs)
+    heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+
     # Promote your postgres database (your URL name may differ)
     heroku pg:promote HEROKU_POSTGRESQL_RED_URL
 
@@ -65,8 +68,9 @@ Heroku setup:
                       AWS_SECRET_ACCESS_KEY=secret \
                       AWS_REGION=us-east-1 \
                       AWS_S3_BUCKET=my-photo-bucket \
-                      AWS_SQS_QUEUE=abcdef
-                      MAX_UPLOAD_SIZE=10485760
+                      AWS_SQS_QUEUE=abcdef \
+                      MAX_UPLOAD_SIZE=10485760 \
+                      SECRET_KEY=secret_key
 
     # Create the production database
     heroku run python manage.py database create
