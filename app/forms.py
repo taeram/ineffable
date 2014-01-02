@@ -1,7 +1,6 @@
-from flask import flash
 from flask.ext.wtf import Form
 from wtforms.fields import TextField, PasswordField, BooleanField, DateField
-from wtforms.validators import Required, ValidationError
+from wtforms.validators import Required
 
 class LoginForm(Form):
     username = TextField('Username', validators=[Required()])

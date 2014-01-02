@@ -7,13 +7,13 @@
 {% block body %}
 <div ng-app="uploaderApp" ng-cloak="ng-cloak">
     <div ng-controller="UploaderCtrl" class="uploader">
-        <form action="https://{{ s3bucket }}.s3.amazonaws.com/" method="POST" enctype="multipart/form-data" class="form-upload">
-            <input type="hidden" name="key" value="{{ s3folder }}${filename}"/>
-            <input type="hidden" name="AWSAccessKeyId" value="{{awsAccessKeyId}}"/>
-            <input type="hidden" name="acl" value="{{s3Acl}}"/>
-            <input type="hidden" name="policy" value="{{s3Policy}}"/>
-            <input type="hidden" name="signature" value="{{s3Signature}}"/>
-            <input type="hidden" name="success_action_status" value="{{s3SuccessActionStatus}}"/>
+        <form action="https://{{ s3_bucket }}.s3.amazonaws.com/" method="POST" enctype="multipart/form-data" class="form-upload">
+            <input type="hidden" name="key" value="{{ s3_folder }}${filename}"/>
+            <input type="hidden" name="AWSAccessKeyId" value="{{aws_access_key_id}}"/>
+            <input type="hidden" name="acl" value="{{s3_acl}}"/>
+            <input type="hidden" name="policy" value="{{s3_policy}}"/>
+            <input type="hidden" name="signature" value="{{s3_signature}}"/>
+            <input type="hidden" name="success_action_status" value="{{s3_success_action_status}}"/>
             <div ng-disabled="getFilesToUpload() > 0 && getUploadProgress() > 0" class="btn btn-success">
                 <input type="file" name="file" file-change="addFiles" class="input-file"/><i class="fa fa-plus"></i>Add files...
             </div>
@@ -70,6 +70,6 @@
 {% block script %}
 <script>
     Config = {};
-    Config.maxUploadSize = {{ maxUploadSize }};
+    Config.maxUploadSize = {{ max_upload_size }};
 </script>
 {% endblock %}

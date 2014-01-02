@@ -1,7 +1,5 @@
 from app import app
 import os
-import base64
-import hmac, hashlib
 from flask import abort, \
                   flash, \
                   redirect, \
@@ -14,26 +12,32 @@ from flask.ext.login import current_user, \
                             login_user, \
                             logout_user, \
                             login_required
-from forms import LoginForm,\
+from .forms import LoginForm,\
                   CreateGalleryForm
-from database import find_user_by_name, \
+from .database import find_user_by_name, \
                      find_gallery_all, \
                      find_gallery_by_id, \
                      db, \
-                     Gallery
+                     Gallery, \
+                     Photo
 import json
+import base64
+import hmac, hashlib
 
 @app.route('/favicon.ico')
 def favicon():
+    """ Return the favicon """
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
 
 @app.route('/', methods=['GET'])
 @login_required
 def home():
+    """ Home page """
     return render_template('index.html')
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """ Login page """
     if current_user.is_authenticated():
         return redirect(url_for('home'))
 
@@ -54,25 +58,27 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    """ Logout the user """
     logout_user()
     return redirect(url_for('login'))
 
 if app.config['DEBUG']:
-    """ Parse the JSX on the fly if we're in debug mode """
-    @app.route('/static/js/<file>', methods=['GET'])
-    def jsx(file):
+    @app.route('/static/js/<filename>', methods=['GET'])
+    def compile_jsx(filename):
+        """ Parse the JSX on the fly if we're in debug mode """
         from react import jsx
 
-        jsxPath = os.path.join(app.root_path, 'static/js/%sx' % file)
+        jsx_path = os.path.join(app.root_path, 'static/js/%sx' % filename)
         try:
-            js = jsx.transform(jsxPath)
+            js = jsx.transform(jsx_path)
             return app.response_class(response=js, mimetype='text/javascript')
         except jsx.TransformError as e:
             return app.response_class(response="%s" % e, status=500)
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/create/', methods=['GET', 'POST'])
 @login_required
 def gallery_create():
+    """ Create a gallery """
     form = CreateGalleryForm()
     if form.validate_on_submit():
         gallery = Gallery(name=form.name.data)
@@ -83,45 +89,46 @@ def gallery_create():
 
     return render_template('create.html', form=form)
 
-@app.route('/upload/<int:id>')
-def gallery_upload(id):
-    gallery = find_gallery_by_id(id)
+@app.route('/upload/<int:gallery_id>')
+def gallery_upload(gallery_id):
+    """ Upload photos to a gallery """
+    gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
 
-    s3SuccessActionStatus = '201';
-    s3Acl = "public-read";
-    folder = gallery.id
-    s3Policy = {
+    s3_success_action_status = '201'
+    s3_acl = "public-read"
+    folder = "%s/" % gallery.get_folder()
+    s3_policy = {
         "expiration": "2038-01-01T00:00:00Z",
         "conditions": [
             {"bucket": app.config['AWS_S3_BUCKET']},
             ["starts-with", "$key", folder],
-            {"acl": s3Acl},
-            {"success_action_status": s3SuccessActionStatus},
+            {"acl": s3_acl},
+            {"success_action_status": s3_success_action_status},
             ["content-length-range", 0, app.config['MAX_UPLOAD_SIZE']]
         ]
     }
 
-    policy = base64.b64encode(json.dumps(s3Policy))
+    policy = base64.b64encode(json.dumps(s3_policy))
     signature = base64.b64encode(hmac.new(app.config['AWS_SECRET_ACCESS_KEY'], policy, hashlib.sha1).digest())
 
     return render_template('upload.html',
         gallery=gallery,
-        awsAccessKeyId=app.config['AWS_ACCESS_KEY_ID'],
-        s3Acl=s3Acl,
-        s3Bucket=app.config['AWS_S3_BUCKET'],
-        s3Folder=folder,
-        s3Policy=policy,
-        s3Signature=signature,
-        s3SuccessActionStatus=s3SuccessActionStatus,
-        maxUploadSize=app.config['MAX_UPLOAD_SIZE']
+        aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
+        s3_acl=s3_acl,
+        s3_bucket=app.config['AWS_S3_BUCKET'],
+        s3_folder=folder,
+        s3_policy=policy,
+        s3_signature=signature,
+        s3_success_action_status=s3_success_action_status,
+        max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
-
 
 @app.route('/rest/gallery/', methods=['GET', 'POST'])
 @login_required
 def gallery_index():
+    """ Add a gallery or get a list of galleries in JSON """
     if request.method == 'GET':
         galleries = find_gallery_all()
 
@@ -137,10 +144,11 @@ def gallery_index():
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
-@app.route('/rest/gallery/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/rest/gallery/<int:gallery_id>', methods=['GET', 'PUT', 'DELETE'])
 @login_required
-def gallery_item(id):
-    gallery = find_gallery_by_id(id)
+def gallery_item(gallery_id):
+    """ Get/update/delete an individual gallery """
+    gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
 
@@ -162,6 +170,7 @@ def gallery_item(id):
 @app.route('/rest/photo/', methods=['POST'])
 @login_required
 def photo_add():
+    """ Add a photo to a gallery """
     photo = Photo(
         name=request.form['name'],
         ext=request.form['ext'],

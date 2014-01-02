@@ -3,9 +3,10 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager, prompt_bool, prompt
 from flask.ext.login import UserMixin
 from datetime import datetime
-from snippets.hash_passwords import check_hash, make_hash
+from .snippets.hash_passwords import check_hash, make_hash
 from hashlib import sha1
-from auth import login_serializer
+from .auth import login_serializer
+import md5
 
 db = SQLAlchemy(app)
 
@@ -21,8 +22,8 @@ def create():
 def setup():
     "Populate the database with some defaults"
     if prompt_bool("Do you want to add an admin user?"):
-        name=prompt("Username for admin")
-        password=prompt("Password for admin")
+        name = prompt("Username for admin")
+        password = prompt("Password for admin")
         user = User(name=name, password=password)
         db.session.add(user)
         db.session.commit()
@@ -39,10 +40,10 @@ def recreate():
     drop()
     create()
 
-def find_user_by_id(id):
+def find_user_by_id(user_id):
     """ Get a user by id """
     return db.session.query(User).\
-                     filter(User.id == id).\
+                     filter(User.id == user_id).\
                      first()
 
 def find_user_by_name(name):
@@ -52,14 +53,17 @@ def find_user_by_name(name):
                      first()
 
 def find_gallery_all():
+    """ Get all galleries """
     return db.session.query(Gallery).all()
 
-def find_gallery_by_id(id):
+def find_gallery_by_id(gallery_id):
+    """ Find a single gallery """
     return db.session.query(Gallery).\
-                     filter(Gallery.id == id).\
+                     filter(Gallery.id == gallery_id).\
                      first()
 
 class Photo(db.Model):
+    """ A photo """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     ext = db.Column(db.Text, nullable=False)
@@ -73,8 +77,21 @@ class Photo(db.Model):
         self.ext = ext
         self.user_id = user_id
         self.aspect_ratio = aspect_ratio
+        self.gallery_id = gallery_id
+
+    def to_object(self):
+        """ Get it as an object """
+        return {
+            "id": self.id,
+            "name": self.name,
+            "ext": self.ext,
+            "user_id": self.user_id,
+            "aspect_ratio": self.aspect_ratio,
+            "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
+        }
 
 class Gallery(db.Model):
+    """ A gallery of photos """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
@@ -83,7 +100,12 @@ class Gallery(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def get_folder(self):
+        """ A unique hash for this album """
+        return md5.new("%s-%s" % (self.id, self.created)).hexdigest()
+
     def to_object(self):
+        """ Get it as an object """
         return {
             "id": self.id,
             "name": self.name,
@@ -91,6 +113,7 @@ class Gallery(db.Model):
         }
 
 class User(db.Model, UserMixin):
+    """ A user """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)
@@ -100,6 +123,7 @@ class User(db.Model, UserMixin):
         self.password = make_hash(password)
 
     def get_auth_token(self):
+        """ Get an auth token. Used when "remember me" is checked on login """
         data = (self.id, sha1(self.password).hexdigest())
         return login_serializer.dumps(data)
 
