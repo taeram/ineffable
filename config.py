@@ -4,6 +4,7 @@ from datetime import timedelta
 class Config(object):
     SITE_NAME = getenv('SITE_NAME', 'Ineffable')
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL')
+    SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)
     SECRET_KEY = getenv('SECRET_KEY')
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
     REMEMBER_COOKIE_DURATION = timedelta(days=30)

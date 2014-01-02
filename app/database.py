@@ -45,13 +45,13 @@ def find_user_by_id(user_id):
     """ Get a user by id """
     return db.session.query(User).\
                      filter(User.id == user_id).\
-                     first()
+                     one()
 
 def find_user_by_name(name):
     """ Get a user by name """
     return db.session.query(User).\
                      filter(User.name == name).\
-                     first()
+                     one()
 
 def find_gallery_all():
     """ Get all galleries """
@@ -61,7 +61,7 @@ def find_gallery_by_id(gallery_id):
     """ Find a single gallery """
     return db.session.query(Gallery).\
                      filter(Gallery.id == gallery_id).\
-                     first()
+                     one()
 
 class Photo(db.Model):
     """ A photo """
