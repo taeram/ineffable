@@ -1,0 +1,9 @@
+/** Thumbnail Images **/
+.img-gallery {
+}
+
+    .img-photo {
+        cursor: pointer;
+        display: inline-block;
+        margin: 2px;
+    }
