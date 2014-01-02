@@ -7,6 +7,7 @@ require.config({
         "bootstrap": "bootstrap/dist/js/bootstrap.min",
         "jquery": "jquery/jquery",
         "react": "react/react.min",
+        "linear-partition": "linear-partition/linear_partition",
 
         // Angular deps for uploader. To be refactored to React
         "angular": "angular/angular.min",
@@ -16,6 +17,7 @@ require.config({
         "underscore": "underscore/underscore",
 
         // App
+        "gallery": "/static/js/gallery",
         "uploader": "/static/js/uploader"
     },
     shim: {
@@ -30,6 +32,9 @@ require.config({
         },
         'jquery-serialize-object': {
             deps: ['jquery']
+        },
+        'linear-partition': {
+            exports: 'linear_partition'
         },
         'number_format': {
             exports: 'number_format'
@@ -52,18 +57,8 @@ if (window.location.pathname.match('/upload/')) {
     })
 }
 
-require(["jquery", "react", "bootstrap"], function($, React) {
-    var ContentBox = React.createClass({
-        render: function() {
-            return (
-                <div className="content">
-                    Hello, world! I am some content. One day I'll show you some photos.
-                </div>
-            );
-        }
+if (window.location.pathname.match('^/$')) {
+    require(["gallery"], function(gallery) {
+        console.log("init gallery")
     });
-    React.renderComponent(
-        <ContentBox />,
-        document.getElementById('app')
-    );
-});
+}

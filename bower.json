@@ -10,6 +10,7 @@
     "bootstrap": "3.*",
     "font-awesome": "4.*",
     "jquery": "2.*",
+    "linear-partition": "https://github.com/taeram/linear-partition.git#1.*",
     "react": "v0.8.0",
     "requirejs": "*"
   }
