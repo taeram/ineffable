@@ -73,6 +73,15 @@ def find_gallery_by_id(gallery_id):
     except NoResultFound:
         return None
 
+def find_photo_by_id(photo_id):
+    """ Find a single photo """
+    try:
+        return db.session.query(Photo).\
+                         filter(Photo.id == photo_id).\
+                         one()
+    except NoResultFound:
+        return None
+
 class Photo(db.Model):
     """ A photo """
     id = db.Column(db.Integer, primary_key=True)

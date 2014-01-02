@@ -15,16 +15,18 @@ from flask.ext.login import current_user, \
 from .forms import LoginForm,\
                   CreateGalleryForm
 from .database import find_user_by_name, \
-                     find_gallery_all, \
-                     find_gallery_by_id, \
-                     db, \
-                     Gallery, \
-                     Photo
+                      find_gallery_all, \
+                      find_gallery_by_id, \
+                      find_photo_by_id, \
+                      db, \
+                      Gallery, \
+                      Photo
 import json
 import base64
 import hmac, hashlib
 from react import jsx
-from helpers import add_to_queue
+from helpers import generate_thumbnail
+from url_decode import urldecode
 
 @app.route('/favicon.ico')
 def favicon():
@@ -168,10 +170,10 @@ def gallery_item(gallery_id):
 
 @app.route('/rest/photo/', methods=['POST'])
 @login_required
-def photo_add():
+def photo_index():
     """ Add a photo to a gallery """
     photo = Photo(
-        name=request.form['name'],
+        name=urldecode(request.form['name']),
         ext=request.form['ext'],
         aspect_ratio=request.form['aspect_ratio'],
         gallery_id=request.form['gallery_id'],
@@ -182,11 +184,29 @@ def photo_add():
 
     # Tell the thumbnail daemon to generate a thumbnail for this photo
     gallery = find_gallery_by_id(photo.gallery_id)
-    message = {
-        "original": "%s/%s.%s" % (gallery.folder, photo.name, photo.ext),
-        "descriptions": json.loads(app.config['THUMBD_DESCRIPTIONS'])
-    }
-    add_to_queue(json.dumps(message))
+    photo_path = "%s/%s.%s" % (gallery.folder, photo.name, photo.ext)
+    generate_thumbnail(photo_path)
 
     response = photo.to_object()
+    return app.response_class(response=json.dumps(response), mimetype='application/json')
+
+@app.route('/rest/photo/<int:photo_id>', methods=['GET', 'DELETE'])
+@login_required
+def photo_item(photo_id):
+    photo = find_photo_by_id(photo_id)
+    if not photo:
+        abort(404)
+
+    if request.method == 'GET':
+        response = photo.to_object()
+    elif request.method == 'PUT':
+        photo.name = request.form['name']
+        db.session.add(photo)
+        db.session.commit()
+        response = photo.to_object()
+    elif request.method == 'DELETE':
+        db.session.delete(photo)
+        db.session.commit()
+        response = []
+
     return app.response_class(response=json.dumps(response), mimetype='application/json')

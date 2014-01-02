@@ -59,6 +59,6 @@ if (window.location.pathname.match('/upload/')) {
 
 if (window.location.pathname.match('^/$')) {
     require(["gallery"], function(gallery) {
-        console.log("init gallery")
+        // Init the gallery
     });
 }
