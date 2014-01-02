@@ -52,12 +52,11 @@ if (window.location.pathname.match('/upload/')) {
 }
 
 require(["jquery", "react", "bootstrap"], function($, React) {
-    /*
     var ContentBox = React.createClass({
         render: function() {
             return (
                 <div className="content">
-                    Hello, world! I am some content.
+                    Hello, world! I am some content. One day I'll show you some photos.
                 </div>
             );
         }
@@ -66,5 +65,4 @@ require(["jquery", "react", "bootstrap"], function($, React) {
         <ContentBox />,
         document.getElementById('app')
     );
-    */
 });
