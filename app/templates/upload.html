@@ -2,6 +2,10 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/uploader.css') }}">
+    <script>
+        Config.max_upload_size = {{ max_upload_size }};
+        Config.gallery_id = {{ gallery.id }};
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -65,12 +69,4 @@
         </form>
     </div>
 </div>
-{% endblock %}
-
-{% block script %}
-<script>
-    Config = {};
-    Config.max_upload_size = {{ max_upload_size }};
-    Config.gallery_id = {{ gallery.id }};
-</script>
 {% endblock %}
