@@ -2,6 +2,7 @@
 
 require.config({
     baseUrl: '/static/components/',
+    urlArgs: "d=" + parseInt(Config.cache_buster, 10),
     paths: {
         "bootstrap": "bootstrap/dist/js/bootstrap.min",
         "jquery": "jquery/jquery",

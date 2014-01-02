@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='components/bootstrap/dist/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='components/font-awesome/css/font-awesome.min.css') }}">
     {% block head %}{% endblock %}
-    <script data-main="{{ url_for('static', filename='js/app') }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
+    <script data-main="{{ url_for('static', filename='js/app.js') }}?d={{ config.CACHE_BUSTER }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
 </head>
 <body>
     <div class="navbar navbar-default" role="navigation">
@@ -57,6 +57,10 @@
             </div>
         </div>
     </div>
+    <script>
+        Config = {};
+        Config.cache_buster = {{ config.CACHE_BUSTER }};
+    </script>
     {% block script %}{% endblock %}
 </body>
 </html>

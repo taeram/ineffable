@@ -7,3 +7,4 @@ manager.add_command("database", database_manager)
 
 if __name__ == '__main__':
     manager.run()
+
