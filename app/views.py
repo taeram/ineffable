@@ -23,6 +23,8 @@ from .database import find_user_by_name, \
 import json
 import base64
 import hmac, hashlib
+from react import jsx
+from helpers import add_to_queue
 
 @app.route('/favicon.ico')
 def favicon():
@@ -66,8 +68,6 @@ if app.config['DEBUG']:
     @app.route('/static/js/<filename>', methods=['GET'])
     def compile_jsx(filename):
         """ Parse the JSX on the fly if we're in debug mode """
-        from react import jsx
-
         jsx_path = os.path.join(app.root_path, 'static/js/%sx' % filename)
         try:
             js = jsx.transform(jsx_path)
@@ -128,20 +128,13 @@ def gallery_upload(gallery_id):
 @app.route('/rest/gallery/', methods=['GET', 'POST'])
 @login_required
 def gallery_index():
-    """ Add a gallery or get a list of galleries in JSON """
+    """ List all galleries, or add a new one """
     if request.method == 'GET':
         galleries = find_gallery_all()
 
         response = []
         for gallery in galleries:
-            item = gallery.to_object()
-            item['num_photos'] = len(gallery.photos)
-            if item['num_photos'] > 0:
-                item['highlight'] = gallery.photos[0].to_object()
-            else:
-                item['highlight'] = []
-
-            response.append(item)
+            response.append(gallery.to_object())
     elif request.method == 'POST':
         gallery = Gallery(name=request.form['name'])
         db.session.add(gallery)
@@ -161,15 +154,10 @@ def gallery_item(gallery_id):
 
     if request.method == 'GET':
         response = gallery.to_object()
-        response['photos'] = []
-        for photo in gallery.photos:
-            response['photos'].append(photo.to_object())
-
     elif request.method == 'PUT':
         gallery.name = request.form['name']
         db.session.add(gallery)
         db.session.commit()
-
         response = gallery.to_object()
     elif request.method == 'DELETE':
         db.session.delete(gallery)
@@ -191,6 +179,14 @@ def photo_add():
     )
     db.session.add(photo)
     db.session.commit()
+
+    # Tell the thumbnail daemon to generate a thumbnail for this photo
+    gallery = find_gallery_by_id(photo.gallery_id)
+    message = {
+        "original": "%s/%s.%s" % (gallery.folder, photo.name, photo.ext),
+        "descriptions": json.loads(app.config['THUMBD_DESCRIPTIONS'])
+    }
+    add_to_queue(json.dumps(message))
 
     response = photo.to_object()
     return app.response_class(response=json.dumps(response), mimetype='application/json')

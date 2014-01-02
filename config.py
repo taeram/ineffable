@@ -17,6 +17,7 @@ class Config(object):
     SITE_NAME = getenv('SITE_NAME', 'Ineffable')
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL')
     SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)
+    THUMBD_DESCRIPTIONS = getenv('THUMBD_DESCRIPTIONS')
 
 class ProductionConfig(Config):
     DEBUG = False

@@ -1,6 +1,8 @@
 Ineffable
 ========
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/taeram/ineffable/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 Ineffable is a minimalist photo gallery.
 
 Requirements
@@ -38,7 +40,21 @@ Local development setup:
            AWS_S3_BUCKET=my-photo-bucket \
            AWS_SQS_QUEUE=abcdef \
            MAX_UPLOAD_SIZE=10485760 \
-           SECRET_KEY=secret_key
+           SECRET_KEY=secret_key \
+           THUMBD_DESCRIPTIONS='[
+              {
+                "height": 200,
+                "width": 200,
+                "suffix": "thumb",
+                "quality": 90
+              },
+              {
+                "height": 1200,
+                "width": 1200,
+                "suffix": "display",
+                "quality": 80
+               }
+            ]'
 
     # Start the application, prefixing with the required environment variables
     python server.py
@@ -70,7 +86,21 @@ Heroku setup:
                       AWS_S3_BUCKET=my-photo-bucket \
                       AWS_SQS_QUEUE=abcdef \
                       MAX_UPLOAD_SIZE=10485760 \
-                      SECRET_KEY=secret_key
+                      SECRET_KEY=secret_key \
+                      THUMBD_DESCRIPTIONS='[
+                        {
+                          "height": 200,
+                          "width": 200,
+                          "suffix": "thumb",
+                          "quality": 90
+                        },
+                        {
+                          "height": 1200,
+                          "width": 1200,
+                          "suffix": "display",
+                          "quality": 80
+                        }
+                      ]'
 
     # Create the production database
     heroku run python manage.py database create
@@ -81,7 +111,3 @@ Heroku setup:
     # Push to Heroku
     git push heroku master
 ```
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/taeram/ineffable/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

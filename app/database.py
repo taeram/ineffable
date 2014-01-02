@@ -114,12 +114,18 @@ class Gallery(db.Model):
 
     def to_object(self):
         """ Get it as an object """
-        return {
+        gallery = {
             "id": self.id,
             "name": self.name,
             "folder": self.folder,
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
+
+        gallery['photos'] = []
+        for photo in self.photos:
+            gallery['photos'].append(photo.to_object())
+
+        return gallery
 
 class User(db.Model, UserMixin):
     """ A user """
