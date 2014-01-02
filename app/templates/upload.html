@@ -70,6 +70,7 @@
 {% block script %}
 <script>
     Config = {};
-    Config.maxUploadSize = {{ max_upload_size }};
+    Config.max_upload_size = {{ max_upload_size }};
+    Config.gallery_id = {{ gallery.id }};
 </script>
 {% endblock %}

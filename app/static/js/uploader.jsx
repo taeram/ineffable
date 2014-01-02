@@ -35,13 +35,55 @@ define('uploader',
     ]);
 
     /* Services */
+    var files = [];
     angular.module('uploaderApp.services', []).
         factory('notify', ['$window', function($window) {
             return function($scope, file) {
-                console.log("Upload completed", file);
+                getImageAttributes(file, function (file) {
+                    // Store the Angular.js data for this file
+                    files[file.name] = {
+                        scope: $scope,
+                        file: file
+                    };
+
+                    // Tell the backend this file has been uploaded
+                    var matches = file.name.match(/^(.+?)\.([a-z]*)/i, '');
+                    var fileName = matches[1];
+                    var fileExt = matches[2];
+                    $.post('/rest/photo/', {
+                        name: fileName,
+                        ext: fileExt,
+                        aspect_ratio: file.aspect_ratio,
+                        gallery_id: Config.gallery_id
+                    }, function (data) {
+                        console.log(data);
+                    });
+                });
             }
         }
     ]);
+
+    function getImageAttributes(file, callback) {
+        // Get the width, height and aspect ratio of the image
+        var image = new Image();
+        image.onload = function() {
+            file.width = this.width;
+            file.height = this.height;
+            file.aspect_ratio = (this.width / this.height);
+
+            callback(file);
+        };
+        image.onerror = function() {
+            file.width = null;
+            file.height = null;
+            file.aspect_ratio = null;
+
+            callback(file);
+        };
+
+        var url = window.URL || window.webkitURL;
+        image.src = url.createObjectURL(file);
+    }
 
     /* Controllers */
 
@@ -138,7 +180,7 @@ define('uploader',
                 // Add the files to the list
                 for (var i=0; i < element.files.length; i++) {
                     var file = element.files[i];
-                    if (file.size > Config.maxUploadSize) {
+                    if (file.size > Config.max_upload_size) {
                         file.isTooBig = true;
                     } else {
                         file.isTooBig = false;

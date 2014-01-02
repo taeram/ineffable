@@ -85,7 +85,7 @@ def gallery_create():
         db.session.add(gallery)
         db.session.commit()
 
-        return redirect(url_for('gallery_upload', id=gallery.id))
+        return redirect(url_for('gallery_upload', gallery_id=gallery.id))
 
     return render_template('create.html', form=form)
 
@@ -98,7 +98,7 @@ def gallery_upload(gallery_id):
 
     s3_success_action_status = '201'
     s3_acl = "public-read"
-    folder = "%s/" % gallery.get_folder()
+    folder = "%s/" % gallery.folder
     s3_policy = {
         "expiration": "2038-01-01T00:00:00Z",
         "conditions": [
@@ -134,7 +134,14 @@ def gallery_index():
 
         response = []
         for gallery in galleries:
-            response.append(gallery.to_object())
+            item = gallery.to_object()
+            item['num_photos'] = len(gallery.photos)
+            if item['num_photos'] > 0:
+                item['highlight'] = gallery.photos[0].to_object()
+            else:
+                item['highlight'] = []
+
+            response.append(item)
     elif request.method == 'POST':
         gallery = Gallery(name=request.form['name'])
         db.session.add(gallery)
@@ -154,6 +161,14 @@ def gallery_item(gallery_id):
 
     if request.method == 'GET':
         response = gallery.to_object()
+        response['photos'] = len(gallery.photos)
+        if response['photos'] > 0:
+            response['photos'] = []
+            for photo in gallery.photos:
+                response['photos'].append(photo.to_object())
+        else:
+            response['highlight'] = []
+
     elif request.method == 'PUT':
         gallery.name = request.form['name']
         db.session.add(gallery)
@@ -176,7 +191,7 @@ def photo_add():
         ext=request.form['ext'],
         aspect_ratio=request.form['aspect_ratio'],
         gallery_id=request.form['gallery_id'],
-        user_id=current_user.id
+        owner_id=current_user.id
     )
     db.session.add(photo)
     db.session.commit()

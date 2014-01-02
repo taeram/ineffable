@@ -7,6 +7,7 @@ from .snippets.hash_passwords import check_hash, make_hash
 from hashlib import sha1
 from .auth import login_serializer
 import md5
+import random
 
 db = SQLAlchemy(app)
 
@@ -72,10 +73,10 @@ class Photo(db.Model):
     aspect_ratio = db.Column(db.Float, nullable=False)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
-    def __init__(self, name, ext, aspect_ratio, user_id, gallery_id):
+    def __init__(self, name, ext, aspect_ratio, owner_id, gallery_id):
         self.name = name
         self.ext = ext
-        self.user_id = user_id
+        self.owner_id = owner_id
         self.aspect_ratio = aspect_ratio
         self.gallery_id = gallery_id
 
@@ -85,7 +86,6 @@ class Photo(db.Model):
             "id": self.id,
             "name": self.name,
             "ext": self.ext,
-            "user_id": self.user_id,
             "aspect_ratio": self.aspect_ratio,
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
@@ -94,21 +94,20 @@ class Gallery(db.Model):
     """ A gallery of photos """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
+    folder = db.Column(db.Text, nullable=False, unique=True)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
-    photos = db.relationship('Photo', backref='gallery', lazy='dynamic')
+    photos = db.relationship('Photo', backref='gallery')
 
     def __init__(self, name):
         self.name = name
-
-    def get_folder(self):
-        """ A unique hash for this album """
-        return md5.new("%s-%s" % (self.id, self.created)).hexdigest()
+        self.folder = md5.new("%032x" % random.getrandbits(128)).hexdigest()
 
     def to_object(self):
         """ Get it as an object """
         return {
             "id": self.id,
             "name": self.name,
+            "folder": self.folder,
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
 
