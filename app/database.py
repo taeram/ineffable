@@ -8,6 +8,7 @@ from hashlib import sha1
 from .auth import login_serializer
 import md5
 import random
+from sqlalchemy.orm.exc import NoResultFound
 
 db = SQLAlchemy(app)
 
@@ -43,15 +44,21 @@ def recreate():
 
 def find_user_by_id(user_id):
     """ Get a user by id """
-    return db.session.query(User).\
-                     filter(User.id == user_id).\
-                     one()
+    try:
+        return db.session.query(User).\
+                         filter(User.id == user_id).\
+                         one()
+    except NoResultFound:
+        return None
 
 def find_user_by_name(name):
     """ Get a user by name """
-    return db.session.query(User).\
-                     filter(User.name == name).\
-                     one()
+    try:
+        return db.session.query(User).\
+                         filter(User.name == name).\
+                         one()
+    except NoResultFound:
+        return None
 
 def find_gallery_all():
     """ Get all galleries """
@@ -59,9 +66,12 @@ def find_gallery_all():
 
 def find_gallery_by_id(gallery_id):
     """ Find a single gallery """
-    return db.session.query(Gallery).\
-                     filter(Gallery.id == gallery_id).\
-                     one()
+    try:
+        return db.session.query(Gallery).\
+                         filter(Gallery.id == gallery_id).\
+                         one()
+    except NoResultFound:
+        return None
 
 class Photo(db.Model):
     """ A photo """
