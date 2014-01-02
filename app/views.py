@@ -164,8 +164,6 @@ def gallery_item(gallery_id):
         response['photos'] = []
         for photo in gallery.photos:
             response['photos'].append(photo.to_object())
-        else:
-            response['highlight'] = []
 
     elif request.method == 'PUT':
         gallery.name = request.form['name']
