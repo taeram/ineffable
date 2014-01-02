@@ -81,3 +81,7 @@ Heroku setup:
     # Push to Heroku
     git push heroku master
 ```
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/taeram/ineffable/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
