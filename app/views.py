@@ -161,11 +161,9 @@ def gallery_item(gallery_id):
 
     if request.method == 'GET':
         response = gallery.to_object()
-        response['photos'] = len(gallery.photos)
-        if response['photos'] > 0:
-            response['photos'] = []
-            for photo in gallery.photos:
-                response['photos'].append(photo.to_object())
+        response['photos'] = []
+        for photo in gallery.photos:
+            response['photos'].append(photo.to_object())
         else:
             response['highlight'] = []
 
