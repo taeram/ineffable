@@ -60,7 +60,11 @@ if (window.location.pathname.match('/upload/')) {
 if (window.location.pathname.match('^/$')) {
     require(["react", "gallery"], function(React, GalleryList) {
         React.renderComponent(
-            <GalleryList url="/rest/gallery/" />,
+            <GalleryList
+                url="/rest/gallery/"
+                viewportWidth={$('#app').width()}
+                windowHeight={$(window).height()}
+            />,
             document.getElementById('app')
         );
     });
