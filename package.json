@@ -4,17 +4,22 @@
   "version": "0.0.3",
   "engines": {
     "node": "0.10.x",
-    "npm":  "1.2.x"
+    "npm": "1.2.x"
   },
   "dependencies": {
     "bower": "*",
-    "react-tools": "*"
+    "grunt": "*",
+    "grunt-cli": "*",
+    "grunt-react": "*",
+    "grunt-contrib-uglify": "*",
+    "react-tools": "*",
+    "uglify-js": "*"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/taeram/ineffable"
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install && ./node_modules/.bin/jsx --extension jsx ./app/static/js ./app/static/js"
+    "postinstall": "./node_modules/.bin/grunt"
   }
 }
