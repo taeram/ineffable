@@ -6,17 +6,17 @@ require.config({
     paths: {
         "bootstrap": "bootstrap/dist/js/bootstrap.min",
         "history": "history.js/scripts/bundled/html4%2Bhtml5/native.history",
-        "jquery": "jquery/jquery",
+        "jquery": "jquery/jquery.min",
         "react": "react/react.min",
-        "router": "routerjs/Router",
-        "linear-partition": "linear-partition/linear_partition",
+        "router": "routerjs/Router.min",
+        "linear-partition": "linear-partition/linear_partition.min",
 
         // Angular deps for uploader. To be refactored to React
         "angular": "angular/angular.min",
         "jquery-serialize-object": "jquery-serialize-object/jquery.serialize-object.compiled",
         "dirname": "phpjs/functions/filesystem/dirname",
         "number_format": "phpjs/functions/strings/number_format",
-        "underscore": "underscore/underscore",
+        "underscore": "underscore/underscore-min",
 
         // App
         "gallery": "/static/js/gallery",
