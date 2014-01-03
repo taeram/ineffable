@@ -50,7 +50,7 @@ require.config({
 window.name = "NG_DEFER_BOOTSTRAP!";
 
 if (window.location.pathname.match('/upload/')) {
-    require(['uploader'], function (uploader) {
+    require(['uploader'], function () {
         // Resume bootstrapping
         // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
         angular.resumeBootstrap();
@@ -58,7 +58,10 @@ if (window.location.pathname.match('/upload/')) {
 }
 
 if (window.location.pathname.match('^/$')) {
-    require(["gallery"], function(gallery) {
-        // Init the gallery
+    require(["react", "gallery"], function(React, GalleryList) {
+        React.renderComponent(
+            <GalleryList url="/rest/gallery/" />,
+            document.getElementById('app')
+        );
     });
 }

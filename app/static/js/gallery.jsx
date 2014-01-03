@@ -68,10 +68,7 @@ define('gallery',
                 </div>
             );
         }
-    })
+    });
 
-    React.renderComponent(
-        <GalleryList url="/rest/gallery/" />,
-        document.getElementById('app')
-    );
+    return GalleryList;
 });
