@@ -4,7 +4,9 @@
     "angular": "// Dependencies for the uploader. To be refactored to use React",
     "angular": "https://github.com/angular/bower-angular.git#1.*",
     "jquery-serialize-object": "1.0.0",
+    "history.js": "1.8.*",
     "phpjs": "https://github.com/kvz/phpjs.git",
+    "routerjs": "https://github.com/haithembelhaj/RouterJs.git",
     "underscore": "*",
 
     "bootstrap": "3.*",

@@ -5,8 +5,10 @@ require.config({
     urlArgs: "d=" + parseInt(Config.cache_buster, 10),
     paths: {
         "bootstrap": "bootstrap/dist/js/bootstrap.min",
+        "history": "history.js/scripts/bundled/html4%2Bhtml5/native.history",
         "jquery": "jquery/jquery",
         "react": "react/react.min",
+        "router": "routerjs/Router",
         "linear-partition": "linear-partition/linear_partition",
 
         // Angular deps for uploader. To be refactored to React
@@ -39,6 +41,9 @@ require.config({
         'number_format': {
             exports: 'number_format'
         },
+        'router': {
+            exports: 'window.Router'
+        },
         'underscore': {
             exports: '_'
         },
@@ -49,23 +54,31 @@ require.config({
 // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
 
-if (window.location.pathname.match('/upload/')) {
-    require(['uploader'], function () {
-        // Resume bootstrapping
-        // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
-        angular.resumeBootstrap();
-    })
-}
+require(['jquery', 'router', 'history'], function ($,  Router) {
+    var router = new Router();
 
-if (window.location.pathname.match('^/$')) {
-    require(["react", "gallery"], function(React, GalleryList) {
-        React.renderComponent(
-            <GalleryList
-                url="/rest/gallery/"
-                viewportWidth={$('#app').width()}
-                windowHeight={$(window).height()}
-            />,
-            document.getElementById('app')
-        );
+    // Uploader
+    router.route('/upload/:id', function(id) {
+        require(['uploader'], function () {
+            // Resume bootstrapping
+            // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
+            angular.resumeBootstrap();
+        })
     });
-}
+
+    // Index
+    router.route('/', function() {
+        require(["react", "gallery"], function(React, GalleryList) {
+            React.renderComponent(
+                <GalleryList
+                    url="/rest/gallery/"
+                    viewportWidth={$('#app').width()}
+                    windowHeight={$(window).height()} />,
+                document.getElementById('app')
+            );
+        });
+    });
+
+    // Start the router
+    router.start(window.location.pathname);
+})
