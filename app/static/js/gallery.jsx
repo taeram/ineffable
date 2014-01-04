@@ -97,7 +97,7 @@ define('gallery',
         baseUrl: 'https://' + Config.s3_bucket + '.s3.amazonaws.com',
 
         thumbUrl: function () {
-            return this.baseUrl + '/' + this.props.folder + '/' + this.props.name + '_display.jpg';
+            return this.baseUrl + '/' + this.props.folder + '/' + this.props.name + '_thumb.jpg';
         },
 
         render: function() {
