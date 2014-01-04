@@ -38,5 +38,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
 
   // default task
-  grunt.registerTask('default', ['react', 'uglify']);
+  grunt.registerTask('default', [
+    'react',
+    'uglify'
+  ]);
 };
