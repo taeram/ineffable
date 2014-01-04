@@ -30,11 +30,15 @@ define('gallery',
         render: function() {
             var viewportWidth = this.props.viewportWidth;
             var windowHeight = this.props.windowHeight;
+            var photoPaddingX = this.props.photoPaddingX;
+            var photoPaddingY = this.props.photoPaddingY;
             var galleryNodes = this.state.data.map(function (gallery) {
                 return <Gallery
                             folder={gallery.folder}
                             name={gallery.name}
                             photos={gallery.photos}
+                            photoPaddingX={photoPaddingX}
+                            photoPaddingY={photoPaddingY}
                             viewportWidth={viewportWidth}
                             windowHeight={windowHeight} />;
             });
@@ -53,7 +57,9 @@ define('gallery',
             var partitionedPhotos = photoPartition(
                 this.props.photos,
                 this.props.viewportWidth,
-                this.props.windowHeight
+                this.props.windowHeight,
+                this.props.photoPaddingX,
+                this.props.photoPaddingY
             );
             var photoRowNodes = _.map(partitionedPhotos, function (photos) {
                 return <PhotoRow folder={folder} photos={photos} />;
@@ -117,10 +123,12 @@ define('gallery',
      * @param array photos The photos
      * @param integer viewportWidth The DOM viewport width, in pixels
      * @param integer windowHeight The DOM window height, in pixels
+     * @param integer photoPaddingX The horizontal photo padding, in pixels
+     * @param integer photoPaddingY The vertical photo padding, in pixels
      */
-    var photoPartition = function (photos, viewportWidth, windowHeight) {
+    var photoPartition = function (photos, viewportWidth, windowHeight, photoPaddingX, photoPaddingY) {
         var idealHeight, index, partition, rowBuffer, rows, summedWidth, weights;
-        idealHeight = parseInt(windowHeight / 5, 10);
+        idealHeight = parseInt(windowHeight / 4, 10);
         summedWidth = _.reduce(photos, function(sum, photo) {
             return sum += photo.aspect_ratio * idealHeight;
         }, 0);
@@ -129,8 +137,8 @@ define('gallery',
         if (rows < 1) {
             // (2a) Fallback to just standard size
             return _.map(photos, function(photo) {
-                photo.width = parseInt(idealHeight * photo.aspect_ratio, 10) - 1;
-                photo.height = idealHeight - 1;
+                photo.width = parseInt(idealHeight * photo.aspect_ratio, 10) - photoPaddingX;
+                photo.height = idealHeight - photoPaddingY;
                 return photo;
             });
         } else {
@@ -155,8 +163,8 @@ define('gallery',
                 }, 0);
 
                 return _.map(rowBuffer, function(photo) {
-                    photo.width = parseInt(viewportWidth / summedRatios * photo.aspect_ratio, 10) - 1;
-                    photo.height = parseInt(viewportWidth / summedRatios, 10) - 1;
+                    photo.width = parseInt(viewportWidth / summedRatios * photo.aspect_ratio, 10) - photoPaddingX;
+                    photo.height = parseInt(viewportWidth / summedRatios, 10) - photoPaddingY;
 
                     return photo;
                 });

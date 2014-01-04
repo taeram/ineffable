@@ -68,14 +68,25 @@ require(['jquery', 'router', 'history'], function ($,  Router) {
 
     // Index
     router.route('/', function() {
-        require(["react", "gallery"], function(React, GalleryList) {
-            React.renderComponent(
-                <GalleryList
-                    url="/rest/gallery/"
-                    viewportWidth={$('#app').width()}
-                    windowHeight={$(window).height()} />,
-                document.getElementById('app')
-            );
+        require(["react", "gallery", "underscore"], function(React, GalleryList, _) {
+
+            var renderGallery = function () {
+                var viewportWidth = $('#app').width() - 15;
+                var windowHeight = $(window).height();
+                React.renderComponent(
+                    <GalleryList
+                        url="/rest/gallery/"
+                        photoPaddingX={1}
+                        photoPaddingY={1}
+                        viewportWidth={viewportWidth}
+                        windowHeight={windowHeight} />,
+                    document.getElementById('app')
+                );
+            }
+            setTimeout(renderGallery, 500);
+
+            var resizeGallery = _.debounce(renderGallery, 200);
+            $(window).resize(resizeGallery);
         });
     });
 

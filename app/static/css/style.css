@@ -1,3 +1,11 @@
+/** Layout **/
+.container {
+    padding-right: 0;
+    padding-left: 5px;
+    margin: 0;
+    width: 100%;
+}
+
 /** Thumbnail Images **/
 .img-gallery {
 }
