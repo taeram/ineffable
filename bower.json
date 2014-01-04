@@ -14,6 +14,6 @@
     "react": "v0.8.0",
     "requirejs": "*",
     "routerjs": "https://github.com/taeram/RouterJs.git",
-    "underscore": "*",
+    "underscore": "*"
   }
 }
