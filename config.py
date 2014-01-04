@@ -14,6 +14,7 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
     REMEMBER_COOKIE_DURATION = timedelta(days=30)
     SECRET_KEY = getenv('SECRET_KEY')
+    SEND_FILE_MAX_AGE_DEFAULT = 365*86400
     SITE_NAME = getenv('SITE_NAME', 'Ineffable')
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL')
     SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)

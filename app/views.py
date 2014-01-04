@@ -157,7 +157,13 @@ def gallery_item(gallery_id):
     if request.method == 'GET':
         response = gallery.to_object()
     elif request.method == 'PUT':
-        gallery.name = request.form['name']
+
+        if 'name' in request.form:
+            gallery.name = request.form['name']
+
+        if 'folder' in request.form:
+            gallery.folder = request.form['folder']
+
         db.session.add(gallery)
         db.session.commit()
         response = gallery.to_object()

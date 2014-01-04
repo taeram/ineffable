@@ -1,4 +1,5 @@
 boto==2.21.2
+Flask-Compress==1.0.0
 Flask-Login==0.2.9
 Flask-Script==0.6.6
 Flask-SQLAlchemy==1.0

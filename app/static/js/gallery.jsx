@@ -36,8 +36,7 @@ define('gallery',
                             name={gallery.name}
                             photos={gallery.photos}
                             viewportWidth={viewportWidth}
-                            windowHeight={windowHeight}
-                        />;
+                            windowHeight={windowHeight} />;
             });
 
             return (
@@ -77,8 +76,7 @@ define('gallery',
                             folder={folder}
                             height={photo.height}
                             name={photo.name}
-                            width={photo.width}
-                        />;
+                            width={photo.width} />;
             });
 
             return (
@@ -93,7 +91,7 @@ define('gallery',
         baseUrl: 'https://' + Config.s3_bucket + '.s3.amazonaws.com',
 
         thumbUrl: function () {
-            return this.baseUrl + '/' + this.props.folder + '/' + this.props.name + '_thumb.jpg';
+            return this.baseUrl + '/' + this.props.folder + '/' + this.props.name + '_display.jpg';
         },
 
         render: function() {
