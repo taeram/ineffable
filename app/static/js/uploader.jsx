@@ -55,8 +55,6 @@ define('uploader',
                         ext: fileExt,
                         aspect_ratio: file.aspect_ratio,
                         gallery_id: Config.gallery_id
-                    }, function (data) {
-                        console.log(data);
                     });
                 });
             }
