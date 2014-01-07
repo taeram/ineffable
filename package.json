@@ -12,6 +12,7 @@
     "grunt-cli": "*",
     "grunt-react": "*",
     "grunt-contrib-uglify": "*",
+    "grunt-contrib-less": "*",
     "react-tools": "*",
     "uglify-js": "*"
   },
