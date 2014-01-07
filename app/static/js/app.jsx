@@ -10,7 +10,6 @@ require.config({
         "linear-partition": "linear-partition/linear_partition.min",
         "react": "react/react-with-addons.min",
         "router": "routerjs/Router.min",
-        "zerobox": "zerobox/zerobox",
 
         // Angular deps for uploader. To be refactored to React
         "angular": "angular/angular.min",
@@ -50,9 +49,6 @@ require.config({
         },
         'underscore': {
             exports: '_'
-        },
-        'zerobox': {
-            deps: ['jquery']
         }
     }
 });

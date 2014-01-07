@@ -3,8 +3,7 @@
 define('photo-row',
 [
     "react",
-    "underscore",
-    "zerobox"
+    "underscore"
 ], function(
     React,
     _
