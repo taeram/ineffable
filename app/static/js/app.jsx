@@ -7,9 +7,10 @@ require.config({
         "bootstrap": "bootstrap/dist/js/bootstrap.min",
         "history": "history.js/scripts/bundled/html4%2Bhtml5/native.history",
         "jquery": "jquery/jquery.min",
-        "react": "react/react.min",
-        "router": "routerjs/Router.min",
         "linear-partition": "linear-partition/linear_partition.min",
+        "react": "react/react-with-addons.min",
+        "router": "routerjs/Router.min",
+        "zerobox": "zerobox/zerobox",
 
         // Angular deps for uploader. To be refactored to React
         "angular": "angular/angular.min",
@@ -19,7 +20,10 @@ require.config({
         "underscore": "underscore/underscore-min",
 
         // App
-        "gallery": "/static/js/gallery",
+        "gallery-list": "/static/js/gallery-list",
+        "gallery-item": "/static/js/gallery-item",
+        "photo-partition": "/static/js/photo-partition",
+        "photo-row": "/static/js/photo-row",
         "uploader": "/static/js/uploader"
     },
     shim: {
@@ -47,6 +51,9 @@ require.config({
         'underscore': {
             exports: '_'
         },
+        'zerobox': {
+            deps: ['jquery']
+        }
     }
 });
 
@@ -56,6 +63,22 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 
 require(['jquery', 'router', 'history'], function ($,  Router) {
     var router = new Router();
+
+    var getViewportWidth = function () {
+        return $('#app').width() - 15;
+    }
+
+    var getWindowHeight = function () {
+        return $(window).height();
+    }
+
+    var getPhotoPaddingX = function () {
+        return 1;
+    }
+
+    var getPhotoPaddingY = function () {
+        return 1;
+    }
 
     // Uploader
     router.route('/upload/:id', function(id) {
@@ -68,25 +91,53 @@ require(['jquery', 'router', 'history'], function ($,  Router) {
 
     // Index
     router.route('/', function() {
-        require(["react", "gallery", "underscore"], function(React, GalleryList, _) {
+        require(["react", "gallery-list", "underscore"], function(React, GalleryList, _) {
 
-            var renderGallery = function () {
-                var viewportWidth = $('#app').width() - 15;
-                var windowHeight = $(window).height();
+            // Enable touch events
+            React.initializeTouchEvents(true);
+
+            var renderGalleryList = function () {
                 React.renderComponent(
                     <GalleryList
                         url="/rest/gallery/"
-                        photoPaddingX={1}
-                        photoPaddingY={1}
-                        viewportWidth={viewportWidth}
-                        windowHeight={windowHeight} />,
+                        photoPaddingX={getPhotoPaddingX()}
+                        photoPaddingY={getPhotoPaddingY()}
+                        viewportWidth={getViewportWidth()}
+                        windowHeight={getWindowHeight()} />,
                     document.getElementById('app')
                 );
             }
-            setTimeout(renderGallery, 500);
+            setTimeout(renderGalleryList, 500);
 
-            var resizeGallery = _.debounce(renderGallery, 200);
-            $(window).resize(resizeGallery);
+            var resizeGalleryList = _.debounce(renderGalleryList, 200);
+            $(window).resize(resizeGalleryList);
+        });
+    });
+
+    // Index
+    router.route('/:id-*slug', function(gallery_id, slug) {
+        // Sanitize the id
+        gallery_id = gallery_id.replace(/-.*$/, '')
+
+        require(["react", "gallery-item", "underscore"], function(React, GalleryItem, _) {
+            // Enable touch events
+            React.initializeTouchEvents(true);
+
+            var renderGalleryItem = function () {
+                React.renderComponent(
+                    <GalleryItem
+                        url={"/rest/gallery/" + gallery_id}
+                        photoPaddingX={getPhotoPaddingX()}
+                        photoPaddingY={getPhotoPaddingY()}
+                        viewportWidth={getViewportWidth()}
+                        windowHeight={getWindowHeight()} />,
+                    document.getElementById('app')
+                );
+            }
+            setTimeout(renderGalleryItem, 500);
+
+            var resizeGalleryItem = _.debounce(renderGalleryItem, 200);
+            $(window).resize(resizeGalleryItem);
         });
     });
 

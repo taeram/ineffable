@@ -1,5 +1,6 @@
 from app import app
 import os
+import subprocess
 from flask import abort, \
                   flash, \
                   redirect, \
@@ -33,9 +34,37 @@ def favicon():
     """ Return the favicon """
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
 
+if app.debug:
+    @app.route('/static/js/<filename>', methods=['GET'])
+    def compile_jsx(filename):
+        """ Parse the JSX on the fly if we're in debug mode """
+        jsx_path = os.path.join(app.root_path, 'static/js/%sx' % filename)
+        try:
+            js = jsx.transform(jsx_path)
+            return app.response_class(response=js, mimetype='text/javascript')
+        except jsx.TransformError as e:
+            return app.response_class(response="%s" % e, status=500)
+
+    @app.route('/static/css/<filename>', methods=['GET'])
+    def compile_less(filename):
+        """ Parse the LESS on the fly if we're in debug mode """
+        filename = filename.replace('.css', '.less')
+        less_path = os.path.join(app.root_path, 'static/css/%s' % filename)
+        try:
+            css = subprocess.check_output(['/usr/bin/lessc', less_path])
+            return app.response_class(response=css, mimetype='text/css')
+        except jsx.TransformError as e:
+            return app.response_class(response="%s" % e, status=500)
+
 @app.route('/', methods=['GET'])
 @login_required
 def home():
+    """ Home page """
+    return render_template('index.html')
+
+@app.route('/<int:id>-<name>', methods=['GET'])
+@login_required
+def home_gallery(id, name):
     """ Home page """
     return render_template('index.html')
 
@@ -65,17 +94,6 @@ def logout():
     """ Logout the user """
     logout_user()
     return redirect(url_for('login'))
-
-if app.config['DEBUG']:
-    @app.route('/static/js/<filename>', methods=['GET'])
-    def compile_jsx(filename):
-        """ Parse the JSX on the fly if we're in debug mode """
-        jsx_path = os.path.join(app.root_path, 'static/js/%sx' % filename)
-        try:
-            js = jsx.transform(jsx_path)
-            return app.response_class(response=js, mimetype='text/javascript')
-        except jsx.TransformError as e:
-            return app.response_class(response="%s" % e, status=500)
 
 @app.route('/create/', methods=['GET', 'POST'])
 @login_required

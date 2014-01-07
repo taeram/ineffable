@@ -33,6 +33,9 @@ Local development setup:
     # Create the development database (SQLite by default)
     python manage.py database create
 
+    # Install less.js for on the fly compilation of .less files
+    npm install -g less
+
     # Export the config variables
     export AWS_ACCESS_KEY_ID=secret \
            AWS_SECRET_ACCESS_KEY=secret \

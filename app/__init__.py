@@ -14,4 +14,5 @@ else:
     app.config.from_object('config.DevelopmentConfig')
 
 import auth
+import filters
 import views
