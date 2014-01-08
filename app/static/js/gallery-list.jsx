@@ -71,9 +71,7 @@ define('gallery-list',
             );
 
             // Only show the first row
-            if (_.isArray(partitionedPhotos[0])) {
-                partitionedPhotos = partitionedPhotos[0];
-            }
+            partitionedPhotos = partitionedPhotos[0];
 
             return (
                 <div id={getSlug(this.props.id, this.props.name)} className="gallery" onClick={this.props.onClick}>

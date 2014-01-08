@@ -78,7 +78,7 @@ define('photo-row',
             if (this.props.type == 'thumb') {
                 src = this.thumbUrl()
             } else if (this.props.type == 'display') {
-                src = this.thumbUrl()
+                src = this.displayUrl()
             }
 
             var photoClass = "gallery-photo gallery-photo-" + this.props.type;

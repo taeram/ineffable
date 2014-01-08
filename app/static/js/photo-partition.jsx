@@ -38,11 +38,11 @@ define('photo-partition',
         rows = Math.round(summedWidth / viewportWidth);
         if (rows < 1) {
             // (2a) Fallback to just standard size
-            return _.map(photos, function(photo) {
+            return [_.map(photos, function(photo) {
                 photo.width = parseInt(idealHeight * photo.aspect_ratio, 10) - photoPaddingX;
                 photo.height = idealHeight - photoPaddingY;
                 return photo;
-            });
+            })];
         } else {
             // (2b) Distribute photos over rows using the aspect ratio as weight
             weights = _.map(photos, function(photo) {
