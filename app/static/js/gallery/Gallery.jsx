@@ -7,19 +7,16 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
         getInitialState: function() {
             state = {
                 isExpanded: null,
-                type: null
+                type: null,
+                isBookmarked: this.isBookmarked()
             }
 
             if (this.isBookmarked()) {
-                state = {
-                    isExpanded: true,
-                    type: "display"
-                };
+                state.isExpanded = true;
+                state.type = "display";
             } else {
-                state = {
-                    isExpanded: false,
-                    type: "thumb"
-                };
+                state.isExpanded = false;
+                state.type = "thumb";
             }
 
             return state;
@@ -96,7 +93,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
             }, this);
 
             var button, onClick
-            if (!this.isBookmarked()) {
+            if (!this.state.isBookmarked) {
                 button = <button className="btn btn-info"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>;
                 onClick = this.onClick;
             }
