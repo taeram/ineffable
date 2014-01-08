@@ -35,7 +35,7 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
 
 if app.debug:
-    @app.route('/static/js/<filename>', methods=['GET'])
+    @app.route('/static/js/<path:filename>', methods=['GET'])
     def compile_jsx(filename):
         """ Parse the JSX on the fly if we're in debug mode """
         jsx_path = os.path.join(app.root_path, 'static/js/%sx' % filename)
@@ -45,7 +45,7 @@ if app.debug:
         except jsx.TransformError as e:
             return app.response_class(response="%s" % e, status=500)
 
-    @app.route('/static/css/<filename>', methods=['GET'])
+    @app.route('/static/css/<path:filename>', methods=['GET'])
     def compile_less(filename):
         """ Parse the LESS on the fly if we're in debug mode """
         filename = filename.replace('.css', '.less')

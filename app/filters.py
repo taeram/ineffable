@@ -6,7 +6,7 @@ from flask.ext.login import current_user
 @app.context_processor
 def utility_processor():
 
-    def navbar_link(endpoint, label, login_required=False, anonymous_required=False):
+    def navbar_link(endpoint, label, icon=None, login_required=False, anonymous_required=False):
         if login_required and not current_user.is_authenticated():
             return ''
 
@@ -14,10 +14,15 @@ def utility_processor():
             return ''
 
         if endpoint == request.endpoint:
-            activeClass = 'class="active"'
+            active = 'active'
         else:
-            activeClass = ''
+            active = None
 
-        return '<li %s><a href="%s">%s</a></li>' % (activeClass, url_for(endpoint), label)
+        if icon is not None:
+            iconEl = '<i class="fa fa-%s"></i>' % icon
+        else:
+            iconEl = None
+
+        return '<li class="%s"><a href="%s">%s%s</a></li>' % (active, url_for(endpoint), iconEl, label)
 
     return dict(navbar_link=navbar_link)

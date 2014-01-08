@@ -1,29 +1,34 @@
 /** @jsx React.DOM */
 
 require.config({
-    baseUrl: '/static/components/',
+    baseUrl: '/static/',
     urlArgs: "d=" + parseInt(Config.cache_buster, 10),
     paths: {
-        "bootstrap": "bootstrap/dist/js/bootstrap.min",
-        "history": "history.js/scripts/bundled/html4%2Bhtml5/native.history",
-        "jquery": "jquery/jquery.min",
-        "linear-partition": "linear-partition/linear_partition.min",
-        "react": "react/react-with-addons.min",
-        "router": "routerjs/Router.min",
+        // Dependencies
+        "bootstrap": "components/bootstrap/dist/js/bootstrap.min",
+        "history": "components/history.js/scripts/bundled/html4%2Bhtml5/native.history",
+        "jquery": "components/jquery/jquery.min",
+        "linear-partition": "components/linear-partition/linear_partition.min",
+        "react": "components/react/react-with-addons.min",
+        "router": "components/routerjs/Router.min",
+        "underscore": "components/underscore/underscore-min",
 
-        // Angular deps for uploader. To be refactored to React
-        "angular": "angular/angular.min",
-        "jquery-serialize-object": "jquery-serialize-object/jquery.serialize-object.compiled",
-        "dirname": "phpjs/functions/filesystem/dirname",
-        "number_format": "phpjs/functions/strings/number_format",
-        "underscore": "underscore/underscore-min",
+        // Angular deps for uploader. To be refactored to use React instead
+        "angular": "components/angular/angular.min",
+        "jquery-serialize-object": "components/jquery-serialize-object/jquery.serialize-object.compiled",
+        "dirname": "components/phpjs/functions/filesystem/dirname",
+        "number_format": "components/phpjs/functions/strings/number_format",
 
         // App
-        "gallery-list": "/static/js/gallery-list",
-        "gallery-item": "/static/js/gallery-item",
-        "photo-partition": "/static/js/photo-partition",
-        "photo-row": "/static/js/photo-row",
-        "uploader": "/static/js/uploader"
+        "gallery": "js/gallery/Gallery",
+        "gallery-list": "js/gallery/GalleryList",
+        "photo": "js/gallery/Photo",
+        "photo-list": "js/gallery/PhotoList",
+        "routes": "js/routes",
+        "uploader": "js/uploader/Uploader",
+
+        // Helpers
+        "photo-partition": "js/helpers/photo-partition"
     },
     shim: {
         'angular': {
@@ -35,6 +40,9 @@ require.config({
         'dirname': {
             exports: 'dirname'
         },
+        'history': {
+            exports: 'window.History'
+        },
         'jquery-serialize-object': {
             deps: ['jquery']
         },
@@ -45,7 +53,8 @@ require.config({
             exports: 'number_format'
         },
         'router': {
-            exports: 'window.Router'
+            exports: 'window.Router',
+            deps: ['history']
         },
         'underscore': {
             exports: '_'
@@ -57,85 +66,37 @@ require.config({
 // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
 
-require(['jquery', 'router', 'history'], function ($,  Router) {
-    var router = new Router();
+// Configure the application
+Config.App = {
+    // The DOM id of the app container
+    elementId: 'app',
 
-    var getViewportWidth = function () {
-        return $('#app').width() - 15;
-    }
+    // Horizontal padding of the app container. Required for partitioning.
+    paddingX: 15,
 
-    var getWindowHeight = function () {
-        return $(window).height();
-    }
+    // Calculated value
+    viewportWidth: 0
+};
 
-    var getPhotoPaddingX = function () {
-        return 1;
-    }
+// Configure the photos
+Config.Photo = {
+    // Horizontal padding of the photo element. Required for partitioning.
+    paddingX: 1,
 
-    var getPhotoPaddingY = function () {
-        return 1;
-    }
+    // Vertical padding of the photo element. Required for partitioning.
+    paddingY: 1
+};
 
-    // Uploader
-    router.route('/upload/:id', function(id) {
-        require(['uploader'], function () {
-            // Resume bootstrapping
-            // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
-            angular.resumeBootstrap();
-        })
-    });
+require(['react', 'routes', 'jquery', 'underscore'], function (React,  router, $, _) {
+    // Setup React
+    React.initializeTouchEvents(true);
 
-    // Index
-    router.route('/', function() {
-        require(["react", "gallery-list", "underscore"], function(React, GalleryList, _) {
-
-            // Enable touch events
-            React.initializeTouchEvents(true);
-
-            var renderGalleryList = function () {
-                React.renderComponent(
-                    <GalleryList
-                        url="/rest/gallery/"
-                        photoPaddingX={getPhotoPaddingX()}
-                        photoPaddingY={getPhotoPaddingY()}
-                        viewportWidth={getViewportWidth()}
-                        windowHeight={getWindowHeight()} />,
-                    document.getElementById('app')
-                );
-            }
-            setTimeout(renderGalleryList, 500);
-
-            var resizeGalleryList = _.debounce(renderGalleryList, 200);
-            $(window).resize(resizeGalleryList);
-        });
-    });
-
-    // Index
-    router.route('/:id-*slug', function(gallery_id, slug) {
-        // Sanitize the id
-        gallery_id = gallery_id.replace(/-.*$/, '')
-
-        require(["react", "gallery-item", "underscore"], function(React, GalleryItem, _) {
-            // Enable touch events
-            React.initializeTouchEvents(true);
-
-            var renderGalleryItem = function () {
-                React.renderComponent(
-                    <GalleryItem
-                        url={"/rest/gallery/" + gallery_id}
-                        photoPaddingX={getPhotoPaddingX()}
-                        photoPaddingY={getPhotoPaddingY()}
-                        viewportWidth={getViewportWidth()}
-                        windowHeight={getWindowHeight()} />,
-                    document.getElementById('app')
-                );
-            }
-            setTimeout(renderGalleryItem, 500);
-
-            var resizeGalleryItem = _.debounce(renderGalleryItem, 200);
-            $(window).resize(resizeGalleryItem);
-        });
-    });
+    // Initialize the Config
+    var initializeConfig = function () {
+        Config.App.viewportWidth = $('#' + Config.App.elementId).width() - Config.App.paddingX;
+    };
+    $(window).resize(_.debounce(initializeConfig, 100));
+    initializeConfig();
 
     // Start the router
     router.start(window.location.pathname);
