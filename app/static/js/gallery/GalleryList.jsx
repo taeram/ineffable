@@ -11,6 +11,10 @@ define('gallery-list', ['react', 'jquery', 'gallery'], function(React, $, Galler
             $.ajax({
                 url: this.props.url,
                 success: function(data) {
+                    if (!Array.isArray(data)) {
+                        data = [data];
+                    }
+
                     this.setState({data: data});
                 }.bind(this)
             });

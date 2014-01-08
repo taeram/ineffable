@@ -62,7 +62,9 @@ def find_user_by_name(name):
 
 def find_gallery_all():
     """ Get all galleries """
-    return db.session.query(Gallery).all()
+    return db.session.query(Gallery).\
+                      order_by(db.desc(Gallery.created)).\
+                      all()
 
 def find_gallery_by_id(gallery_id):
     """ Find a single gallery """

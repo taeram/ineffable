@@ -5,21 +5,36 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
     var Gallery = React.createClass({
 
         getInitialState: function() {
-            return {
-                isExpanded: false,
-                type: "thumb"
-            };
+            state = {
+                isExpanded: null,
+                type: null
+            }
+
+            if (this.isBookmarked()) {
+                state = {
+                    isExpanded: true,
+                    type: "display"
+                };
+            } else {
+                state = {
+                    isExpanded: false,
+                    type: "thumb"
+                };
+            }
+
+            return state;
         },
 
         /**
-         * Get a slug
+         * Has the user visited the url of the individual album?
          *
-         * @param integer id The id
-         * @param string name The name
-         *
-         * @return string
+         * @return boolean
          */
-        getSlug: function (id, name) {
+        isBookmarked: function () {
+            return window.location.pathname == '/' + this.getSlug();
+        },
+
+        getSlug: function () {
             name = this.props.name.toLowerCase();
             name = name.replace(/[^a-z0-9]/ig, '-').replace(/--/, '-');
             return this.props.id + '-' + name;
@@ -80,10 +95,16 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                 );
             }, this);
 
+            var button, onClick
+            if (!this.isBookmarked()) {
+                button = <button className="btn btn-info"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>;
+                onClick = this.onClick;
+            }
+
             return (
                 <div>
-                    <h2 id={this.getSlug()} className="gallery-heading" onClick={this.onClick}>
-                        <button className="btn btn-info"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>
+                    <h2 id={this.getSlug()} className="gallery-heading" onClick={onClick}>
+                        {button}
                         {this.props.name}
                     </h2>
                     {photoRowNodes}

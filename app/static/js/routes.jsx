@@ -22,7 +22,20 @@ define('routes', ['router'], function() {
     // Single Gallery
     router.route('/:id-*slug', function(gallery_id, slug) {
         // Sanitize the id
-        gallery_id = gallery_id.replace(/-.*$/, '')
+        gallery_id = parseInt(gallery_id.replace(/-.*$/, ''), 10)
+
+        require(['react', 'gallery-list'], function (React, GalleryList) {
+            var render = function () {
+                React.renderComponent(
+                    <GalleryList url={"/rest/gallery/" + gallery_id} container={Config.App.elementId} />,
+                    document.getElementById(Config.App.elementId)
+                );
+            };
+            render();
+
+            // Re-render on window resize
+            $(window).resize(_.debounce(render, 200));
+        });
     });
 
     // Photo Uploader
