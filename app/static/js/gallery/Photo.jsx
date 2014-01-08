@@ -7,7 +7,7 @@ define('photo', ['react', 'jquery'], function(React, $) {
             return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + '_' + this.props.type + '.jpg';
         },
 
-        onClick: function () {
+        showLightbox: function () {
             var css = {
                 background: 'rgba(0, 0, 0, .75) url("' + this.url() + '")',
                 backgroundPosition: 'center',
@@ -38,13 +38,11 @@ define('photo', ['react', 'jquery'], function(React, $) {
 
             var onClick;
             if (this.props.type == 'display') {
-                onClick = this.onClick;
-            } else {
-                onClick = this.props.onClick;
+                onClick = this.showLightbox;
             }
 
             return (
-                <div className="gallery-photo" onClick={onClick}>
+                <div className={"gallery-photo gallery-photo-" + this.props.type} onClick={onClick}>
                     <img src={this.url()} style={imgStyle} />
                 </div>
             );

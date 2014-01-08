@@ -70,7 +70,6 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                                 height={photo.height}
                                 name={photo.name}
                                 width={photo.width}
-                                onClick={this.onClick}
                                 type={this.state.type} />;
                 }, this);
 
@@ -84,7 +83,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
             return (
                 <div>
                     <h2 id={this.getSlug()} className="gallery-heading" onClick={this.onClick}>
-                        <i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i>
+                        <button className="btn btn-info"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>
                         {this.props.name}
                     </h2>
                     {photoRowNodes}
