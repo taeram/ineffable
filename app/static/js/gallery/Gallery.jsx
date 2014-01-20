@@ -92,16 +92,10 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                 );
             }, this);
 
-            var button, onClick
-            if (!this.state.isBookmarked) {
-                button = <button className="btn btn-info"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>;
-                onClick = this.onClick;
-            }
-
             return (
                 <div>
-                    <h2 id={this.getSlug()} className="gallery-heading" onClick={onClick}>
-                        {button}
+                    <h2 id={this.getSlug()} className="gallery-heading" onClick={this.onClick}>
+                        <button className="btn"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>
                         {this.props.name}
                     </h2>
                     {photoRowNodes}
