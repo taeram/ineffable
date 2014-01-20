@@ -58,7 +58,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
 
         getRowHeight: function () {
             if (this.state.type == 'thumb') {
-                return $(window).height() / 8;
+                return 100;
             } else {
                 return $(window).height() / 3;
             }
@@ -92,10 +92,14 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                 );
             }, this);
 
+            var h2Classes = React.addons.classSet({
+                "gallery-heading": true,
+                "gallery-heading-dropped": (this.state.type === 'thumb')
+            });
+
             return (
-                <div>
-                    <h2 id={this.getSlug()} className="gallery-heading" onClick={this.onClick}>
-                        <button className="btn"><i className={"fa fa-" + (this.state.isExpanded ? 'minus' : 'plus')}></i></button>
+                <div className={"gallery-" + this.state.type}>
+                    <h2 id={this.getSlug()} className={h2Classes} onClick={this.onClick}>
                         {this.props.name}
                     </h2>
                     {photoRowNodes}

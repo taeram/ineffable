@@ -48,6 +48,9 @@
 @import "../components/bootstrap/less/utilities.less";
 @import "../components/bootstrap/less/responsive-utilities.less";
 
+// Variables
+@gallery-heading-bg: #fff;
+
 /** Layout **/
 .container {
     margin: 0;
@@ -62,33 +65,39 @@
     padding-right: 10px;
 }
 
-/** Thumbnail Images **/
-@gallery-heading-bg: #fff;
 .gallery-heading {
+    color: #222;
+    font-size: 32px;
+    margin: 0;
+    padding: 5px 10px;
+}
+
+.gallery-heading-dropped {
     background-color: @gallery-heading-bg;
     border-bottom-right-radius: 5px;
     color: #222;
     cursor: pointer;
-    display: inline-block;
     font-size: 32px;
     margin: 0;
+    opacity: .7;
     padding: 5px 10px;
     position: relative;
-    top: 45px;
-    opacity: .8;
+    text-align: center;
+    top: 72px;
     width: auto;
     z-index: 1000;
 
-    button {
-        font-size: 16px;
-        padding: 1px 6px;
-        margin-right: 15px;
-        margin-bottom: 5px;
+    &:hover {
+        background-color: white;
+        opacity: .8;
     }
 }
 
-.gallery-heading:hover {
-    background-color: darken(@gallery-heading-bg, 15%);
+.gallery-display {
+}
+
+.gallery-thumb {
+    text-align: center;
 }
 
 .gallery-photo {
@@ -99,4 +108,7 @@
 
 .gallery-photo-display {
     cursor: pointer;
+}
+
+.gallery-photo-thumb {
 }
