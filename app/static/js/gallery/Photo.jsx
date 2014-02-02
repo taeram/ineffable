@@ -3,13 +3,13 @@
 define('photo', ['react', 'jquery'], function(React, $) {
 
     var Photo = React.createClass({
-        url: function () {
-            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + '_' + this.props.type + '.jpg';
+        url: function (type) {
+            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + '_' + type + '.jpg';
         },
 
         showLightbox: function () {
             var css = {
-                background: 'rgba(0, 0, 0, .75) url("' + this.url() + '")',
+                background: 'rgba(0, 0, 0, .75) url("' + this.url('display') + '")',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 cursor: 'pointer',
@@ -36,14 +36,9 @@ define('photo', ['react', 'jquery'], function(React, $) {
                 height: this.props.height
             };
 
-            var onClick;
-            if (this.props.type == 'display') {
-                onClick = this.showLightbox;
-            }
-
             return (
-                <div className={"gallery-photo gallery-photo-" + this.props.type} onClick={onClick}>
-                    <img src={this.url()} style={imgStyle} />
+                <div className="gallery-photo" onClick={this.showLightbox}>
+                    <img src={this.url('thumb')} style={imgStyle} />
                 </div>
             );
         }

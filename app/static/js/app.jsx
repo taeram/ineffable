@@ -9,6 +9,7 @@ require.config({
         "history": "components/history.js/scripts/bundled/html4%2Bhtml5/native.history",
         "jquery": "components/jquery/jquery.min",
         "linear-partition": "components/linear-partition/linear_partition.min",
+        "moment": "components/momentjs/moment",
         "react": "components/react/react-with-addons.min",
         "router": "components/routerjs/Router.min",
         "underscore": "components/underscore/underscore-min",
