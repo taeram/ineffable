@@ -1,11 +1,22 @@
 /** @jsx React.DOM */
 
-define('gallery-list', ['react', 'jquery', 'moment', 'gallery'], function(React, $, moment, Gallery) {
+define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'gallery'], function(React, $, moment, _, Gallery) {
 
     var GalleryList = React.createClass({
         getInitialState: function() {
             return {data: []};
         },
+
+        /**
+         * Triggered by window resize events
+         */
+        handleResize: _.debounce(
+            function(e) {
+                this.state.windowWidth = window.innerWidth;
+                this.setState(this.state);
+            },
+            200
+        ),
 
         componentWillMount: function() {
             $.ajax({
@@ -18,6 +29,14 @@ define('gallery-list', ['react', 'jquery', 'moment', 'gallery'], function(React,
                     this.setState({data: data});
                 }.bind(this)
             });
+        },
+
+        componentDidMount: function() {
+            window.addEventListener('resize', this.handleResize);
+        },
+
+        componentWillUnmount: function() {
+            window.removeEventListener('resize', this.handleResize);
         },
 
         render: function() {

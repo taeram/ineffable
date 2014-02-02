@@ -6,35 +6,10 @@ define('routes', ['router'], function() {
     // Gallery List
     router.route('/', function() {
         require(['react', 'gallery-list'], function (React, GalleryList) {
-            var render = function () {
-                React.renderComponent(
-                    <GalleryList url="/rest/gallery/" container={Config.App.elementId} />,
-                    document.getElementById(Config.App.elementId)
-                );
-            };
-            render();
-
-            // Re-render on window resize
-            $(window).resize(_.debounce(render, 200));
-        });
-    });
-
-    // Single Gallery
-    router.route('/:id-*slug', function(gallery_id, slug) {
-        // Sanitize the id
-        gallery_id = parseInt(gallery_id.replace(/-.*$/, ''), 10)
-
-        require(['react', 'gallery-list'], function (React, GalleryList) {
-            var render = function () {
-                React.renderComponent(
-                    <GalleryList url={"/rest/gallery/" + gallery_id} container={Config.App.elementId} />,
-                    document.getElementById(Config.App.elementId)
-                );
-            };
-            render();
-
-            // Re-render on window resize
-            $(window).resize(_.debounce(render, 200));
+            React.renderComponent(
+                <GalleryList url="/rest/gallery/" container={Config.App.elementId} />,
+                document.getElementById(Config.App.elementId)
+            );
         });
     });
 

@@ -19,12 +19,11 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
             var photoRows = photoPartition(this.props.photos, this.idealRowHeight, viewportWidth, photoPaddingX, photoPaddingY);
             var photoRowNodes = _.map(photoRows, function (photoRow) {
                 var photoNodes = _.map(photoRow, function (photo) {
-                    return <Photo
-                                folder={this.props.folder}
-                                height={photo.height}
-                                name={photo.name}
-                                width={photo.width}
-                                type="thumb" />;
+                    return <Photo folder={this.props.folder}
+                                  height={photo.height}
+                                  name={photo.name}
+                                  width={photo.width}
+                                  type="thumb" />;
                 }, this);
 
                 return (
@@ -34,7 +33,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                 );
             }, this);
 
-            var galleryDate = moment(this.props.created).format('MMMM Do YYYY');
+            var galleryDate = moment(this.props.created).format('MMMM Do, YYYY');
 
             return (
                 <div className="gallery">
