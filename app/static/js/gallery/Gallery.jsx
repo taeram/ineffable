@@ -65,7 +65,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
                 <div className="gallery">
                     <h2 className="gallery-heading">
                         {this.props.name}
-                        <span class="gallery-heading-date">
+                        <span className="gallery-heading-date">
                             {galleryDate}
                         </span>
                     </h2>
