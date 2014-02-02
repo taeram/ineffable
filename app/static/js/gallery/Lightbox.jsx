@@ -6,6 +6,13 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
 
         mixins: [HandleResizeMixin],
 
+        /**
+         * How long to show an image
+         *
+         * @var integer
+         */
+        slideshowInterval: 5,
+
         getInitialState: function() {
             // Find the index of the selected photo in this.props.photos
             var selectedIndex = 0;
@@ -19,7 +26,8 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
 
             return {
                 index: selectedIndex,
-                isLoaded: false
+                isLoaded: false,
+                slideshow: false
             }
         },
 
@@ -30,12 +38,17 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
         },
 
         next: function (e) {
-            e.stopPropagation();
+            if (e) {
+                e.stopPropagation();
+            }
+
             if (this.state.index + 1 < this.props.photos.length) {
                 this.setState({
                     index: this.state.index + 1,
                     isLoaded: false
                 });
+            } else {
+                this.slideshow();
             }
         },
 
@@ -51,6 +64,27 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
 
         isImageLoaded: function () {
             this.setState({isLoaded: true});
+        },
+
+        download: function (e) {
+            e.stopPropagation();
+        },
+
+        slideshow: function (e) {
+            if (e) {
+                e.stopPropagation();
+            }
+
+            if (this.state.slideshow) {
+                clearTimeout(this.slideshowTimer);
+                this.setState({
+                    index: 0,
+                    slideshow: false
+                });
+            } else {
+                this.slideshowTimer = setInterval(this.next, (this.slideshowInterval * 1000));
+                this.setState({slideshow: true});
+            }
         },
 
         render: function() {
@@ -78,8 +112,26 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
                 );
             }
 
+            var slideshowBtnClass = React.addons.classSet({
+                'btn': true,
+                'btn-xs': true,
+                'btn-success': this.state.slideshow,
+                'btn-default': !this.state.slideshow
+            });
+
             return (
                 <div className="lightbox" style={style} onClick={this.close}>
+                    <div className="lightbox-buttons">
+                        <a className="btn btn-default btn-xs" href={photo.url('original')} onClick={this.download}>
+                            <i className="fa fa-download"></i>
+                            Download
+                        </a>
+                        <button className={slideshowBtnClass} onClick={this.slideshow}>
+                            <i className="fa fa-picture-o"></i>
+                            {this.state.slideshow ? 'Stop' : 'Start'} Slideshow
+                        </button>
+                    </div>
+
                     <span className="lightbox-nav lightbox-nav-left" onClick={this.prev}>
                         <i className="fa fa-chevron-left"></i>
                     </span>

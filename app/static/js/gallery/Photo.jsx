@@ -4,7 +4,13 @@ define('photo', ['react'], function(React) {
 
     var Photo = React.createClass({
         url: function (type) {
-            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + '_' + type + '.jpg';
+            if (type == 'original') {
+                postfix = '';
+            } else {
+                postfix = '_' + type;
+            }
+
+            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + postfix + '.jpg';
         },
 
         onClick: function () {
