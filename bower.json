@@ -14,7 +14,7 @@
     "momentjs": "*",
     "react": "v0.8.0",
     "requirejs": "*",
-    "routerjs": "https://github.com/taeram/RouterJs.git",
+    "routerjs": "https://github.com/haithembelhaj/RouterJs.git",
     "underscore": "*"
   }
 }

@@ -11,7 +11,7 @@ require.config({
         "linear-partition": "components/linear-partition/linear_partition.min",
         "moment": "components/momentjs/moment",
         "react": "components/react/react-with-addons.min",
-        "router": "components/routerjs/Router.min",
+        "router": "components/routerjs/Router",
         "underscore": "components/underscore/underscore-min",
 
         // Angular deps for uploader. To be refactored to use React instead
