@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(React, photoPartition, Photo, History) {
+define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(React, photoPartition, Photo, Lightbox) {
 
     var Gallery = React.createClass({
 
@@ -21,29 +21,13 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
         /**
          * Show the Lightbox
          *
-         * @param DOM photo The photo element
+         * @param DOM photo The photo to display
          */
         onClick: function (photo) {
-            var css = {
-                background: 'rgba(0, 0, 0, .75) url("' + photo.url('display') + '")',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                cursor: 'pointer',
-                height: '100%',
-                left: 0,
-                position: 'fixed',
-                textAlign: 'center',
-                top: 0,
-                width: '100%',
-                zIndex: 1099
-            };
-
-            $('<div class="photo-lightbox">')
-                .css(css)
-                .click(function(e) {
-                    $(e.target).remove();
-                })
-                .appendTo(document.body);
+            React.renderComponent(
+                <Lightbox photo={photo} photos={this.photos} />,
+                document.getElementById(Config.App.lightboxElementId)
+            );
         },
 
         render: function() {
@@ -51,15 +35,21 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                 photoPaddingX = parseInt(Config.Photo.paddingX, 10),
                 photoPaddingY = parseInt(Config.Photo.paddingY, 10);
 
+            this.photos = [];
             var photoRows = photoPartition(this.props.photos, this.idealRowHeight, viewportWidth, photoPaddingX, photoPaddingY);
             var photoRowNodes = _.map(photoRows, function (photoRow) {
                 var photoNodes = _.map(photoRow, function (photo) {
-                    return <Photo folder={this.props.folder}
-                                  height={photo.height}
-                                  name={photo.name}
-                                  width={photo.width}
-                                  type="thumb"
-                                  onClick={this.onClick} />;
+                    var photo = <Photo folder={this.props.folder}
+                                       height={photo.height}
+                                       name={photo.name}
+                                       width={photo.width}
+                                       type="thumb"
+                                       onClick={this.onClick} />;
+
+                    // Store a list of all photos
+                    this.photos.push(photo);
+
+                    return photo;
                 }, this);
 
                 return (

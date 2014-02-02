@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('photo', ['react', 'jquery'], function(React, $) {
+define('photo', ['react'], function(React) {
 
     var Photo = React.createClass({
         url: function (type) {

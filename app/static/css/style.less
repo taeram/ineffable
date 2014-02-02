@@ -108,3 +108,54 @@
     border-right: 1px solid white;
     display: inline-block;
 }
+
+/** Lightbox **/
+
+.lightbox {
+    .user-select(none);
+    background: rgba(0, 0, 0, .75);
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 1099;
+}
+
+.lightbox-spinner {
+    color: white;
+    font-size: 50px;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.lightbox-photo {
+    display: inline-block;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+    width: auto;
+}
+
+.lightbox-nav {
+    color: white;
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 50px;
+}
+
+.lightbox-nav-left {
+    border-right: 1px solid #999;
+    left: 0;
+}
+
+.lightbox-nav-right {
+    border-left: 1px solid #999;
+    right: 0;
+}

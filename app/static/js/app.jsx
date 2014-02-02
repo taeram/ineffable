@@ -23,6 +23,7 @@ require.config({
         // App
         "gallery": "js/gallery/Gallery",
         "gallery-list": "js/gallery/GalleryList",
+        "lightbox": "js/gallery/Lightbox",
         "photo": "js/gallery/Photo",
         "photo-list": "js/gallery/PhotoList",
         "routes": "js/routes",
@@ -74,6 +75,9 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 Config.App = {
     // The DOM id of the app container
     elementId: 'app',
+
+    // The DOM id of the lightbox container
+    lightboxElementId: 'app-lightbox',
 
     // Horizontal padding of the app container. Required for partitioning.
     paddingX: 15,
