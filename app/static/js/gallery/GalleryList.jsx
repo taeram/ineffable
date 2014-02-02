@@ -45,6 +45,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'gallery'], function(React,
                         <Gallery folder={gallery.folder}
                                 id={gallery.id}
                                 name={gallery.name}
+                                created={gallery.created}
                                 photos={gallery.photos} />
                     </div>
                 )

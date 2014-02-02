@@ -34,14 +34,15 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                 );
             }, this);
 
-            var h2Classes = React.addons.classSet({
-                "gallery-heading": true
-            });
+            var galleryDate = moment(this.props.created).format('MMMM Do YYYY');
 
             return (
                 <div className="gallery">
-                    <h2 className={h2Classes}>
+                    <h2 className="gallery-heading">
                         {this.props.name}
+                        <span class="gallery-heading-date">
+                            {galleryDate}
+                        </span>
                     </h2>
                     {photoRowNodes}
                 </div>
