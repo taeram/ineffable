@@ -11,6 +11,41 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
          */
         idealRowHeight: 100,
 
+        /**
+         * A list of all photo elements
+         *
+         * @var DOM
+         */
+        photos: null,
+
+        /**
+         * Show the Lightbox
+         *
+         * @param DOM photo The photo element
+         */
+        onClick: function (photo) {
+            var css = {
+                background: 'rgba(0, 0, 0, .75) url("' + photo.url('display') + '")',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                cursor: 'pointer',
+                height: '100%',
+                left: 0,
+                position: 'fixed',
+                textAlign: 'center',
+                top: 0,
+                width: '100%',
+                zIndex: 1099
+            };
+
+            $('<div class="photo-lightbox">')
+                .css(css)
+                .click(function(e) {
+                    $(e.target).remove();
+                })
+                .appendTo(document.body);
+        },
+
         render: function() {
             var viewportWidth = parseInt(Config.App.viewportWidth, 10),
                 photoPaddingX = parseInt(Config.Photo.paddingX, 10),
@@ -23,7 +58,8 @@ define('gallery', ['react', 'photo-partition', 'photo', 'history'], function(Rea
                                   height={photo.height}
                                   name={photo.name}
                                   width={photo.width}
-                                  type="thumb" />;
+                                  type="thumb"
+                                  onClick={this.onClick} />;
                 }, this);
 
                 return (

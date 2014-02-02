@@ -29,7 +29,10 @@ require.config({
         "uploader": "js/uploader/Uploader",
 
         // Helpers
-        "photo-partition": "js/helpers/photo-partition"
+        "photo-partition": "js/helpers/photo-partition",
+
+        // Mixins
+        "handle-resize-mixin": "js/mixins/HandleResizeMixin"
     },
     shim: {
         'angular': {
