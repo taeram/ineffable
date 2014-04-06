@@ -1,12 +1,10 @@
 from app import app
 import os
-import subprocess
 from flask import abort, \
                   flash, \
                   redirect, \
                   render_template, \
                   request, \
-                  send_from_directory, \
                   session, \
                   url_for
 from flask.ext.login import current_user, \
@@ -25,36 +23,8 @@ from .database import find_user_by_name, \
 import json
 import base64
 import hmac, hashlib
-from react import jsx
 from helpers import generate_thumbnail
 from url_decode import urldecode
-
-@app.route('/favicon.ico')
-def favicon():
-    """ Return the favicon """
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
-
-if app.debug:
-    @app.route('/static/js/<path:filename>', methods=['GET'])
-    def compile_jsx(filename):
-        """ Parse the JSX on the fly if we're in debug mode """
-        jsx_path = os.path.join(app.root_path, 'static/js/%sx' % filename)
-        try:
-            js = jsx.transform(jsx_path)
-            return app.response_class(response=js, mimetype='text/javascript')
-        except jsx.TransformError as e:
-            return app.response_class(response="%s" % e, status=500)
-
-    @app.route('/static/css/<path:filename>', methods=['GET'])
-    def compile_less(filename):
-        """ Parse the LESS on the fly if we're in debug mode """
-        filename = filename.replace('.css', '.less')
-        less_path = os.path.join(app.root_path, 'static/css/%s' % filename)
-        try:
-            css = subprocess.check_output(['/usr/bin/lessc', less_path])
-            return app.response_class(response=css, mimetype='text/css')
-        except jsx.TransformError as e:
-            return app.response_class(response="%s" % e, status=500)
 
 @app.route('/', methods=['GET'])
 @login_required

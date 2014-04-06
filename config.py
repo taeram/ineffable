@@ -10,6 +10,7 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
     AWS_SQS_QUEUE = getenv('AWS_SQS_QUEUE')
     CACHE_BUSTER = int(path.getmtime(__file__))
+    GOOGLE_ANALYTICS_ID=getenv('GOOGLE_ANALYTICS_ID', False)
     MAX_UPLOAD_SIZE = getenv('MAX_UPLOAD_SIZE')
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
     REMEMBER_COOKIE_DURATION = timedelta(days=30)

@@ -64,8 +64,8 @@ Local development setup:
 Heroku setup:
 ```bash
     # Clone the repo
-    git clone https://github.com/taeram/dynamite.git
-    cd ./dynamite/
+    git clone https://github.com/taeram/ineffable.git
+    cd ./ineffable
 
     # Create your Heroku app, and the addons
     heroku apps:create
@@ -102,6 +102,9 @@ Heroku setup:
                           "quality": 80
                         }
                       ]'
+
+    # Add a Google Analytics ID if you want to track visitors
+    heroku config:set GOOGLE_ANALYTICS_ID=<your Google Analytics id>
 
     # Create the production database
     heroku run python manage.py database create
