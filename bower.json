@@ -10,6 +10,7 @@
     "font-awesome": "4.*",
     "history.js": "1.8.*",
     "jquery": "2.*",
+    "jsjpegmeta": "https://github.com/taeram/jsjpegmeta.git#1.*",
     "linear-partition": "https://github.com/taeram/linear-partition.git#1.*",
     "momentjs": "*",
     "react": "v0.8.0",

@@ -7,6 +7,7 @@ define('uploader',
     "dirname",
     "jquery-serialize-object",
     "bootstrap",
+    "jpegmeta"
 ], function(
     $,
     angular,
@@ -178,10 +179,34 @@ define('uploader',
                     file.isUploaded = false;
                     file.isUploadError = false;
 
+                    // Get the EXIF information for this file
+                    var fileReader = new FileReader();
+                    fileReader.onloadend = function () {
+                        var dateCreated;
+                        try {
+                            var meta = new JpegMeta.JpegFile(this.result, this.file.name);
+                            dateCreated = meta.exif.DateTimeOriginal.value;
+                        } catch (exception) {
+                            console.log("No EXIF info found in this file");
+                            dateCreated = null;
+                        }
+
+                        // Add the created date to this file in the scope
+                        for (var i in this.$scope.files) {
+                            if (this.$scope.files[i].name == this.file.name) {
+                                this.$scope.files[i].created = dateCreated;
+                                break;
+                            }
+                        }
+                    };
+
+                    fileReader.file = file;
+                    fileReader.$scope = $scope;
+                    fileReader.readAsBinaryString(file);
+
                     $scope.files.push(file);
                 }
 
-                // Make sure there are no dupes
                 $scope.files = _.uniq($scope.files);
             });
         };
@@ -274,7 +299,8 @@ define('uploader',
                 name: fileName,
                 ext: fileExt,
                 aspect_ratio: this.photo.aspect_ratio,
-                gallery_id: Config.gallery_id
+                gallery_id: Config.gallery_id,
+                created: this.photo.created
             };
 
             $.post('/rest/photo/', data, function (result) {
@@ -303,14 +329,14 @@ define('uploader',
         var fileName = matches[1];
         var fileExt = matches[2];
 
-        var photoUrl = photo.url.replace('.' + fileExt, '_thumb.' + fileExt);
+        var photoUrl = photo.url.replace('.' + fileExt, '_thumb.jpg');
 
         $.ajax({
             url: photoUrl,
             type: 'HEAD',
             error: function() {
                 // 403/404'd, so we haven't found the thumbnail yet, keep waiting
-                setTimeout(this.pollThumbnailUrl.bind(this, photo), 250);
+                setTimeout(this.pollThumbnailUrl.bind(this, photo), 1000);
             }.bind(this),
             success: function() {
                 // Found the thumbnail, update the page!

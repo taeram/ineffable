@@ -8,6 +8,7 @@ require.config({
         "bootstrap": "components/bootstrap/dist/js/bootstrap.min",
         "history": "components/history.js/scripts/bundled/html4%2Bhtml5/native.history",
         "jquery": "components/jquery/jquery.min",
+        "jpegmeta": "components/jsjpegmeta/jpegmeta",
         "linear-partition": "components/linear-partition/linear_partition.min",
         "moment": "components/momentjs/moment",
         "react": "components/react/react-with-addons.min",

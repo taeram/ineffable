@@ -95,7 +95,7 @@ def gallery_create():
 @app.route('/update/<int:gallery_id>', methods=['GET', 'POST'])
 @login_required
 def gallery_update(gallery_id):
-    """ Updates a gallery """
+    """ Updated a gallery """
     gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
@@ -212,7 +212,8 @@ def photo_index():
         ext=request.form['ext'],
         aspect_ratio=float(request.form['aspect_ratio']),
         gallery_id=request.form['gallery_id'],
-        owner_id=int(current_user.id)
+        owner_id=int(current_user.id),
+        created=request.form['created']
     )
 
     # Save the updated photos JSON for this gallery

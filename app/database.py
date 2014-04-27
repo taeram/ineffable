@@ -98,7 +98,7 @@ class Photo():
     aspect_ratio = None
     created = None
 
-    def __init__(self, name, ext, aspect_ratio, owner_id, gallery_id):
+    def __init__(self, name, ext, aspect_ratio, owner_id, gallery_id, created=None):
         """ Setup the class """
         self.id = md5.new(name + '.' + ext).hexdigest()
         self.name = name
@@ -106,7 +106,11 @@ class Photo():
         self.owner_id = owner_id
         self.gallery = find_gallery_by_id(gallery_id)
         self.aspect_ratio = aspect_ratio
-        self.created = datetime.utcnow()
+
+        if created is not None and len(created) > 0:
+            self.created = datetime.strptime(created, '%Y:%m:%d %H:%M:%S')
+        else:
+            self.created = datetime.utcnow()
 
     def generate_thumbnail(self):
         """ Generate a thumbnail for this photo """
@@ -158,16 +162,18 @@ class Gallery(db.Model):
         photos.append(photo)
 
         # Deduplicate the photos list
-        result = []
-        filenames = []
-        for photo in reversed(photos):
-            filename = photo['name'] + '.' + photo['ext']
-            if filename not in filenames:
-                result.append(photo)
+        # Start with the one we just added so it will overwrite any previous copies
+        unique_photos = []
+        photo_ids = []
+        for photo in photos:
+            if photo['id'] not in photo_ids:
+                unique_photos.append(photo)
+            photo_ids.append(photo['id'])
 
-            filenames.append(filename)
+        # Order the photos by created date
+        sorted_photos = sorted(unique_photos, key=lambda photo: photo['created'])
 
-        return self.set_photos(result)
+        return self.set_photos(sorted_photos)
 
     def to_object(self):
         """ Get it as an object """
