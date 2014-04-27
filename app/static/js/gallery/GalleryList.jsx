@@ -38,7 +38,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                                 </span>
                             </span>
                         </div>
-                    )
+                    );
                 }
 
                 return (
@@ -50,7 +50,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                                 created={gallery.created}
                                 photos={gallery.photos} />
                     </div>
-                )
+                );
             }, this);
 
             return (

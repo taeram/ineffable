@@ -108,4 +108,4 @@ require(['react', 'routes', 'jquery', 'underscore'], function (React,  router, $
 
     // Start the router
     router.start(window.location.pathname);
-})
+});

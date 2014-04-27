@@ -17,7 +17,7 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
             // Find the index of the selected photo in this.props.photos
             var selectedIndex = 0;
             for (var i in this.props.photos) {
-                var photo = this.props.photos[i]
+                var photo = this.props.photos[i];
                 if (photo._rootNodeID == this.props.photo._rootNodeID) {
                     selectedIndex = parseInt(i, 10);
                     break;
@@ -28,7 +28,7 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
                 index: selectedIndex,
                 isLoaded: false,
                 slideshow: false
-            }
+            };
         },
 
         close: function () {

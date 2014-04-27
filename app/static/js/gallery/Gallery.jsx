@@ -38,11 +38,11 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
             this.photos = [];
             var photoRows = photoPartition(this.props.photos, this.idealRowHeight, viewportWidth, photoPaddingX, photoPaddingY);
             var photoRowNodes = _.map(photoRows, function (photoRow) {
-                var photoNodes = _.map(photoRow, function (photo) {
+                var photoNodes = _.map(photoRow, function (item) {
                     var photo = <Photo folder={this.props.folder}
-                                       height={photo.height}
-                                       name={photo.name}
-                                       width={photo.width}
+                                       height={item.height}
+                                       name={item.name}
+                                       width={item.width}
                                        type="thumb"
                                        onClick={this.onClick} />;
 
