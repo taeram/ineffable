@@ -177,9 +177,9 @@ def photo_index():
     photo = Photo(
         name=urldecode(request.form['name']),
         ext=request.form['ext'],
-        aspect_ratio=request.form['aspect_ratio'],
+        aspect_ratio=float(request.form['aspect_ratio']),
         gallery_id=request.form['gallery_id'],
-        owner_id=current_user.id
+        owner_id=int(current_user.id)
     )
 
     # Save the updated photos JSON for this gallery

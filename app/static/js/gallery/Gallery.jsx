@@ -18,6 +18,32 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
          */
         photos: null,
 
+        getInitialState: function() {
+            return {
+                photos: [],
+                loading: true
+            };
+        },
+
+        componentWillMount: function() {
+            $.ajax({
+                url: 'https://' + Config.s3_bucket + '.s3.amazonaws.com/' + this.props.folder + '/photos.json',
+                success: function(photos) {
+                    this.setState({
+                        photos: JSON.parse(photos),
+                        loading: false
+                    });
+                }.bind(this),
+                error: function () {
+                    this.setState({
+                        loading: false
+                    });
+
+                    console.log("No photos found for gallery " + this.props.id);
+                }.bind(this)
+            });
+        },
+
         /**
          * Show the Lightbox
          *
@@ -25,7 +51,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
          */
         onClick: function (photo) {
             React.renderComponent(
-                <Lightbox photo={photo} photos={this.photos} />,
+                <Lightbox photo={photo} photos={this.photoNodes} />,
                 document.getElementById(Config.App.lightboxElementId)
             );
         },
@@ -35,29 +61,42 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
                 photoPaddingX = parseInt(Config.Photo.paddingX, 10),
                 photoPaddingY = parseInt(Config.Photo.paddingY, 10);
 
-            this.photos = [];
-            var photoRows = photoPartition(this.props.photos, this.idealRowHeight, viewportWidth, photoPaddingX, photoPaddingY);
-            var photoRowNodes = _.map(photoRows, function (photoRow) {
-                var photoNodes = _.map(photoRow, function (item) {
-                    var photo = <Photo folder={this.props.folder}
-                                       height={item.height}
-                                       name={item.name}
-                                       width={item.width}
-                                       type="thumb"
-                                       onClick={this.onClick} />;
-
-                    // Store a list of all photos
-                    this.photos.push(photo);
-
-                    return photo;
-                }, this);
-
-                return (
-                    <div>
-                        {photoNodes}
+            var photoRowNodes;
+            if (this.state.loading) {
+                var divStyle = {"text-align": "center"};
+                photoRowNodes = (
+                    <div style={divStyle}>
+                        <i class="fa fa-spinner fa-spin"></i>
                     </div>
                 );
-            }, this);
+            } else if (this.state.photos.length > 0) {
+                var photoRows = photoPartition(this.state.photos, this.idealRowHeight, viewportWidth, photoPaddingX, photoPaddingY);
+                photoRowNodes = _.map(photoRows, function (photoRow) {
+                    this.photoNodes = _.map(photoRow, function (item) {
+                        return (
+                            <Photo folder={this.props.folder}
+                                   height={item.height}
+                                   name={item.name}
+                                   width={item.width}
+                                   type="thumb"
+                                   onClick={this.onClick} />
+                       );
+                    }, this);
+
+                    return (
+                        <div>
+                            {this.photoNodes}
+                        </div>
+                    );
+                }, this);
+            } else {
+                var divCenterStyle = {"text-align": "center"};
+                photoRowNodes = (
+                    <div style={divCenterStyle}>
+                        No Photos Found
+                    </div>
+                );
+            }
 
             var galleryDate = moment(this.props.created).format('MMMM Do, YYYY');
 

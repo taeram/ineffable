@@ -100,6 +100,7 @@ class Photo():
 
     def __init__(self, name, ext, aspect_ratio, owner_id, gallery_id):
         """ Setup the class """
+        self.id = md5.new(name + '.' + ext).hexdigest()
         self.name = name
         self.ext = ext
         self.owner_id = owner_id
@@ -108,6 +109,7 @@ class Photo():
         self.created = datetime.utcnow()
 
     def generate_thumbnail(self):
+        """ Generate a thumbnail for this photo """
         photo_path = "%s/%s.%s" % (self.gallery.folder, self.name, self.ext)
         generate_thumbnail(photo_path)
 
@@ -118,9 +120,11 @@ class Photo():
     def to_object(self):
         """ Get this class as an object """
         return {
+            "id": self.id,
             "name": self.name,
             "ext": self.ext,
             "aspect_ratio": self.aspect_ratio,
+            "owner_id": self.owner_id,
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
 
@@ -144,21 +148,23 @@ class Gallery(db.Model):
         return get_gallery_photos(self.folder)
 
     def set_photos(self, photos):
+        """ Set the photos for the gallery """
         return save_gallery_photos(self.folder, photos)
 
     def add_photo(self, photo):
+        """ Add a photo to the gallery """
         photos = self.get_photos()
         photos.append(photo)
 
         # Deduplicate the photos list
         result = []
-        photo_ids = []
+        filenames = []
         for photo in reversed(photos):
-            id = photo['name'] + '.' + photo['ext']
-            if id not in photo_ids:
+            filename = photo['name'] + '.' + photo['ext']
+            if filename not in filenames:
                 result.append(photo)
 
-            photo_ids.append(id)
+            filenames.append(filename)
 
         return self.set_photos(result)
 

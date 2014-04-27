@@ -18,7 +18,7 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
             var selectedIndex = 0;
             for (var i in this.props.photos) {
                 var photo = this.props.photos[i];
-                if (photo._rootNodeID == this.props.photo._rootNodeID) {
+                if (photo.id == this.props.photo.id) {
                     selectedIndex = parseInt(i, 10);
                     break;
                 }
