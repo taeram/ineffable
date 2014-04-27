@@ -40,22 +40,8 @@ define('uploader',
         factory('notify', ['$window', function($window) {
             return function($scope, file) {
                 getImageAttributes(file, function (file) {
-                    // Store the Angular.js data for this file
-                    files[file.name] = {
-                        scope: $scope,
-                        file: file
-                    };
-
                     // Tell the backend this file has been uploaded
-                    var matches = file.name.match(/^(.+?)\.([a-z]*)/i, '');
-                    var fileName = matches[1];
-                    var fileExt = matches[2];
-                    $scope.uploadQueue.add({
-                        name: fileName,
-                        ext: fileExt,
-                        aspect_ratio: file.aspect_ratio,
-                        gallery_id: Config.gallery_id
-                    });
+                    $scope.uploadQueue.add(file);
                 });
             };
         }
@@ -94,7 +80,7 @@ define('uploader',
         .controller('UploaderCtrl', ['$scope', 'notify', function($scope, $uploadCompleteCallback) {
 
         // Start watching for files which have finished uploading
-        $scope.uploadQueue = new UploadQueue();
+        $scope.uploadQueue = new UploadQueue($scope);
 
         // Initialize our variables
         $scope.files = [];
@@ -262,7 +248,8 @@ define('uploader',
     /**
      * The upload queue class
      */
-    function UploadQueue() {
+    function UploadQueue($scope) {
+        this.$scope = $scope;
         this.queue = [];
         this.sending = false;
         this.interval = 1000; // milliseconds
@@ -279,15 +266,61 @@ define('uploader',
         // Send the next photo in the queue
         if (this.queue.length > 0) {
             this.sending = true;
-            var photo = this.queue.shift();
-            $.post('/rest/photo/', photo, function () {
+            this.photo = this.queue.shift();
+            var matches = this.photo.name.match(/^(.+?)\.([a-z]*)/i, '');
+            var fileName = matches[1];
+            var fileExt = matches[2];
+            var data = {
+                name: fileName,
+                ext: fileExt,
+                aspect_ratio: this.photo.aspect_ratio,
+                gallery_id: Config.gallery_id
+            };
+
+            $.post('/rest/photo/', data, function (result) {
                 this.sending = false;
+
+                // Start polling for the thumbnail
+                console.log("Start polling")
+                this.pollThumbnailUrl(this.photo);
             }.bind(this));
         }
     };
 
     UploadQueue.prototype.add = function (photo) {
         this.queue.push(photo);
+    };
+
+    /**
+     * Start polling the thumbnail url to see if it has been created yet.
+     *
+     * Once the thumbnail has been created, update angular.js with the url to the
+     * thumbnail so it can be added to the view template.
+     *
+     * @param object photo The photo
+     */
+    UploadQueue.prototype.pollThumbnailUrl = function (photo) {
+        var matches = photo.name.match(/^(.+?)\.([a-z]*)/i, '');
+        var fileName = matches[1];
+        var fileExt = matches[2];
+
+        var photoUrl = photo.url.replace('.' + fileExt, '_thumb.' + fileExt);
+        console.log("Polling for " + photoUrl);
+
+        $.ajax({
+            url: photoUrl,
+            type: 'HEAD',
+            error: function() {
+                // 403/404'd, so we haven't found the thumbnail yet, keep waiting
+                setTimeout(this.pollThumbnailUrl, 250, photo);
+            }.bind(this),
+            success: function() {
+                // Found the thumbnail, update the page!
+                this.$scope.$apply(function() {
+                    photo.imgUrl = photoUrl;
+                }.bind(this));
+            }.bind(this)
+        });
     };
 
     /**

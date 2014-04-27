@@ -16,7 +16,6 @@ from .forms import LoginForm,\
 from .database import find_user_by_name, \
                       find_gallery_all, \
                       find_gallery_by_id, \
-                      find_photo_by_id, \
                       db, \
                       Gallery, \
                       Photo
@@ -24,7 +23,6 @@ import json
 import base64
 import hmac
 import hashlib
-from helpers import generate_thumbnail
 from url_decode import urldecode
 
 
@@ -183,36 +181,11 @@ def photo_index():
         gallery_id=request.form['gallery_id'],
         owner_id=current_user.id
     )
-    db.session.add(photo)
-    db.session.commit()
+
+    # Save the updated photos JSON for this gallery
+    photo.save()
 
     # Tell the thumbnail daemon to generate a thumbnail for this photo
-    gallery = find_gallery_by_id(photo.gallery_id)
-    photo_path = "%s/%s.%s" % (gallery.folder, photo.name, photo.ext)
-    generate_thumbnail(photo_path)
+    photo.generate_thumbnail()
 
-    response = photo.to_object()
-    return app.response_class(response=json.dumps(response), mimetype='application/json')
-
-
-@app.route('/rest/photo/<int:photo_id>', methods=['GET', 'DELETE'])
-@login_required
-def photo_item(photo_id):
-    """ Get a single photo """
-    photo = find_photo_by_id(photo_id)
-    if not photo:
-        abort(404)
-
-    if request.method == 'GET':
-        response = photo.to_object()
-    elif request.method == 'PUT':
-        photo.name = request.form['name']
-        db.session.add(photo)
-        db.session.commit()
-        response = photo.to_object()
-    elif request.method == 'DELETE':
-        db.session.delete(photo)
-        db.session.commit()
-        response = []
-
-    return app.response_class(response=json.dumps(response), mimetype='application/json')
+    return app.response_class(response=json.dumps(photo.to_object()), mimetype='application/json')
