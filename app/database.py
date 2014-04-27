@@ -12,6 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from helpers import generate_thumbnail, \
                     save_gallery_photos, \
                     get_gallery_photos
+from urllib import unquote
 
 db = SQLAlchemy(app)
 
@@ -101,7 +102,7 @@ class Photo():
     def __init__(self, name, ext, aspect_ratio, owner_id, gallery_id, created=None):
         """ Setup the class """
         self.id = md5.new(name + '.' + ext).hexdigest()
-        self.name = name
+        self.name = unquote(name)
         self.ext = ext
         self.owner_id = owner_id
         self.gallery = find_gallery_by_id(gallery_id)
@@ -170,8 +171,9 @@ class Gallery(db.Model):
                 unique_photos.append(photo)
             photo_ids.append(photo['id'])
 
-        # Order the photos by created date
-        sorted_photos = sorted(unique_photos, key=lambda photo: photo['created'])
+        # Order the photos by name, and then by created date
+        sorted_photos = sorted(unique_photos, key=lambda photo: photo['name'])
+        sorted_photos = sorted(sorted_photos, key=lambda photo: photo['created'])
 
         return self.set_photos(sorted_photos)
 
