@@ -119,6 +119,18 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
                 'btn-default': !this.state.slideshow
             });
 
+            var prevBtnClass = React.addons.classSet({
+                'lightbox-nav': true,
+                'lightbox-nav-left': true,
+                'hidden': (this.state.index === 0)
+            });
+
+            var nextBtnClass = React.addons.classSet({
+                'lightbox-nav': true,
+                'lightbox-nav-right': true,
+                'hidden': (this.state.index == this.props.photos.length - 1)
+            });
+
             return (
                 <div className="lightbox" style={style} onClick={this.close}>
                     <div className="lightbox-buttons">
@@ -132,11 +144,11 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
                         </button>
                     </div>
 
-                    <span className="lightbox-nav lightbox-nav-left" onClick={this.prev}>
+                    <span className={prevBtnClass} onClick={this.prev}>
                         <i className="fa fa-chevron-left"></i>
                     </span>
                     {photoNode}
-                    <span className="lightbox-nav lightbox-nav-right" onClick={this.next}>
+                    <span className={nextBtnClass} onClick={this.next}>
                         <i className="fa fa-chevron-right"></i>
                     </span>
                 </div>
