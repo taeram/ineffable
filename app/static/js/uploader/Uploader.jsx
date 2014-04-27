@@ -50,7 +50,7 @@ define('uploader',
                     var matches = file.name.match(/^(.+?)\.([a-z]*)/i, '');
                     var fileName = matches[1];
                     var fileExt = matches[2];
-                    $.post('/rest/photo/', {
+                    $scope.uploadQueue.add({
                         name: fileName,
                         ext: fileExt,
                         aspect_ratio: file.aspect_ratio,
@@ -92,6 +92,9 @@ define('uploader',
      */
     angular.module('uploaderApp.controllers', [])
         .controller('UploaderCtrl', ['$scope', 'notify', function($scope, $uploadCompleteCallback) {
+
+        // Start watching for files which have finished uploading
+        $scope.uploadQueue = new UploadQueue();
 
         // Initialize our variables
         $scope.files = [];
@@ -255,6 +258,37 @@ define('uploader',
             }
         };
     }]);
+
+    /**
+     * The upload queue class
+     */
+    function UploadQueue() {
+        this.queue = [];
+        this.sending = false;
+        this.interval = 1000; // milliseconds
+
+        setInterval(this.watch.bind(this), this.interval);
+    }
+
+    UploadQueue.prototype.watch = function () {
+        // Only send one at a time
+        if (this.sending) {
+            return;
+        }
+
+        // Send the next photo in the queue
+        if (this.queue.length > 0) {
+            this.sending = true;
+            var photo = this.queue.shift();
+            $.post('/rest/photo/', photo, function () {
+                this.sending = false;
+            }.bind(this));
+        }
+    };
+
+    UploadQueue.prototype.add = function (photo) {
+        this.queue.push(photo);
+    };
 
     /**
      * The uploader class
