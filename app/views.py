@@ -22,9 +22,11 @@ from .database import find_user_by_name, \
                       Photo
 import json
 import base64
-import hmac, hashlib
+import hmac
+import hashlib
 from helpers import generate_thumbnail
 from url_decode import urldecode
+
 
 @app.route('/', methods=['GET'])
 @login_required
@@ -32,11 +34,13 @@ def home():
     """ Home page """
     return render_template('index.html')
 
+
 @app.route('/<int:id>-<name>', methods=['GET'])
 @login_required
 def home_gallery(id, name):
     """ Home page """
     return render_template('index.html')
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -58,12 +62,14 @@ def login():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     """ Logout the user """
     logout_user()
     return redirect(url_for('login'))
+
 
 @app.route('/create/', methods=['GET', 'POST'])
 @login_required
@@ -78,6 +84,7 @@ def gallery_create():
         return redirect(url_for('gallery_upload', gallery_id=gallery.id))
 
     return render_template('create.html', form=form)
+
 
 @app.route('/upload/<int:gallery_id>')
 def gallery_upload(gallery_id):
@@ -115,6 +122,7 @@ def gallery_upload(gallery_id):
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
 
+
 @app.route('/rest/gallery/', methods=['GET', 'POST'])
 @login_required
 def gallery_index():
@@ -133,6 +141,7 @@ def gallery_index():
         response = gallery.to_object()
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
+
 
 @app.route('/rest/gallery/<int:gallery_id>', methods=['GET', 'PUT', 'DELETE'])
 @login_required
@@ -162,6 +171,7 @@ def gallery_item(gallery_id):
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
+
 @app.route('/rest/photo/', methods=['POST'])
 @login_required
 def photo_index():
@@ -184,9 +194,11 @@ def photo_index():
     response = photo.to_object()
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
+
 @app.route('/rest/photo/<int:photo_id>', methods=['GET', 'DELETE'])
 @login_required
 def photo_item(photo_id):
+    """ Get a single photo """
     photo = find_photo_by_id(photo_id)
     if not photo:
         abort(404)

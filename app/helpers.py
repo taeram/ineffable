@@ -10,6 +10,7 @@ conn = boto.sqs.connect_to_region(
     aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY']
 )
 
+
 def add_to_queue(message):
     """ Add a raw message to the queue """
     queue = conn.get_queue(queue_name=app.config['AWS_SQS_QUEUE'])
@@ -19,6 +20,7 @@ def add_to_queue(message):
     m = RawMessage()
     m.set_body(message)
     queue.write(m)
+
 
 def generate_thumbnail(photo_path):
     """ Generate a thumbnail from this photo """

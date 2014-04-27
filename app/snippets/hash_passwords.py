@@ -1,19 +1,16 @@
 # coding: utf8
-"""
+"""Securely hash and check passwords using PBKDF2.
 
-    Securely hash and check passwords using PBKDF2.
+Use random salts to protect againt rainbow tables, many iterations against
+brute-force, and constant-time comparaison againt timing attacks.
 
-    Use random salts to protect againt rainbow tables, many iterations against
-    brute-force, and constant-time comparaison againt timing attacks.
+Keep parameters to the algorithm together with the hash so that we can
+change the parameters and keep older hashes working.
 
-    Keep parameters to the algorithm together with the hash so that we can
-    change the parameters and keep older hashes working.
+See more details at http://exyr.org/2011/hashing-passwords/
 
-    See more details at http://exyr.org/2011/hashing-passwords/
-
-    Author: Simon Sapin
-    License: BSD
-
+Author: Simon Sapin
+License: BSD
 """
 
 import hashlib

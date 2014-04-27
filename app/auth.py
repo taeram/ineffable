@@ -13,14 +13,15 @@ from .database import find_user_by_id
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     """ Get a user """
     return find_user_by_id(user_id)
+
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     """ Handle requests to login protected pages """
     flash('Please login', 'warning')
     return redirect(url_for('login', next=request.path))
-

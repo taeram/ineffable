@@ -3,9 +3,10 @@ from flask import request, \
                   url_for
 from flask.ext.login import current_user
 
+
 @app.context_processor
 def utility_processor():
-
+    """ Utility Processor filter """
     def navbar_link(endpoint, label, icon=None, login_required=False, anonymous_required=False):
         if login_required and not current_user.is_authenticated():
             return ''

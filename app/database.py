@@ -14,15 +14,17 @@ db = SQLAlchemy(app)
 
 manager = Manager(usage="Manage the database")
 
+
 @manager.command
 def create():
-    "Create the database"
+    """ Create the database """
     db.create_all()
     setup()
 
+
 @manager.command
 def setup():
-    "Populate the database with some defaults"
+    """ Populate the database with some defaults """
     if prompt_bool("Do you want to add an admin user?"):
         name = prompt("Username for admin")
         password = prompt("Password for admin")
@@ -30,17 +32,20 @@ def setup():
         db.session.add(user)
         db.session.commit()
 
+
 @manager.command
 def drop():
-    "Empty the database"
+    """ Empty the database """
     if prompt_bool("Are you sure you want to drop all tables from the database?"):
         db.drop_all()
 
+
 @manager.command
 def recreate():
-    "Recreate the database"
+    """ Recreate the database """
     drop()
     create()
+
 
 def find_user_by_id(user_id):
     """ Get a user by id """
@@ -51,6 +56,7 @@ def find_user_by_id(user_id):
     except NoResultFound:
         return None
 
+
 def find_user_by_name(name):
     """ Get a user by name """
     try:
@@ -60,11 +66,13 @@ def find_user_by_name(name):
     except NoResultFound:
         return None
 
+
 def find_gallery_all():
     """ Get all galleries """
     return db.session.query(Gallery).\
                       order_by(db.desc(Gallery.created)).\
                       all()
+
 
 def find_gallery_by_id(gallery_id):
     """ Find a single gallery """
@@ -112,7 +120,9 @@ class Photo(db.Model):
         }
 
 class Gallery(db.Model):
+
     """ A gallery of photos """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     folder = db.Column(db.Text, nullable=False, unique=True)
@@ -120,6 +130,7 @@ class Gallery(db.Model):
     photos = db.relationship('Photo', backref='gallery')
 
     def __init__(self, name):
+        """ Setup the class """
         self.name = name
         self.folder = md5.new("%032x" % random.getrandbits(128)).hexdigest()
 
@@ -132,19 +143,19 @@ class Gallery(db.Model):
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
 
-        gallery['photos'] = []
-        for photo in self.photos:
-            gallery['photos'].append(photo.to_object())
-
         return gallery
 
+
 class User(db.Model, UserMixin):
+
     """ A user """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)
 
     def __init__(self, name, password):
+        """ Setup the class """
         self.name = name
         self.password = make_hash(password)
 

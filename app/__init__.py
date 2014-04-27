@@ -20,14 +20,18 @@ else:
 import auth
 import filters
 
+
 @app.route('/favicon.ico')
 def favicon():
     """ Return the favicon """
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
 
+
 @app.route('/static/favicon-<int:cachebuster>.png', methods=['GET'])
 def handle_cachebusted_favicon(cachebuster):
+    """ Handle a cachebusted favicon request """
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
+
 
 @app.route('/apple-touch-icon-precomposed.png')
 def favicon_apple():
@@ -68,6 +72,7 @@ if app.debug:
 else:
     @app.route('/static/js/<path:filename>', methods=['GET'])
     def handle_cachebusted_js(filename):
+        """ Handle cachebusted JavaScript requests """
         filename = re.sub(r"\-[0-9]+", "", filename)
         js_path = os.path.join(app.root_path, 'static/js/%s' % filename)
         js = open(js_path, 'r').read()
@@ -75,6 +80,7 @@ else:
 
     @app.route('/static/css/<path:filename>', methods=['GET'])
     def handle_cachebusted_css(filename):
+        """ Handle cachebusted CSS requests """
         filename = re.sub(r"\-[0-9]+", "", filename)
         css_path = os.path.join(app.root_path, 'static/css/%s' % filename)
         css = open(css_path, 'r').read()
