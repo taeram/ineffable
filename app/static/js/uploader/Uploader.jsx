@@ -281,7 +281,6 @@ define('uploader',
                 this.sending = false;
 
                 // Start polling for the thumbnail
-                console.log("Start polling")
                 this.pollThumbnailUrl(this.photo);
             }.bind(this));
         }
@@ -305,7 +304,6 @@ define('uploader',
         var fileExt = matches[2];
 
         var photoUrl = photo.url.replace('.' + fileExt, '_thumb.' + fileExt);
-        console.log("Polling for " + photoUrl);
 
         $.ajax({
             url: photoUrl,
