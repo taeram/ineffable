@@ -95,7 +95,7 @@ Config.Photo = {
     paddingY: 1
 };
 
-require(['react', 'routes', 'jquery', 'underscore'], function (React,  router, $, _) {
+require(['react', 'routes', 'jquery', 'underscore', 'bootstrap'], function (React,  router, $, _, bs) {
     // Setup React
     React.initializeTouchEvents(true);
 

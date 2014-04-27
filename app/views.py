@@ -12,7 +12,7 @@ from flask.ext.login import current_user, \
                             logout_user, \
                             login_required
 from .forms import LoginForm,\
-                  CreateGalleryForm
+                   GalleryForm
 from .database import find_user_by_name, \
                       find_gallery_all, \
                       find_gallery_by_id, \
@@ -73,15 +73,53 @@ def logout():
 @login_required
 def gallery_create():
     """ Create a gallery """
-    form = CreateGalleryForm()
+    form = GalleryForm()
     if form.validate_on_submit():
-        gallery = Gallery(name=form.name.data)
+        gallery = Gallery(
+            name=form.name.data,
+            created=form.date.data
+        )
         db.session.add(gallery)
         db.session.commit()
 
         return redirect(url_for('gallery_upload', gallery_id=gallery.id))
 
-    return render_template('create.html', form=form)
+    return render_template('gallery.html',
+        form=form,
+        page_title="Create an Album",
+        form_action=url_for('gallery_create'),
+        form_submit_button_title="Create"
+    )
+
+
+@app.route('/update/<int:gallery_id>', methods=['GET', 'POST'])
+@login_required
+def gallery_update(gallery_id):
+    """ Updates a gallery """
+    gallery = find_gallery_by_id(gallery_id)
+    if not gallery:
+        abort(404)
+
+    if request.method == 'GET':
+        form = GalleryForm(
+            name=gallery.name,
+            date=gallery.created
+        )
+    elif request.method == 'POST':
+        form = GalleryForm()
+        if form.validate_on_submit():
+            gallery.name = form.name.data
+            gallery.created = form.date.data
+
+            db.session.add(gallery)
+            db.session.commit()
+
+    return render_template('gallery.html',
+        form=form,
+        page_title="Update %s" % gallery.name,
+        form_action=url_for('gallery_update', gallery_id=gallery.id),
+        form_submit_button_title="Update"
+    )
 
 
 @app.route('/upload/<int:gallery_id>')
@@ -152,13 +190,8 @@ def gallery_item(gallery_id):
     if request.method == 'GET':
         response = gallery.to_object()
     elif request.method == 'PUT':
-
         if 'name' in request.form:
             gallery.name = request.form['name']
-
-        if 'folder' in request.form:
-            gallery.folder = request.form['folder']
-
         db.session.add(gallery)
         db.session.commit()
         response = gallery.to_object()

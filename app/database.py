@@ -138,9 +138,10 @@ class Gallery(db.Model):
     folder = db.Column(db.Text, nullable=False, unique=True)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
-    def __init__(self, name):
+    def __init__(self, name, created):
         """ Setup the class """
         self.name = name
+        self.created = created
         self.folder = md5.new("%032x" % random.getrandbits(128)).hexdigest()
 
     def get_photos(self):

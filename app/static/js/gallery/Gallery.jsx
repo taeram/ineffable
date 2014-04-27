@@ -104,9 +104,28 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
                 <div className="gallery">
                     <h2 className="gallery-heading">
                         {this.props.name}
+
                         <span className="gallery-heading-date">
                             {galleryDate}
                         </span>
+
+                        <div className="btn-group gallery-heading-buttons">
+                            <i className="fa fa-cogs" data-toggle="dropdown"></i>
+                            <ul className="dropdown-menu" role="menu">
+                                <li>
+                                    <a href={"/update/" + this.props.id}>
+                                        <i class="fa fa-pencil"></i>
+                                        Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href={"/upload/" + this.props.id}>
+                                        <i class="fa fa-upload"></i>
+                                        Upload Photos
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </h2>
                     {photoRowNodes}
                 </div>

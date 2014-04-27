@@ -1,6 +1,7 @@
 from flask.ext.wtf import Form
 from wtforms.fields import TextField, PasswordField, BooleanField, DateField
 from wtforms.validators import Required
+from datetime import datetime
 
 
 class LoginForm(Form):
@@ -9,6 +10,6 @@ class LoginForm(Form):
     remember = BooleanField('Remember Me', default=False)
 
 
-class CreateGalleryForm(Form):
+class GalleryForm(Form):
     name = TextField('Name', validators=[Required()])
-    date = DateField('Date', validators=[Required()])
+    date = DateField('Date', validators=[Required()], default=datetime.utcnow())

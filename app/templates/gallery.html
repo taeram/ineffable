@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}Create an Album{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block body %}
 
-<form class="form form-horizontal col-sm-4 col-sm-offset-4" action="{{ url_for('gallery_create') }}" method="post">
+<form class="form form-horizontal col-sm-4 col-sm-offset-4" action="{{ form_action }}" method="post">
     {{ form.csrf_token }}
 
     <div class="form-group">
@@ -18,7 +18,7 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">{{ form_submit_button_title }}</button>
     </div>
 </form>
 {% endblock %}
