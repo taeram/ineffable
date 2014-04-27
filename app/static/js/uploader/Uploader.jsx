@@ -310,7 +310,7 @@ define('uploader',
             type: 'HEAD',
             error: function() {
                 // 403/404'd, so we haven't found the thumbnail yet, keep waiting
-                setTimeout(this.pollThumbnailUrl, 250, photo);
+                setTimeout(this.pollThumbnailUrl.bind(this, photo), 250);
             }.bind(this),
             success: function() {
                 // Found the thumbnail, update the page!
