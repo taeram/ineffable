@@ -77,6 +77,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
                             <Photo folder={this.props.folder}
                                    height={item.height}
                                    name={item.name}
+                                   ext={item.ext}
                                    width={item.width}
                                    type="thumb"
                                    onClick={this.onClick} />

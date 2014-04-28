@@ -4,13 +4,20 @@ define('photo', ['react'], function(React) {
 
     var Photo = React.createClass({
         url: function (type) {
+            var ext = 'jpg';
             if (type == 'original') {
                 postfix = '';
             } else {
                 postfix = '_' + type;
             }
 
-            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + postfix + '.jpg';
+            // If it's a .gif, don't use the _display.jpg, use the original .gif
+            if (type == 'display' && this.props.ext == 'gif') {
+                postfix = '';
+                ext = 'gif';
+            }
+
+            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + postfix + '.' + ext;
         },
 
         onClick: function () {
