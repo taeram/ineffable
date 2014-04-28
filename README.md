@@ -1,8 +1,7 @@
-[![Stories in Ready](https://badge.waffle.io/taeram/ineffable.png?label=ready&title=Ready)](https://waffle.io/taeram/ineffable)
-Ineffable
-========
+Ineffable [![Stories in Ready](https://badge.waffle.io/taeram/ineffable.png?label=ready&title=Ready)](https://waffle.io/taeram/ineffable)
+=========
 
-Ineffable is a minimalist photo gallery.
+Ineffable is a minimalist photo gallery. 
 
 Requirements
 ============
