@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(React, photoPartition, Photo, Lightbox) {
+define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], function(React, photoPartition, Photo, Lightbox, Modal) {
 
     var Gallery = React.createClass({
 
@@ -54,6 +54,26 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
                 <Lightbox photo={photo} photos={this.photoNodes} />,
                 document.getElementById(Config.App.lightboxElementId)
             );
+        },
+
+        showDeleteModal: function () {
+            // Unmount the existing component, if any
+            React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
+
+            React.renderComponent(
+                <Modal onClickSubmit={this.deleteGallery} />,
+                document.getElementById(Config.App.modalElementId)
+            );
+        },
+
+        deleteGallery: function () {
+            $.ajax({
+                url: '/rest/gallery/' + this.props.id,
+                method: 'DELETE',
+                success: function() {
+                    window.location.reload();
+                }.bind(this)
+            });
         },
 
         render: function() {
@@ -115,14 +135,22 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox'], function(Re
                             <ul className="dropdown-menu" role="menu">
                                 <li>
                                     <a href={"/update/" + this.props.id}>
-                                        <i class="fa fa-pencil"></i>
+                                        <i className="fa fa-pencil"></i>
                                         Edit
                                     </a>
                                 </li>
                                 <li>
                                     <a href={"/upload/" + this.props.id}>
-                                        <i class="fa fa-upload"></i>
+                                        <i className="fa fa-upload"></i>
                                         Upload Photos
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onClick={this.showDeleteModal} href="#">
+                                        <i className="fa fa-exclamation text-danger"></i>
+                                        <span className="text-danger">
+                                            Delete Gallery
+                                        </span>
                                     </a>
                                 </li>
                             </ul>

@@ -25,6 +25,7 @@ require.config({
         "gallery": "js/gallery/Gallery",
         "gallery-list": "js/gallery/GalleryList",
         "lightbox": "js/gallery/Lightbox",
+        "modal": "js/helpers/Modal",
         "photo": "js/gallery/Photo",
         "photo-list": "js/gallery/PhotoList",
         "routes": "js/routes",
@@ -79,6 +80,9 @@ Config.App = {
 
     // The DOM id of the lightbox container
     lightboxElementId: 'app-lightbox',
+
+    // The DOM id of the Modal container
+    modalElementId: 'app-modal',
 
     // Horizontal padding of the app container. Required for partitioning.
     paddingX: 15,
