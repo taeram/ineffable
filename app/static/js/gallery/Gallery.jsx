@@ -21,7 +21,8 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
         getInitialState: function() {
             return {
                 photos: [],
-                loading: true
+                loading: true,
+                deleting: false
             };
         },
 
@@ -61,12 +62,21 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
             React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
 
             React.renderComponent(
-                <Modal onClickSubmit={this.deleteGallery} />,
+                <Modal
+                    title={"Delete " + this.props.name + "?"}
+                    content={"Are you sure you want to delete the " + this.props.name + " gallery?"}
+                    submitButtonText="Delete"
+                    submitButtonClass="btn-danger"
+                    onClickSubmit={this.deleteGallery} />,
                 document.getElementById(Config.App.modalElementId)
             );
         },
 
         deleteGallery: function () {
+            this.setState({
+                deleting: true
+            });
+
             $.ajax({
                 url: '/rest/gallery/' + this.props.id,
                 method: 'DELETE',
@@ -82,10 +92,16 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                 photoPaddingY = parseInt(Config.Photo.paddingY, 10);
 
             var photoRowNodes;
-            if (this.state.loading) {
-                var divStyle = {"text-align": "center"};
+            var divCenterStyle = {"text-align": "center"};
+            if (this.state.deleting) {
                 photoRowNodes = (
-                    <div style={divStyle}>
+                    <div style={divCenterStyle}>
+                        <i class="fa fa-spinner fa-spin"></i> Deleting...
+                    </div>
+                );
+            } else if (this.state.loading) {
+                photoRowNodes = (
+                    <div style={divCenterStyle}>
                         <i class="fa fa-spinner fa-spin"></i>
                     </div>
                 );
@@ -111,7 +127,6 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                     );
                 }, this);
             } else {
-                var divCenterStyle = {"text-align": "center"};
                 photoRowNodes = (
                     <div style={divCenterStyle}>
                         No Photos Found

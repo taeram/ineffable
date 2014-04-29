@@ -10,6 +10,7 @@ define('modal', ['react'], function(React) {
                 "cancelButtonText": "Cancel",
                 "onClickCancel": function () {},
                 "submitButtonText": "Save",
+                "submitButtonClass": "btn-primary",
                 "onClickSubmit": function () {}
             };
         },
@@ -34,7 +35,7 @@ define('modal', ['react'], function(React) {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal" onClick={this.props.onClickCancel}>{this.props.cancelButtonText}</button>
-                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.props.onClickSubmit}>{this.props.submitButtonText}</button>
+                                <button type="button" className={"btn " + this.props.submitButtonClass} data-dismiss="modal" onClick={this.props.onClickSubmit}>{this.props.submitButtonText}</button>
                             </div>
                         </div>
                     </div>

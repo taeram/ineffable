@@ -193,6 +193,7 @@ def gallery_item(gallery_id):
         # Delete all photos from the gallery
         gallery.delete()
 
+        # Delete the gallery from the database
         db.session.delete(gallery)
         db.session.commit()
         response = []
