@@ -8,6 +8,8 @@
     </script>
 {% endblock %}
 
+{% block title %}Upload{% endblock %}
+
 {% block body %}
 <div ng-app="uploaderApp" ng-cloak="ng-cloak">
     <div ng-controller="UploaderCtrl" class="uploader">
@@ -19,7 +21,7 @@
             <input type="hidden" name="signature" value="{{s3_signature}}"/>
             <input type="hidden" name="success_action_status" value="{{s3_success_action_status}}"/>
             <div ng-disabled="getFilesToUpload() > 0 && getUploadProgress() > 0" class="btn btn-success">
-                <input type="file" name="file" file-change="addFiles" class="input-file"/><i class="fa fa-plus"></i>Add files...
+                <input type="file" name="file" file-change="addFiles" class="input-file" accept="image/*"/><i class="fa fa-plus"></i>Add files...
             </div>
             <button type="submit" ng-click="uploadFiles($event)" ng-disabled="getFilesToUpload() == 0 || getUploadProgress() > 0" class="btn btn-primary"><i class="fa fa-upload"></i>Start upload</button>
             <button type="reset" ng-click="clearFiles()" class="btn btn-warning"><i class="fa fa-ban"></i>Cancel upload</button>
