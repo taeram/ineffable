@@ -9,10 +9,12 @@ import json
 class IneffableQueue(object):
 
     def __init__(self):
+        """ Initialize the class """
         self.connection = None
         self.queue = None
 
     def setup_connection(self):
+        """ Connect to SQS """
         if self.connection is None:
             self.connection = boto.sqs.connect_to_region(
                 app.config['AWS_REGION'],
@@ -44,6 +46,7 @@ class IneffableQueue(object):
 class IneffableStorage(object):
 
     def __init__(self):
+        """ Initialize the class """
         self.connection = None
         self.bucket = None
 
@@ -60,6 +63,10 @@ class IneffableStorage(object):
         self.setup_connection()
         if self.bucket is None:
             self.bucket = self.connection.get_bucket(app.config['AWS_S3_BUCKET'])
+
+    def get_bucket(self):
+        self.setup_bucket()
+        return self.bucket
 
     def get_key(self, key_name):
         """ Get a key for a specific bucket """
@@ -101,5 +108,15 @@ def save_gallery_photos(gallery_folder, photos):
     key = ineffable_storage.get_key("%s/photos.json" % gallery_folder)
     key.set_contents_from_string(json.dumps(photos))
     key.make_public()
+
+    return True
+
+
+def delete_gallery(gallery_folder):
+    """ Delete a gallery and all its photos """
+    bucket = ineffable_storage.get_bucket()
+    photos = bucket.list(gallery_folder)
+    for photo in photos:
+        photo.delete()
 
     return True

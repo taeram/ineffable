@@ -179,7 +179,7 @@ def gallery_index():
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
 
-@app.route('/rest/gallery/<int:gallery_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/rest/gallery/<int:gallery_id>', methods=['DELETE'])
 @login_required
 def gallery_item(gallery_id):
     """ Get/update/delete an individual gallery """
@@ -189,13 +189,10 @@ def gallery_item(gallery_id):
 
     if request.method == 'GET':
         response = gallery.to_object()
-    elif request.method == 'PUT':
-        if 'name' in request.form:
-            gallery.name = request.form['name']
-        db.session.add(gallery)
-        db.session.commit()
-        response = gallery.to_object()
     elif request.method == 'DELETE':
+        # Delete all photos from the gallery
+        gallery.delete()
+
         db.session.delete(gallery)
         db.session.commit()
         response = []

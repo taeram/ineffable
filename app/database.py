@@ -11,7 +11,8 @@ import random
 from sqlalchemy.orm.exc import NoResultFound
 from helpers import generate_thumbnail, \
                     save_gallery_photos, \
-                    get_gallery_photos
+                    get_gallery_photos, \
+                    delete_gallery
 from urllib import unquote
 
 db = SQLAlchemy(app)
@@ -176,6 +177,9 @@ class Gallery(db.Model):
         sorted_photos = sorted(sorted_photos, key=lambda photo: photo['created'])
 
         return self.set_photos(sorted_photos)
+
+    def delete(self):
+        return delete_gallery(self.folder)
 
     def to_object(self):
         """ Get it as an object """
