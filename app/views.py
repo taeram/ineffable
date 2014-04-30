@@ -19,6 +19,7 @@ from .database import find_user_by_name, \
                       db, \
                       Gallery, \
                       Photo
+from .helpers import delete_photo
 import json
 import base64
 import hmac
@@ -221,3 +222,18 @@ def photo_index():
     photo.generate_thumbnail()
 
     return app.response_class(response=json.dumps(photo.to_object()), mimetype='application/json')
+
+
+@app.route('/rest/photo/<int:gallery_id>/<string:photo_id>', methods=['DELETE'])
+@login_required
+def photo_delete(gallery_id, photo_id):
+    """ Delete a photo from a gallery """
+    gallery = find_gallery_by_id(gallery_id)
+    if not gallery:
+        abort(404)
+
+    response = []
+    if not delete_photo(gallery.folder, photo_id):
+        response = ["error"]
+
+    return app.response_class(response=json.dumps(response), mimetype='application/json')

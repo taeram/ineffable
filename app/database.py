@@ -179,6 +179,7 @@ class Gallery(db.Model):
         return self.set_photos(sorted_photos)
 
     def delete(self):
+        """ Delete a gallery and all its photos """
         return delete_gallery(self.folder)
 
     def to_object(self):

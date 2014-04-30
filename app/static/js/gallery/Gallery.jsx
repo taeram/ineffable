@@ -22,7 +22,8 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
             return {
                 photos: [],
                 loading: true,
-                deleting: false
+                isDeleting: false,
+                isManagingPhotos: false
             };
         },
 
@@ -74,7 +75,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
 
         deleteGallery: function () {
             this.setState({
-                deleting: true
+                isDeleting: true
             });
 
             $.ajax({
@@ -82,7 +83,13 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                 method: 'DELETE',
                 success: function() {
                     window.location.reload();
-                }.bind(this)
+                }
+            });
+        },
+
+        toggleManagingPhotos: function () {
+            this.setState({
+                isManagingPhotos: !this.state.isManagingPhotos
             });
         },
 
@@ -93,7 +100,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
 
             var photoRowNodes;
             var divCenterStyle = {"text-align": "center"};
-            if (this.state.deleting) {
+            if (this.state.isDeleting) {
                 photoRowNodes = (
                     <div style={divCenterStyle}>
                         <i class="fa fa-spinner fa-spin"></i> Deleting...
@@ -111,11 +118,14 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                     this.photoNodes = _.map(photoRow, function (item) {
                         return (
                             <Photo folder={this.props.folder}
+                                   galleryId={this.props.id}
+                                   id={item.id}
                                    height={item.height}
                                    name={item.name}
                                    ext={item.ext}
                                    width={item.width}
                                    type="thumb"
+                                   isManagingPhotos={this.state.isManagingPhotos}
                                    onClick={this.onClick} />
                        );
                     }, this);
@@ -135,6 +145,19 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
             }
 
             var galleryDate = moment(this.props.created).format('MMMM Do, YYYY');
+
+            var managingPhotosButton;
+            if (this.state.isManagingPhotos) {
+                var manageBtnStyle = {
+                    "margin-left": "15px"
+                };
+
+                managingPhotosButton = (
+                    <button onClick={this.toggleManagingPhotos} className="btn btn-success btn-xs" style={manageBtnStyle}>
+                        <i class="fa fa-check"></i> Save Changes
+                    </button>
+                );
+            }
 
             return (
                 <div className="gallery">
@@ -161,6 +184,12 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                                     </a>
                                 </li>
                                 <li>
+                                    <a onClick={this.toggleManagingPhotos} href="#">
+                                        <i className="fa fa-camera"></i>
+                                        Manage Photos
+                                    </a>
+                                </li>
+                                <li>
                                     <a onClick={this.showDeleteModal} href="#">
                                         <i className="fa fa-exclamation text-danger"></i>
                                         <span className="text-danger">
@@ -170,6 +199,8 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                                 </li>
                             </ul>
                         </div>
+
+                        {managingPhotosButton}
                     </h2>
                     {photoRowNodes}
                 </div>

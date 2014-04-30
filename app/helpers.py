@@ -51,7 +51,7 @@ class IneffableStorage(object):
         self.bucket = None
 
     def setup_connection(self):
-        """ Get an S3 connection """
+        """ Setup the connection to S3 """
         if self.connection is None:
             self.connection = S3Connection(
                 aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
@@ -59,12 +59,13 @@ class IneffableStorage(object):
             )
 
     def setup_bucket(self):
-        """ Get an  S3 bucket """
+        """ Setup the connection to the S3 bucket """
         self.setup_connection()
         if self.bucket is None:
             self.bucket = self.connection.get_bucket(app.config['AWS_S3_BUCKET'])
 
     def get_bucket(self):
+        """ Get an S3 bucket """
         self.setup_bucket()
         return self.bucket
 
@@ -120,3 +121,24 @@ def delete_gallery(gallery_folder):
         photo.delete()
 
     return True
+
+
+def delete_photo(gallery_folder, photo_id):
+    """ Delete a photo from a gallery """
+    photos = get_gallery_photos(gallery_folder)
+
+    remaining_photos = []
+    for photo in photos:
+        if photo['id'] == photo_id:
+            key = ineffable_storage.get_key("%s/%s.%s" % (gallery_folder, photo['name'], photo['ext']))
+            key.delete()
+
+            key = ineffable_storage.get_key("%s/%s_display.jpg" % (gallery_folder, photo['name']))
+            key.delete()
+
+            key = ineffable_storage.get_key("%s/%s_thumb.jpg" % (gallery_folder, photo['name']))
+            key.delete()
+        else:
+            remaining_photos.append(photo)
+
+    return save_gallery_photos(gallery_folder, remaining_photos)
