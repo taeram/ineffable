@@ -1,7 +1,7 @@
 Ineffable [![Stories in Ready](https://badge.waffle.io/taeram/ineffable.png?label=ready&title=Ready)](https://waffle.io/taeram/ineffable)
 =========
 
-Ineffable is a minimalist photo gallery. 
+Ineffable is a minimalist photo gallery.
 
 Requirements
 ============
@@ -29,7 +29,8 @@ Local development setup:
     pip install -r requirements.txt
 
     # Create the development database (SQLite by default)
-    python manage.py database create
+    python manage.py database migrate upgrade
+    python manage.py database setup
 
     # Install less.js for on the fly compilation of .less files
     npm install -g less
@@ -107,7 +108,8 @@ Heroku setup:
     heroku config:set GOOGLE_ANALYTICS_ID=<your Google Analytics id>
 
     # Create the production database
-    heroku run python manage.py database create
+    heroku run python manage.py database migrate upgrade
+    heroku run python manage.py database setup
 
     # Make sure Heroku runs the Python and Node.js buildpacks
     heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
@@ -115,3 +117,15 @@ Heroku setup:
     # Push to Heroku
     git push heroku master
 ```
+
+Upgrading to a new Release
+==========================
+
+When upgrading to a new release, simply pull down the new copy, and migrate the
+database:
+
+```
+python manage.py database migrate upgrade
+```
+
+If you're migrating a Heroku app, just prefix the above command with `heroku run`.

@@ -31,7 +31,7 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     CACHE_BUSTER = int(time())
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///app.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.dirname(__file__) + '/app/app.db'
 
 
 class TestingConfig(Config):
