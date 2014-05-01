@@ -47,6 +47,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                         <Gallery folder={gallery.folder}
                                 id={gallery.id}
                                 name={gallery.name}
+                                modified={gallery.modified}
                                 created={gallery.created}
                                 photos={gallery.photos} />
                     </div>

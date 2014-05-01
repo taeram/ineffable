@@ -221,6 +221,9 @@ def photo_index():
     # Tell the thumbnail daemon to generate a thumbnail for this photo
     photo.generate_thumbnail()
 
+    # Update the gallery modified date
+    photo.gallery.updateModified()
+
     return app.response_class(response=json.dumps(photo.to_object()), mimetype='application/json')
 
 
@@ -235,5 +238,8 @@ def photo_delete(gallery_id, photo_id):
     response = []
     if not delete_photo(gallery.folder, photo_id):
         response = ["error"]
+
+    # Update the gallery modified date
+    gallery.updateModified()
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')

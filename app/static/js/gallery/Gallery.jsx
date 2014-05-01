@@ -29,7 +29,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
 
         componentWillMount: function() {
             $.ajax({
-                url: 'https://' + Config.s3_bucket + '.s3.amazonaws.com/' + this.props.folder + '/photos.json',
+                url: 'https://' + Config.s3_bucket + '.s3.amazonaws.com/' + this.props.folder + '/photos.json?d=' + this.props.modified,
                 success: function(photos) {
                     this.setState({
                         photos: JSON.parse(photos),

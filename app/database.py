@@ -145,6 +145,7 @@ class Gallery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     folder = db.Column(db.Text, nullable=False, unique=True)
+    modified = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
     def __init__(self, name, created):
@@ -160,6 +161,12 @@ class Gallery(db.Model):
     def set_photos(self, photos):
         """ Set the photos for the gallery """
         return save_gallery_photos(self.folder, photos)
+
+    def updateModified(self):
+        """ Update the modified time of the gallery """
+        self.modified = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
 
     def add_photo(self, photo):
         """ Add a photo to the gallery """
@@ -191,6 +198,7 @@ class Gallery(db.Model):
             "id": self.id,
             "name": self.name,
             "folder": self.folder,
+            "modified": int((self.modified - datetime(1970, 1, 1)).total_seconds()),
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
 
