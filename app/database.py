@@ -2,6 +2,7 @@ from app import app
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager, prompt_bool, prompt
 from flask.ext.login import UserMixin
+from flask.ext.migrate import Migrate, MigrateCommand
 from datetime import datetime
 from .snippets.hash_passwords import check_hash, make_hash
 from hashlib import sha1
@@ -16,8 +17,10 @@ from helpers import generate_thumbnail, \
 from urllib import unquote
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 manager = Manager(usage="Manage the database")
+manager.add_command('migrate', MigrateCommand)
 
 
 @manager.command
