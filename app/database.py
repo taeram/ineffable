@@ -166,7 +166,7 @@ class Gallery(db.Model):
 
     def updateModified(self):
         """ Update the modified time of the gallery """
-        self.modified = datetime.utcnow()
+        self.modified = datetime.now(pytz.utc)
         db.session.add(self)
         db.session.commit()
 
