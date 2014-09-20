@@ -6,7 +6,9 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         mixins: [HandleResizeMixin],
 
         getInitialState: function() {
-            return {data: []};
+            return {
+                data: []
+            };
         },
 
         componentWillMount: function() {
@@ -20,6 +22,16 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                     this.setState({data: data});
                 }.bind(this)
             });
+        },
+
+        removeGallery: function (galleryId) {
+            data = _.filter(this.state.data, function (gallery) {
+                return gallery.id != galleryId;
+            });
+
+            this.setState({
+                data: data
+            })
         },
 
         render: function() {
@@ -49,7 +61,8 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                                 name={gallery.name}
                                 modified={gallery.modified}
                                 created={gallery.created}
-                                photos={gallery.photos} />
+                                photos={gallery.photos} 
+                                removeGallery={this.removeGallery} />
                     </div>
                 );
             }, this);

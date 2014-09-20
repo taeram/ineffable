@@ -80,8 +80,12 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                 url: '/rest/gallery/' + this.props.id,
                 method: 'DELETE',
                 success: function() {
-                    window.location.reload();
-                }
+                    this.setState({
+                        isDeleting: false
+                    });
+
+                    this.props.removeGallery(this.props.id);
+                }.bind(this)
             });
         },
 

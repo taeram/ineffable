@@ -115,6 +115,8 @@ def gallery_update(gallery_id):
             db.session.add(gallery)
             db.session.commit()
 
+            return redirect(url_for('home'))
+
     return render_template('gallery.html',
         form=form,
         page_title="Update %s" % gallery.name,
