@@ -9,13 +9,13 @@
     "bootstrap": "3.*",
     "font-awesome": "4.*",
     "history.js": "1.8.*",
-    "jquery": "2.1.0",
+    "jquery": "2.*",
     "jsjpegmeta": "https://github.com/taeram/jsjpegmeta.git#1.*",
     "linear-partition": "https://github.com/taeram/linear-partition.git#1.*",
-    "momentjs": "2.5.1",
-    "react": "v0.8.0",
-    "requirejs": "2.1.10",
+    "momentjs": "2.*",
+    "react": "0.11.*",
+    "requirejs": "2.*",
     "routerjs": "https://github.com/haithembelhaj/RouterJs.git",
-    "underscore": "1.5.2"
+    "underscore": "1.*"
   }
 }

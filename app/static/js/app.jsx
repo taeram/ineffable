@@ -35,7 +35,8 @@ require.config({
         "photo-partition": "js/helpers/photo-partition",
 
         // Mixins
-        "handle-resize-mixin": "js/mixins/HandleResizeMixin"
+        "handle-resize-mixin": "js/mixins/HandleResizeMixin",
+        "photo-mixin": "js/mixins/PhotoMixin"
     },
     shim: {
         'angular': {

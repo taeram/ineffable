@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], function(React, photoPartition, Photo, Lightbox, Modal) {
+define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'underscore'], function(React, photoPartition, Photo, Lightbox, Modal, _) {
 
     var Gallery = React.createClass({
 
@@ -40,8 +40,6 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                     this.setState({
                         loading: false
                     });
-
-                    console.log("No photos found for gallery " + this.props.id);
                 }.bind(this)
             });
         },
@@ -51,9 +49,9 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
          *
          * @param DOM photo The photo to display
          */
-        onClick: function (photo) {
+        onClick: function (photoEl, photoId) {
             React.renderComponent(
-                <Lightbox photo={photo} photos={this.photoNodes} />,
+                <Lightbox photoId={photoId} photo={photoEl} photos={this.state.photos} folder={this.props.folder} />,
                 document.getElementById(Config.App.lightboxElementId)
             );
         },
@@ -93,6 +91,16 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
             });
         },
 
+        removePhoto: function (photoId) {
+            photos = _.filter(this.state.photos, function (photo) {
+                return photo.id != photoId;
+            });
+
+            this.setState({
+                photos: photos
+            })
+        },
+
         render: function() {
             var viewportWidth = parseInt(Config.App.viewportWidth, 10),
                 photoPaddingX = parseInt(Config.Photo.paddingX, 10),
@@ -103,13 +111,13 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
             if (this.state.isDeleting) {
                 photoRowNodes = (
                     <div style={divCenterStyle}>
-                        <i class="fa fa-spinner fa-spin"></i> Deleting...
+                        <i className="fa fa-spinner fa-spin"></i> Deleting...
                     </div>
                 );
             } else if (this.state.loading) {
                 photoRowNodes = (
                     <div style={divCenterStyle}>
-                        <i class="fa fa-spinner fa-spin"></i>
+                        <i className="fa fa-spinner fa-spin"></i>
                     </div>
                 );
             } else if (this.state.photos.length > 0) {
@@ -125,8 +133,9 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
                                    ext={item.ext}
                                    width={item.width}
                                    type="thumb"
+                                   removePhoto={this.removePhoto}
                                    isManagingPhotos={this.state.isManagingPhotos}
-                                   onClick={this.onClick} />
+                                   onClick={this.onClick.bind(this, item)} />
                        );
                     }, this);
 
@@ -154,7 +163,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal'], fu
 
                 managingPhotosButton = (
                     <button onClick={this.toggleManagingPhotos} className="btn btn-success btn-xs" style={manageBtnStyle}>
-                        <i class="fa fa-check"></i> Save Changes
+                        <i className="fa fa-check"></i> Save Changes
                     </button>
                 );
             }

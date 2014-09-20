@@ -27,10 +27,6 @@ define('photo', ['react', 'modal'], function(React, Modal) {
             return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + postfix + '.' + ext;
         },
 
-        onClick: function () {
-            this.props.onClick(this);
-        },
-
         showDeleteModal: function () {
             // Unmount the existing component, if any
             React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
@@ -62,8 +58,11 @@ define('photo', ['react', 'modal'], function(React, Modal) {
                 url: '/rest/photo/' + this.props.galleryId + '/' + this.props.id,
                 method: 'DELETE',
                 success: function() {
-                    window.location.reload();
-                }
+                    this.setState({
+                        isDeleting: false
+                    });
+                    this.props.removePhoto(this.props.id)
+                }.bind(this)
             });
         },
 
@@ -77,15 +76,15 @@ define('photo', ['react', 'modal'], function(React, Modal) {
             if (this.state.isDeleting) {
                 managePhotosNode = (
                     <div className="btn-group gallery-photo-manage-dropdown">
-                        <button class="btn btn-default btn-xs" disabled>
+                        <button className="btn btn-default btn-xs" disabled>
                             <i className="fa fa-spinner fa-spin"></i>
                         </button>
                     </div>
                 );
-            } else if (this.props.isManagingPhotos || true) {
+            } else if (this.props.isManagingPhotos) {
                 managePhotosNode = (
                     <div className="btn-group gallery-photo-manage-dropdown">
-                        <button class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <button className="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
                             <i className="fa fa-cog"></i>
                         </button>
                         <ul className="dropdown-menu" role="menu">
@@ -105,7 +104,7 @@ define('photo', ['react', 'modal'], function(React, Modal) {
             return (
                 <div className="gallery-photo">
                     {managePhotosNode}
-                    <img onClick={this.onClick} src={this.url('thumb')} style={imgStyle} />
+                    <img onClick={this.props.onClick} src={this.url('thumb')} style={imgStyle} />
                 </div>
             );
         }

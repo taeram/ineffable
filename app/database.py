@@ -200,7 +200,7 @@ class Gallery(db.Model):
             "id": self.id,
             "name": self.name,
             "folder": self.folder,
-            "modified": int((self.modified - datetime(1970, 1, 1)).total_seconds()),
+            "modified": self.modified.strftime('%Y-%m-%d %H:%M:%S'),
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
 

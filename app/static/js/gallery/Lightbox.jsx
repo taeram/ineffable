@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 
-define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResizeMixin) {
+define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(React, HandleResizeMixin, PhotoMixin) {
 
     var Lightbox = React.createClass({
 
-        mixins: [HandleResizeMixin],
+        mixins: [HandleResizeMixin, PhotoMixin],
 
         /**
          * How long to show an image
@@ -14,18 +14,8 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
         slideshowInterval: 5,
 
         getInitialState: function() {
-            // Find the index of the selected photo in this.props.photos
-            var selectedIndex = 0;
-            for (var i in this.props.photos) {
-                var photo = this.props.photos[i];
-                if (photo._rootNodeID == this.props.photo._rootNodeID) {
-                    selectedIndex = parseInt(i, 10);
-                    break;
-                }
-            }
-
             return {
-                index: selectedIndex,
+                index: _.indexOf(this.props.photos, this.props.photo),
                 isLoaded: false,
                 slideshow: false
             };
@@ -93,12 +83,13 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
             };
 
             var photo = this.props.photos[this.state.index];
-            var photoUrl = photo.url('display');
+            var photoDisplayUrl = this.photoUrl('display', photo.ext, this.props.folder, photo.name);
+            var photoOriginalUrl = this.photoUrl('original', photo.ext, this.props.folder, photo.name);
 
             var photoNode = null;
             if (!this.state.isLoaded) {
                 var img = new Image() ;
-                img.src = photoUrl;
+                img.src = photoDisplayUrl;
                 img.onload = this.isImageLoaded;
 
                 photoNode = (
@@ -108,7 +99,7 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
                 );
             } else {
                 photoNode = (
-                    <img className="lightbox-photo" src={photoUrl} />
+                    <img className="lightbox-photo" src={photoDisplayUrl} />
                 );
             }
 
@@ -134,7 +125,7 @@ define('lightbox', ['react', 'handle-resize-mixin'], function(React, HandleResiz
             return (
                 <div className="lightbox" style={style} onClick={this.close}>
                     <div className="lightbox-buttons">
-                        <a className="btn btn-default btn-xs" href={photo.url('original')} onClick={this.download}>
+                        <a className="btn btn-default btn-xs" href={photoOriginalUrl} onClick={this.download}>
                             <i className="fa fa-download"></i>
                             Download
                         </a>
