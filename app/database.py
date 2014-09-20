@@ -3,6 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager, prompt_bool, prompt
 from flask.ext.login import UserMixin
 from flask.ext.migrate import Migrate, MigrateCommand
+import pytz
 from datetime import datetime
 from .snippets.hash_passwords import check_hash, make_hash
 from hashlib import sha1
@@ -115,7 +116,7 @@ class Photo():
         if created is not None and len(created) > 0:
             self.created = datetime.strptime(created, '%Y:%m:%d %H:%M:%S')
         else:
-            self.created = datetime.utcnow()
+            self.created = datetime.now(pytz.utc)
 
     def generate_thumbnail(self):
         """ Generate a thumbnail for this photo """
@@ -145,14 +146,15 @@ class Gallery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     folder = db.Column(db.Text, nullable=False, unique=True)
-    modified = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
-    created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+    modified = db.Column(db.DateTime(timezone=True))
+    created = db.Column(db.DateTime(timezone=True))
 
     def __init__(self, name, created):
         """ Setup the class """
         self.name = name
-        self.created = created
         self.folder = md5.new("%032x" % random.getrandbits(128)).hexdigest()
+        self.modified = datetime.now(pytz.utc)
+        self.created = created
 
     def get_photos(self):
         """ Get the photos for this gallery """
