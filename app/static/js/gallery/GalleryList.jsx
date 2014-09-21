@@ -121,9 +121,8 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
             var loadingNode;
             if (this.state.isLoading) {
                 loadingNode = (
-                    <div className="text-center">
-                        <i className="fa fa-spin fa-spinner"></i> 
-                        Loading next page...
+                    <div className="text-center text-large" style={{fontSize: "24px"}}>
+                        <i className="fa fa-spin fa-circle-o-notch"></i>
                     </div>
                 );
             }
