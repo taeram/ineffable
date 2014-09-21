@@ -20,10 +20,12 @@ require.config({
         "jquery-serialize-object": "components/jquery-serialize-object/jquery.serialize-object.compiled",
         "dirname": "components/phpjs/functions/filesystem/dirname",
         "number_format": "components/phpjs/functions/strings/number_format",
+        "basename": "components/phpjs/functions/filesystem/basename",
 
         // App
         "gallery": "js/gallery/Gallery",
         "gallery-list": "js/gallery/GalleryList",
+        "gallery-verify": "js/gallery/GalleryVerify",
         "lightbox": "js/gallery/Lightbox",
         "modal": "js/helpers/Modal",
         "photo": "js/gallery/Photo",
@@ -36,11 +38,15 @@ require.config({
 
         // Mixins
         "handle-resize-mixin": "js/mixins/HandleResizeMixin",
+        "gallery-mixin": "js/mixins/GalleryMixin",
         "photo-mixin": "js/mixins/PhotoMixin"
     },
     shim: {
         'angular': {
             exports: 'angular'
+        },
+        'basename': {
+            exports: 'basename'
         },
         'bootstrap': {
             deps: ['jquery']

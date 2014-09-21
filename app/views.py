@@ -161,6 +161,15 @@ def gallery_upload(gallery_id):
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
 
+@app.route('/verify/<int:gallery_id>')
+def gallery_verify(gallery_id):
+    """ Verify all thumbnails have been created for a gallery """
+    gallery = find_gallery_by_id(gallery_id)
+    if not gallery:
+        abort(404)
+
+    return render_template('index.html')
+
 @app.route('/rest/gallery/', methods=['GET'])
 @login_required
 def gallery_index():

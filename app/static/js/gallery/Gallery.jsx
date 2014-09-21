@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 
-define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'underscore'], function(React, photoPartition, Photo, Lightbox, Modal, _) {
+define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'underscore', 'gallery-mixin'], function(React, photoPartition, Photo, Lightbox, Modal, _, GalleryMixin) {
 
     var Gallery = React.createClass({
+
+        mixins: [GalleryMixin],
 
         /**
          * The ideal row height
@@ -28,20 +30,24 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
         },
 
         componentWillMount: function() {
-            $.ajax({
-                url: 'https://' + Config.s3_bucket + '.s3.amazonaws.com/' + this.props.folder + '/photos.json?d=' + this.props.modified,
-                success: function(photos) {
-                    this.setState({
-                        photos: JSON.parse(photos),
-                        loading: false
-                    });
-                }.bind(this),
-                error: function () {
-                    this.setState({
-                        loading: false
-                    });
-                }.bind(this)
-            });
+            this.retrieve();
+        },
+
+        retrieve: function () {
+            var success = function(photos) {
+                this.setState({
+                    photos: JSON.parse(photos),
+                    loading: false
+                });
+            }.bind(this);
+
+            var error = function () {
+                this.setState({
+                    loading: false
+                });
+            }.bind(this);
+
+            this.retrieveGallery(this.props.folder, this.props.modified, success, error);
         },
 
         /**
