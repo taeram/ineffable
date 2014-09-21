@@ -12,4 +12,4 @@ class LoginForm(Form):
 
 class GalleryForm(Form):
     name = TextField('Name', validators=[Required()])
-    date = DateField('Date', validators=[Required()], default=datetime.utcnow())
+    date = DateField('Date', validators=[Required()])
