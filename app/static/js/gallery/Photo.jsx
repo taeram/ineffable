@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 
-define('photo', ['react', 'modal'], function(React, Modal) {
+define('photo', ['react', 'modal', 'photo-mixin'], function(React, Modal, PhotoMixin) {
 
     var Photo = React.createClass({
+
+        mixins: [PhotoMixin],
 
         getInitialState: function() {
             return {
@@ -10,31 +12,16 @@ define('photo', ['react', 'modal'], function(React, Modal) {
             };
         },
 
-        url: function (type) {
-            var ext = 'jpg';
-            if (type == 'original') {
-                postfix = '';
-            } else {
-                postfix = '_' + type;
-            }
-
-            // If it's a .gif, don't use the _display.jpg, use the original .gif
-            if (type == 'display' && this.props.ext == 'gif') {
-                postfix = '';
-                ext = 'gif';
-            }
-
-            return 'https://' + Config.s3_bucket + '.s3.amazonaws.com' + '/' + this.props.folder + '/' + this.props.name + postfix + '.' + ext;
-        },
-
         showDeleteModal: function () {
             // Unmount the existing component, if any
             React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
 
+            var thumbUrl = this.photoUrl('thumb', this.props.ext, this.props.folder, this.props.name);
+
             var modalContentNode = (
                 <div>
                     Are you sure you want to delete this photo?
-                    <img src={this.url('thumb')} style={{padding: "10px"}} />
+                    <img src={thumbUrl} style={{padding: "10px"}} />
                 </div>
             );
 
@@ -101,10 +88,12 @@ define('photo', ['react', 'modal'], function(React, Modal) {
                 );
             }
 
+            var thumbUrl = this.photoUrl('thumb', this.props.ext, this.props.folder, this.props.name);
+
             return (
                 <div className="gallery-photo">
                     {managePhotosNode}
-                    <img onClick={this.props.onClick} src={this.url('thumb')} style={imgStyle} />
+                    <img onClick={this.props.onClick} src={thumbUrl} style={imgStyle} />
                 </div>
             );
         }
