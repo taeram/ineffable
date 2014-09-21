@@ -15,6 +15,29 @@ You'll need the following:
 
 Setup
 =====
+Amazon S3
+* Create a bucket in S3
+* Right click on the bucket, and select Properties
+* Under Permissions, click Edit CORS Configuration
+* Change the domain name(s) below to match your configuration:
+```xml
+<CORSConfiguration>
+    <CORSRule>
+        <AllowedOrigin>http://ineffable.example.com</AllowedOrigin>
+        <AllowedOrigin>https://ineffable.example.com</AllowedOrigin>
+        <AllowedMethod>GET</AllowedMethod>
+        <AllowedMethod>POST</AllowedMethod>
+        <AllowedMethod>PUT</AllowedMethod>
+        <AllowedMethod>HEAD</AllowedMethod>
+        <AllowedHeader>*</AllowedHeader>
+    </CORSRule>
+    <CORSRule>
+        <AllowedOrigin>*</AllowedOrigin>
+        <AllowedMethod>GET</AllowedMethod>
+    </CORSRule>
+</CORSConfiguration>
+```
+
 Local development setup:
 ```bash
     # Clone the repo
@@ -72,11 +95,11 @@ Heroku setup:
     heroku apps:create
     heroku addons:add heroku-postgresql
 
-    # Tell Heroku we need a custom buildpack (for python + nodejs)
-    heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
-
     # Promote your postgres database (your URL name may differ)
     heroku pg:promote HEROKU_POSTGRESQL_RED_URL
+
+    # Tell Heroku we need a custom buildpack (for python + nodejs)
+    heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
 
     # Set the flask environment
     heroku config:set FLASK_ENV=production
@@ -110,9 +133,6 @@ Heroku setup:
     # Create the production database
     heroku run python manage.py database migrate upgrade
     heroku run python manage.py database setup
-
-    # Make sure Heroku runs the Python and Node.js buildpacks
-    heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
 
     # Push to Heroku
     git push heroku master
