@@ -161,25 +161,43 @@ def gallery_upload(gallery_id):
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
 
-
-@app.route('/rest/gallery/<int:page_num>', methods=['GET', 'POST'])
+@app.route('/rest/gallery/', methods=['GET'])
 @login_required
-def gallery_index(page_num):
-    """ List all galleries, or add a new one """
-    if request.method == 'GET':
-        limit = 5
-        offset = (page_num - 1) * limit
-        galleries = find_gallery_all(offset, limit)
+def gallery_index():
+    """ List all galleries """
+    if not request.args.get('page'):
+        abort(500)
+    page_num = int(request.args.get('page'))
 
-        response = []
-        for gallery in galleries:
-            response.append(gallery.to_object())
-    elif request.method == 'POST':
-        gallery = Gallery(name=request.form['name'])
-        db.session.add(gallery)
-        db.session.commit()
+    limit = 5
+    offset = (page_num - 1) * limit
+    galleries = find_gallery_all(offset, limit)
 
-        response = gallery.to_object()
+    response = []
+    for gallery in galleries:
+        response.append(gallery.to_object())
+
+    return app.response_class(response=json.dumps(response), mimetype='application/json')
+
+@app.route('/rest/gallery/<int:gallery_id>', methods=['GET'])
+@login_required
+def gallery_get(gallery_id):
+    """ Get a gallery """
+    gallery = find_gallery_by_id(gallery_id)
+    if not gallery:
+        abort(404)
+
+    return app.response_class(response=json.dumps(gallery.to_object()), mimetype='application/json')
+
+@app.route('/rest/gallery/', methods=['POST'])
+@login_required
+def gallery_post():
+    """ Add a new gallery """
+    gallery = Gallery(name=request.form['name'])
+    db.session.add(gallery)
+    db.session.commit()
+
+    response = gallery.to_object()
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
@@ -208,7 +226,7 @@ def gallery_item(gallery_id):
 
 @app.route('/rest/photo/', methods=['POST'])
 @login_required
-def photo_index():
+def photo_post():
     """ Add a photo to a gallery """
     photo = Photo(
         name=urldecode(request.form['name']),

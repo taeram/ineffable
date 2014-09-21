@@ -23,7 +23,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
         retrieve: function () {
             $.ajax({
-                url: this.props.url + '/' + this.state.pageNum,
+                url: this.props.url + '/?page=' + this.state.pageNum,
                 success: function(response) {
                     var data;
                     if (this.state.data.length > 0) {
