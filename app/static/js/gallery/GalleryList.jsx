@@ -8,6 +8,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         getInitialState: function() {
             return {
                 isLoading: true,
+                hasMorePages: true,
                 pageNum: 1,
                 data: []
             };
@@ -36,8 +37,13 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
                     this.setState({
                         isLoading: false,
+                        hasMorePages: (response.length > 0),
                         data: data
                     });
+
+                    // Just in case the current window displays *all* of the current galleries,
+                    // manually trigger a next page
+                    this.triggerNextPage();
                 }.bind(this)
             });
         },
@@ -53,6 +59,13 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         },
 
         triggerNextPage: function () {
+            // Don't bother triggering if there are no more pages
+            if (!this.state.hasMorePages) {
+                $(window).unbind('resize.gallery-list');
+                $(window).unbind('scroll.gallery-list');
+                return;
+            }
+
             var pageHeight = $(document).height();
             var scrollbarPosition = $(window).scrollTop() + $(window).height();
             var fudge = 250;
@@ -106,7 +119,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
             }, this);
 
             var loadingNode;
-            if (!this.state.isLoading) {
+            if (this.state.isLoading) {
                 loadingNode = (
                     <div className="text-center">
                         <i className="fa fa-spin fa-spinner"></i> 
