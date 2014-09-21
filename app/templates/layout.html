@@ -9,7 +9,10 @@
     <script>
         var Config = {
             cache_buster: {{ config.CACHE_BUSTER }},
-            s3_bucket: '{{ config.AWS_S3_BUCKET }}'
+            s3_bucket: '{{ config.AWS_S3_BUCKET }}',
+            User: {
+                role: '{{ user.role }}'
+            }
         };
     </script>
     <script data-main="{{ url_for('static', filename='js/app-%d.js' % config.CACHE_BUSTER) }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
@@ -31,7 +34,9 @@
                 <ul class="nav navbar-nav">
                     {% autoescape false %}
                         {{ navbar_link('home', 'Home', icon='home') }}
-                        {{ navbar_link('gallery_create', 'Create an Album', icon='plus', login_required=true) }}
+                        {% if user.role != "guest" %}
+                            {{ navbar_link('gallery_create', 'Create an Album', icon='plus', login_required=true) }}
+                        {% endif %}
                         {{ navbar_link('login', 'Login', icon='user', anonymous_required=true) }}
                         {{ navbar_link('logout', 'Logout', icon='user', login_required=true) }}
                     {% endautoescape %}

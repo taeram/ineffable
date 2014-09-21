@@ -165,28 +165,23 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
 
             var galleryDate = moment(this.props.created).format('MMMM Do, YYYY');
 
-            var managingPhotosButton;
-            if (this.state.isManagingPhotos) {
-                var manageBtnStyle = {
-                    "margin-left": "15px"
-                };
+            var galleryButtonsNode;
+            if (Config.User.role != "guest") {
+                var managingPhotosButton;
+                if (this.state.isManagingPhotos) {
+                    var manageBtnStyle = {
+                        "margin-left": "15px"
+                    };
 
-                managingPhotosButton = (
-                    <button onClick={this.toggleManagingPhotos} className="btn btn-success btn-xs" style={manageBtnStyle}>
-                        <i className="fa fa-check"></i> Save Changes
-                    </button>
-                );
-            }
+                    managingPhotosButton = (
+                        <button onClick={this.toggleManagingPhotos} className="btn btn-success btn-xs" style={manageBtnStyle}>
+                            <i className="fa fa-check"></i> Save Changes
+                        </button>
+                    );
+                }
 
-            return (
-                <div className="gallery">
-                    <h2 className="gallery-heading">
-                        {this.props.name}
-
-                        <span className="gallery-heading-date">
-                            {galleryDate}
-                        </span>
-
+                galleryButtonsNode = (
+                    <div>
                         <div className="btn-group gallery-heading-buttons">
                             <i className="fa fa-cogs" data-toggle="dropdown"></i>
                             <ul className="dropdown-menu" role="menu">
@@ -220,6 +215,20 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                         </div>
 
                         {managingPhotosButton}
+                    </div>
+                );
+            }
+
+            return (
+                <div className="gallery">
+                    <h2 className="gallery-heading">
+                        {this.props.name}
+
+                        <span className="gallery-heading-date">
+                            {galleryDate}
+                        </span>
+
+                        {galleryButtonsNode}
                     </h2>
                     {photoRowNodes}
                 </div>

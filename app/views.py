@@ -31,16 +31,9 @@ from url_decode import urldecode
 @login_required
 def home():
     """ Home page """
-    return render_template('index.html')
+    return render_template('index.html', user=current_user)
 
-
-@app.route('/<int:id>-<name>', methods=['GET'])
-@login_required
-def home_gallery(id, name):
-    """ Home page """
-    return render_template('index.html')
-
-
+    
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """ Login page """
@@ -59,7 +52,7 @@ def login():
     elif form.errors:
         flash('Invalid username or password', 'danger')
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, user=current_user)
 
 
 @app.route('/logout')
@@ -74,6 +67,9 @@ def logout():
 @login_required
 def gallery_create():
     """ Create a gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     form = GalleryForm()
     if form.validate_on_submit():
         gallery = Gallery(
@@ -86,6 +82,7 @@ def gallery_create():
         return redirect(url_for('gallery_upload', gallery_id=gallery.id))
 
     return render_template('gallery.html',
+        user=current_user,
         form=form,
         page_title="Create an Album",
         form_action=url_for('gallery_create'),
@@ -97,6 +94,9 @@ def gallery_create():
 @login_required
 def gallery_update(gallery_id):
     """ Updated a gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
@@ -118,6 +118,7 @@ def gallery_update(gallery_id):
             return redirect(url_for('home'))
 
     return render_template('gallery.html',
+        user=current_user,
         form=form,
         page_title="Update %s" % gallery.name,
         form_action=url_for('gallery_update', gallery_id=gallery.id),
@@ -143,6 +144,7 @@ def user_create():
         return redirect(url_for('user_create'))
 
     return render_template('gallery.html',
+        user=current_user,
         form=form,
         page_title="Update %s" % gallery.name,
         form_action=url_for('gallery_update', gallery_id=gallery.id),
@@ -154,6 +156,9 @@ def user_create():
 @login_required
 def gallery_upload(gallery_id):
     """ Upload photos to a gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
@@ -176,6 +181,7 @@ def gallery_upload(gallery_id):
     signature = base64.b64encode(hmac.new(app.config['AWS_SECRET_ACCESS_KEY'], policy, hashlib.sha1).digest())
 
     return render_template('upload.html',
+        user=current_user,
         gallery=gallery,
         aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
         s3_acl=s3_acl,
@@ -191,12 +197,18 @@ def gallery_upload(gallery_id):
 @login_required
 def gallery_verify(gallery_id):
     """ Verify all thumbnails have been created for a gallery """
-    return render_template('index.html')
+    if current_user.role == "guest":
+        abort(404)
+
+    return render_template('index.html', user=current_user)
 
 @app.route('/verify/thumbnail/', methods=['POST'])
 @login_required
 def photo_thumbnail():
     """ Add a photo to a gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     photo = Photo(
         name=urldecode(request.form['name']),
         ext=request.form['ext'],
@@ -244,6 +256,9 @@ def gallery_get(gallery_id):
 @login_required
 def gallery_post():
     """ Add a new gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     gallery = Gallery(name=request.form['name'])
     db.session.add(gallery)
     db.session.commit()
@@ -252,11 +267,14 @@ def gallery_post():
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
-
+    
 @app.route('/rest/gallery/<int:gallery_id>', methods=['DELETE'])
 @login_required
 def gallery_item(gallery_id):
     """ Get/update/delete an individual gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
@@ -279,6 +297,9 @@ def gallery_item(gallery_id):
 @login_required
 def photo_post():
     """ Add a photo to a gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     photo = Photo(
         name=urldecode(request.form['name']),
         ext=request.form['ext'],
@@ -304,6 +325,9 @@ def photo_post():
 @login_required
 def photo_delete(gallery_id, photo_id):
     """ Delete a photo from a gallery """
+    if current_user.role == "guest":
+        abort(404)
+
     gallery = find_gallery_by_id(gallery_id)
     if not gallery:
         abort(404)
