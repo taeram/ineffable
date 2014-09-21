@@ -49,7 +49,23 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
         inspectNextAlbum: function() {
             if (this.state.isLoading === false && this.parsedPhotos == (this.state.photos.length * 2)) {
                 var nextAlbumId = parseInt(this.props.id, 10) + 1;
-                window.location.href = "/verify/" + nextAlbumId + "?all";
+                if (window.location.hash.length > 0) {
+                    var maxAlbumId = window.location.hash.match(/=(\d+)/)[1];
+                    maxAlbumId = parseInt(maxAlbumId, 10);
+                    if (nextAlbumId > maxAlbumId) {
+                        clearInterval(this.inspectInterval);
+                        this.state.messages.push({
+                            name: "Max album id reached, stopping...",
+                            exists: true
+                        });
+                        this.setState({
+                            message: this.state.messages
+                        })
+                        return;
+                    }
+                }
+
+                //window.location.href = "/verify/" + nextAlbumId + "?all";
             }
         },
 
