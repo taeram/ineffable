@@ -167,7 +167,7 @@ def gallery_upload(gallery_id):
 def gallery_index(page_num):
     """ List all galleries, or add a new one """
     if request.method == 'GET':
-        limit = 10
+        limit = 5
         offset = (page_num - 1) * limit
         galleries = find_gallery_all(offset, limit)
 
