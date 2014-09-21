@@ -47,7 +47,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                 });
             }.bind(this);
 
-            this.retrieveGallery(this.props.folder, this.props.modified, success, error);
+            this.retrievePhotos(this.props.folder, this.props.modified, success, error);
         },
 
         /**

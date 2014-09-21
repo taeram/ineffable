@@ -13,3 +13,8 @@ class LoginForm(Form):
 class GalleryForm(Form):
     name = TextField('Name', validators=[Required()])
     date = DateField('Date', validators=[Required()])
+
+
+class UserForm(Form):
+    name = TextField('Name', validators=[Required()])
+    password = PasswordField('Password', validators=[Required()])

@@ -125,7 +125,33 @@ def gallery_update(gallery_id):
     )
 
 
+@app.route('/user/', methods=['GET', 'POST'])
+@login_required
+def user_create():
+    """ Create a user """
+    if not current_user.role == "admin":
+        abort(404)
+
+    form = UserForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        gallery.name = form.name.data
+        gallery.created = form.date.data
+
+        db.session.add(gallery)
+        db.session.commit()
+
+        return redirect(url_for('user_create'))
+
+    return render_template('gallery.html',
+        form=form,
+        page_title="Update %s" % gallery.name,
+        form_action=url_for('gallery_update', gallery_id=gallery.id),
+        form_submit_button_title="Update"
+    )
+
+
 @app.route('/upload/<int:gallery_id>')
+@login_required
 def gallery_upload(gallery_id):
     """ Upload photos to a gallery """
     gallery = find_gallery_by_id(gallery_id)
@@ -162,13 +188,29 @@ def gallery_upload(gallery_id):
     )
 
 @app.route('/verify/<int:gallery_id>')
+@login_required
 def gallery_verify(gallery_id):
     """ Verify all thumbnails have been created for a gallery """
-    gallery = find_gallery_by_id(gallery_id)
-    if not gallery:
-        abort(404)
-
     return render_template('index.html')
+
+@app.route('/verify/thumbnail/', methods=['POST'])
+@login_required
+def photo_thumbnail():
+    """ Add a photo to a gallery """
+    photo = Photo(
+        name=urldecode(request.form['name']),
+        ext=request.form['ext'],
+        gallery_id=request.form['gallery_id'],
+        aspect_ratio=1.0,
+        owner_id=1,
+        created="2000:01:01 00:00:00"
+    )
+
+    # Tell the thumbnail daemon to generate a thumbnail for this photo
+    photo.generate_thumbnail()
+
+    return app.response_class(response="[]", mimetype='application/json')
+
 
 @app.route('/rest/gallery/', methods=['GET'])
 @login_required

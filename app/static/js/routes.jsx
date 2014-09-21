@@ -17,7 +17,7 @@ define('routes', ['router'], function() {
     router.route('/verify/:id', function(gallery_id) {
         require(['react', 'gallery-verify'], function (React, GalleryVerify) {
             React.renderComponent(
-                <GalleryVerify url={"/rest/gallery/" + gallery_id} />,
+                <GalleryVerify url="/rest/gallery" id={gallery_id} />,
                 document.getElementById(Config.App.elementId)
             );
         });

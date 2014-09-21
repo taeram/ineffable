@@ -3,7 +3,7 @@
 define('gallery-mixin', ['react'], function(React) {
 
     var GalleryMixin = {
-        retrieveGallery: function(folder, modified, successCallback, errorCallback) {
+        retrievePhotos: function(folder, modified, successCallback, errorCallback) {
             $.ajax({
                 url: 'https://' + Config.s3_bucket + '.s3.amazonaws.com/' + folder + '/photos.json?d=' + modified,
                 success: successCallback,

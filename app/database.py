@@ -38,6 +38,15 @@ def setup():
         name = prompt("Username for admin")
         password = prompt("Password for admin")
         user = User(name=name, password=password)
+        user.set_role('admin')
+        db.session.add(user)
+        db.session.commit()
+
+    if prompt_bool("Create a guest user?"):
+        name = prompt("Username for guest")
+        password = prompt("Password for guest")
+        user = User(name=name, password=password)
+        user.set_role('guest')
         db.session.add(user)
         db.session.commit()
 
@@ -216,11 +225,19 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)
+    role = db.Column(db.Text, nullable=False, default="user")
 
     def __init__(self, name, password):
         """ Setup the class """
         self.name = name
         self.password = make_hash(password)
+
+    def get_role(self):
+        return self.role
+
+    def set_role(self, role):
+        self.role = role
+        return self
 
     def get_auth_token(self):
         """ Get an auth token. Used when "remember me" is checked on login """

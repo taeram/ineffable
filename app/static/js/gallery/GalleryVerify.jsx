@@ -1,10 +1,30 @@
 /** @jsx React.DOM */
 
-define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'photo-mixin', 'basename'], function(React, $, _, GalleryMixin, PhotoMixin, basename) {
+define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'photo-mixin', 'basename', 'in_array'], function(React, $, _, GalleryMixin, PhotoMixin, basename, in_array) {
 
     var GalleryVerify = React.createClass({
 
         mixins: [GalleryMixin, PhotoMixin],
+
+        /**
+         * Does this gallery have any missing photos?
+         */
+        hasMissingPhotos: false,
+
+        /**
+         * The list of photos we've sent to be re-rendered
+         */
+        renderedPhotos: [],
+
+        /**
+         * The number of photos we've parsed through
+         */
+        parsedPhotos: 0,
+
+        /**
+         * The interval for inspectNextAlbum
+         */
+        inspectInterval: null,
 
         getInitialState: function() {
             return {
@@ -19,12 +39,24 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
 
         componentWillMount: function() {
             this.retrieve();
+
+            // If "?all" is appended to the query string, iterate through all albums
+            if (window.location.search.match(/all/)) {
+                this.inspectInterval = setInterval(this.inspectNextAlbum.bind(this), 1000);
+            }
+        },
+
+        inspectNextAlbum: function() {
+            if (this.state.isLoading === false && this.parsedPhotos == (this.state.photos.length * 2)) {
+                var nextAlbumId = parseInt(this.props.id, 10) + 1;
+                window.location.href = "/verify/" + nextAlbumId + "?all";
+            }
         },
 
         retrieve: function () {
             // Get the gallery
             $.ajax({
-                url: this.props.url,
+                url: this.props.url + '/' + this.props.id,
                 success: function(response) {
                     this.state.gallery = response;
                     this.setState({
@@ -49,7 +81,12 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
                         });
                     }.bind(this);
 
-                    this.retrieveGallery(response.folder, response.modified, success, error);
+                    this.retrievePhotos(response.folder, response.modified, success, error);
+                }.bind(this),
+                error: function () {
+                    this.setState({
+                        isLoading: false
+                    });
                 }.bind(this)
             });
         },
@@ -71,6 +108,8 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
                 url: photoUrl,
                 type: 'HEAD',
                 success: function () {
+                    this.parsedPhotos++;
+
                     this.state.messages.push({
                         name: basename(photoUrl),
                         exists: true
@@ -80,7 +119,8 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
                     })
                 }.bind(this),
                 error: function() {
-                    this.triggerPhotoRender(photo);
+                    this.hasMissingPhotos = true;
+                    this.triggerPhotoRender(basename(photoUrl));
 
                     this.state.messages.push({
                         name: basename(photoUrl),
@@ -93,8 +133,24 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
             });
         },
 
-        triggerPhotoRender: function(photo) {
-            console.log("Rendering photo", photo);
+        triggerPhotoRender: function(filename) {
+            filename = filename.replace(/_thumb/, "").replace(/_display/, '');
+
+            var data = {
+                name: filename.match(/^(.+?)\./)[1],
+                ext: filename.match(/^.+?\.(.+)$/)[1],
+                gallery_id: this.props.id
+            };
+
+            // Don't process the same photo twice
+            if (in_array(data.name, this.renderedPhotos)) {
+                return;
+            }
+            this.renderedPhotos.push(data.name);
+
+            $.post('/verify/thumbnail/', data, function () {
+                this.parsedPhotos += 2;
+            }.bind(this));
         },
 
         render: function() {

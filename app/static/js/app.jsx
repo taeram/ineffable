@@ -20,6 +20,7 @@ require.config({
         "jquery-serialize-object": "components/jquery-serialize-object/jquery.serialize-object.compiled",
         "dirname": "components/phpjs/functions/filesystem/dirname",
         "number_format": "components/phpjs/functions/strings/number_format",
+        "in_array": "components/phpjs/functions/array/in_array",
         "basename": "components/phpjs/functions/filesystem/basename",
 
         // App
@@ -56,6 +57,9 @@ require.config({
         },
         'history': {
             exports: 'window.History'
+        },
+        'in_array': {
+            exports: 'in_array'
         },
         'jquery-serialize-object': {
             deps: ['jquery']
