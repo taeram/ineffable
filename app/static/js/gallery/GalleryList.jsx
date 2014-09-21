@@ -7,19 +7,37 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
         getInitialState: function() {
             return {
+                isLoading: true,
+                pageNum: 1,
                 data: []
             };
         },
 
         componentWillMount: function() {
+            this.retrieve();
+
+            $(window).unbind('resize.gallery-list').bind('resize.gallery-list', _.debounce(this.triggerNextPage.bind(this), 100));
+            $(window).unbind('scroll.gallery-list').bind('scroll.gallery-list', _.debounce(this.triggerNextPage.bind(this), 100));
+        },
+
+        retrieve: function () {
             $.ajax({
-                url: this.props.url,
-                success: function(data) {
-                    if (!Array.isArray(data)) {
-                        data = [data];
+                url: this.props.url + '/' + this.state.pageNum,
+                success: function(response) {
+                    var data;
+                    if (this.state.data.length > 0) {
+                        data = this.state.data;
+                        for (var i=0; i < response.length; i++) {
+                            data.push(response[i]);
+                        }
+                    } else {
+                        data = response;
                     }
 
-                    this.setState({data: data});
+                    this.setState({
+                        isLoading: false,
+                        data: data
+                    });
                 }.bind(this)
             });
         },
@@ -32,6 +50,26 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
             this.setState({
                 data: data
             })
+        },
+
+        triggerNextPage: function () {
+            var pageHeight = $(document).height();
+            var scrollbarPosition = $(window).scrollTop() + $(window).height();
+            var fudge = 250;
+
+            if (pageHeight - fudge <= scrollbarPosition) {
+                this.nextPage();
+            }
+        },
+
+        nextPage: function () {
+            this.state.pageNum++;
+            this.setState({
+                isLoading: true,
+                pageNum: this.state.pageNum
+            });
+
+            this.retrieve();
         },
 
         render: function() {
@@ -67,9 +105,20 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                 );
             }, this);
 
+            var loadingNode;
+            if (!this.state.isLoading) {
+                loadingNode = (
+                    <div className="text-center">
+                        <i className="fa fa-spin fa-spinner"></i> 
+                        Loading next page...
+                    </div>
+                );
+            }
+
             return (
                 <div>
                     {galleryNodes}
+                    {loadingNode}
                 </div>
             );
         }

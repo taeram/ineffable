@@ -162,12 +162,14 @@ def gallery_upload(gallery_id):
     )
 
 
-@app.route('/rest/gallery/', methods=['GET', 'POST'])
+@app.route('/rest/gallery/<int:page_num>', methods=['GET', 'POST'])
 @login_required
-def gallery_index():
+def gallery_index(page_num):
     """ List all galleries, or add a new one """
     if request.method == 'GET':
-        galleries = find_gallery_all()
+        limit = 10
+        offset = (page_num - 1) * limit
+        galleries = find_gallery_all(offset, limit)
 
         response = []
         for gallery in galleries:

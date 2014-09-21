@@ -76,10 +76,12 @@ def find_user_by_name(name):
         return None
 
 
-def find_gallery_all():
+def find_gallery_all(offset, limit):
     """ Get all galleries """
     return db.session.query(Gallery).\
                       order_by(db.desc(Gallery.created)).\
+                      limit(limit).\
+                      offset(offset).\
                       all()
 
 
@@ -166,7 +168,7 @@ class Gallery(db.Model):
 
     def updateModified(self):
         """ Update the modified time of the gallery """
-        self.modified = datetime.utcnow()
+        self.modified = datetime.now(pytz.utc)
         db.session.add(self)
         db.session.commit()
 
