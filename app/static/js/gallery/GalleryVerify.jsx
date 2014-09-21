@@ -65,7 +65,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
                     }
                 }
 
-                //window.location.href = "/verify/" + nextAlbumId + "?all";
+                window.location.href = "/verify/" + nextAlbumId + "?all";
             }
         },
 
