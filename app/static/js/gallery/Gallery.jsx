@@ -181,7 +181,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                 }
 
                 galleryButtonsNode = (
-                    <div>
+                    <span>
                         <div className="btn-group gallery-heading-buttons">
                             <i className="fa fa-cogs" data-toggle="dropdown"></i>
                             <ul className="dropdown-menu" role="menu">
@@ -195,6 +195,12 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                                     <a href={"/upload/" + this.props.id}>
                                         <i className="fa fa-upload"></i>
                                         Upload Photos
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href={"/verify/" + this.props.id}>
+                                        <i className="fa fa-upload"></i>
+                                        Verify Photo Thumbnails
                                     </a>
                                 </li>
                                 <li>
@@ -215,7 +221,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                         </div>
 
                         {managingPhotosButton}
-                    </div>
+                    </span>
                 );
             }
 
