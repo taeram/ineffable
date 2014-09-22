@@ -10,6 +10,7 @@ from hashlib import sha1
 from .auth import login_serializer
 import md5
 import random
+from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 from helpers import generate_thumbnail, \
                     save_gallery_photos, \
@@ -85,13 +86,17 @@ def find_user_by_name(name):
         return None
 
 
-def find_gallery_all(offset, limit):
+def find_gallery_all(offset, limit, search_query):
     """ Get all galleries """
-    return db.session.query(Gallery).\
-                      order_by(db.desc(Gallery.created)).\
-                      limit(limit).\
-                      offset(offset).\
-                      all()
+    query = db.session.query(Gallery)
+
+    if search_query is not None:
+        query = query.filter(func.lower(Gallery.name).like('%%%s%%' % search_query))
+
+    return query.order_by(db.desc(Gallery.created)).\
+                limit(limit).\
+                offset(offset).\
+                all()
 
 
 def find_gallery_by_id(gallery_id):

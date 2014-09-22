@@ -22,8 +22,13 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         },
 
         retrieve: function () {
+            var searchQuery = "";
+            if ($('#search').val()) {
+                searchQuery = "&q=" + $('#search').val();
+            }
+
             $.ajax({
-                url: this.props.url + '/?page=' + this.state.pageNum,
+                url: this.props.url + '/?page=' + this.state.pageNum + searchQuery,
                 success: function(response) {
                     var data;
                     if (this.state.data.length > 0) {
@@ -87,43 +92,48 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
         render: function() {
             var prevGalleryDate = null;
-            var galleryNodes = this.state.data.map(function (gallery, i) {
-                var galleryDateline = null;
-                var galleryDate = moment(gallery.created).format('MMMM YYYY');
-                if (galleryDate != prevGalleryDate) {
-                    prevGalleryDate = galleryDate;
-                    galleryDateline = (
-                        <div className="gallery-date">
-                            <hr className="gallery-date-line" />
-                            <span className="gallery-date-text">
-                                <span className="gallery-date-text-bg">
-                                    {galleryDate}
-                                </span>
-                            </span>
-                        </div>
-                    );
-                }
-
-                return (
-                    <div>
-                        {galleryDateline}
-                        <Gallery folder={gallery.folder}
-                                id={gallery.id}
-                                name={gallery.name}
-                                modified={gallery.modified}
-                                created={gallery.created}
-                                photos={gallery.photos} 
-                                removeGallery={this.removeGallery} />
-                    </div>
-                );
-            }, this);
-
+            var galleryNodes;
             var loadingNode;
             if (this.state.isLoading) {
                 loadingNode = (
                     <div className="text-center text-large" style={{fontSize: "24px"}}>
                         <i className="fa fa-spin fa-circle-o-notch"></i>
                     </div>
+                );
+            } else if (this.state.data.length > 0) {
+                galleryNodes = this.state.data.map(function (gallery, i) {
+                    var galleryDateline = null;
+                    var galleryDate = moment(gallery.created).format('MMMM YYYY');
+                    if (galleryDate != prevGalleryDate) {
+                        prevGalleryDate = galleryDate;
+                        galleryDateline = (
+                            <div className="gallery-date">
+                                <hr className="gallery-date-line" />
+                                <span className="gallery-date-text">
+                                    <span className="gallery-date-text-bg">
+                                        {galleryDate}
+                                    </span>
+                                </span>
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <div>
+                            {galleryDateline}
+                            <Gallery folder={gallery.folder}
+                                    id={gallery.id}
+                                    name={gallery.name}
+                                    modified={gallery.modified}
+                                    created={gallery.created}
+                                    photos={gallery.photos} 
+                                    removeGallery={this.removeGallery} />
+                        </div>
+                    );
+                }, this);
+            } else {
+                galleryNodes = (
+                    <h2>No albums found</h2>
                 );
             }
 

@@ -31,7 +31,12 @@ from url_decode import urldecode
 @login_required
 def home():
     """ Home page """
-    return render_template('index.html', user=current_user)
+    if request.args.get('q'):
+        search_query = request.args.get('q')
+    else:
+        search_query = ""
+
+    return render_template('index.html', user=current_user, q=search_query)
 
     
 @app.route("/login", methods=["GET", "POST"])
@@ -232,9 +237,14 @@ def gallery_index():
         abort(500)
     page_num = int(request.args.get('page'))
 
+    if request.args.get('q'):
+        search_query = request.args.get('q')
+    else:
+        search_query = None
+
     limit = 5
     offset = (page_num - 1) * limit
-    galleries = find_gallery_all(offset, limit)
+    galleries = find_gallery_all(offset=offset, limit=limit, search_query=search_query)
 
     response = []
     for gallery in galleries:
