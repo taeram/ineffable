@@ -17,8 +17,8 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         componentWillMount: function() {
             this.retrieve();
 
-            $(window).unbind('resize.gallery-list').bind('resize.gallery-list', _.debounce(this.triggerNextPage, 1000));
-            $(window).unbind('scroll.gallery-list').bind('scroll.gallery-list', _.debounce(this.triggerNextPage, 1000));
+            $(window).unbind('resize.gallery-list').bind('resize.gallery-list', _.debounce(this.triggerNextPage, 100));
+            $(window).unbind('scroll.gallery-list').bind('scroll.gallery-list', _.debounce(this.triggerNextPage, 100));
         },
 
         retrieve: function () {
@@ -48,7 +48,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
                     // Just in case the current window displays *all* of the current galleries,
                     // manually trigger a next page
-                    //this.triggerNextPage();
+                    setTimeout(this.triggerNextPage, 1000);
                 }.bind(this)
             });
         },
