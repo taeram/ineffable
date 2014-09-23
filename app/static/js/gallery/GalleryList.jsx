@@ -5,6 +5,8 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
     var GalleryList = React.createClass({
         mixins: [HandleResizeMixin],
 
+        nextPageInterval: null,
+
         getInitialState: function() {
             return {
                 isLoading: true,
@@ -17,8 +19,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         componentWillMount: function() {
             this.retrieve();
 
-            $(window).unbind('resize.gallery-list').bind('resize.gallery-list', _.debounce(this.triggerNextPage, 100));
-            $(window).unbind('scroll.gallery-list').bind('scroll.gallery-list', _.debounce(this.triggerNextPage, 100));
+            this.nextPageInterval = setInterval(this.triggerNextPage, 250);
         },
 
         retrieve: function () {
@@ -45,10 +46,6 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                         hasMorePages: (response.length > 0),
                         data: data
                     });
-
-                    // Just in case the current window displays *all* of the current galleries,
-                    // manually trigger a next page
-                    setTimeout(this.triggerNextPage, 1000);
                 }.bind(this)
             });
         },
