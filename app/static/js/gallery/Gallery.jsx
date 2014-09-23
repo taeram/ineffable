@@ -209,13 +209,13 @@ define('gallery',
                                     </a>
                                 </li>
                                 <li>
-                                    <a onClick={this.toggleManagingPhotos} href="#">
+                                    <a onClick={this.toggleManagingPhotos}>
                                         <i className="fa fa-camera"></i>
                                         Manage Photos
                                     </a>
                                 </li>
                                 <li>
-                                    <a onClick={this.showDeleteModal} href="#">
+                                    <a onClick={this.showDeleteModal}>
                                         <i className="fa fa-exclamation text-danger"></i>
                                         <span className="text-danger">
                                             Delete Gallery

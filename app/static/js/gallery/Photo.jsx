@@ -85,7 +85,7 @@ define('photo', ['react', 'modal', 'photo-mixin', 'unveil'], function(React, Mod
                         </button>
                         <ul className="dropdown-menu" role="menu">
                             <li>
-                                <a onClick={this.showDeleteModal} href="#">
+                                <a onClick={this.showDeleteModal}>
                                     <i className="fa fa-exclamation text-danger"></i>
                                     <span className="text-danger">
                                         Delete
