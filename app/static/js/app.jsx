@@ -14,6 +14,7 @@ require.config({
         "react": "components/react/react-with-addons",
         "router": "components/routerjs/Router",
         "underscore": "components/underscore/underscore-min",
+        "unveil": "components/unveil/jquery.unveil",
 
         // Angular deps for uploader. To be refactored to use React instead
         "angular": "components/angular/angular.min",
@@ -76,6 +77,9 @@ require.config({
         },
         'underscore': {
             exports: '_'
+        },
+        'unveil': {
+            deps: ['jquery']
         }
     }
 });

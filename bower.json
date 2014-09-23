@@ -16,6 +16,7 @@
     "react": "0.11.*",
     "requirejs": "2.*",
     "routerjs": "https://github.com/haithembelhaj/RouterJs.git",
-    "underscore": "1.*"
+    "underscore": "1.*",
+    "unveil": "https://github.com/taeram/unveil.git#1.1.*"
   }
 }

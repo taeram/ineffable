@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 
-define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'underscore', 'gallery-mixin', 'moment'], function(React, photoPartition, Photo, Lightbox, Modal, _, GalleryMixin, moment) {
+define('gallery', 
+    ['react', 'photo-partition', 'photo', 'lightbox', 'jquery', 'modal', 'underscore', 'gallery-mixin', 'moment'],
+    function (React, photoPartition, Photo, Lightbox, $, Modal, _, GalleryMixin, moment ) {
 
     var Gallery = React.createClass({
 

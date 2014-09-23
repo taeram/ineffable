@@ -1,15 +1,24 @@
 /** @jsx React.DOM */
 
-define('photo', ['react', 'modal', 'photo-mixin'], function(React, Modal, PhotoMixin) {
+define('photo', ['react', 'modal', 'photo-mixin', 'unveil'], function(React, Modal, PhotoMixin, unveil) {
 
     var Photo = React.createClass({
 
         mixins: [PhotoMixin],
 
+        /**
+         * How long to wait before displaying the thumbnail, in milliseconds
+         */
+        unveilTimeout: 200,
+
         getInitialState: function() {
             return {
                 isDeleting: false
             };
+        },
+
+        componentDidMount: function () {
+            $(this.getDOMNode()).find('img').unveil(this.unveilTimeout);
         },
 
         showDeleteModal: function () {
@@ -93,7 +102,7 @@ define('photo', ['react', 'modal', 'photo-mixin'], function(React, Modal, PhotoM
             return (
                 <div className="gallery-photo">
                     {managePhotosNode}
-                    <img onClick={this.props.onClick} src={thumbUrl} style={imgStyle} />
+                    <img onClick={this.props.onClick} data-src={thumbUrl} src="" style={imgStyle} />
                 </div>
             );
         }

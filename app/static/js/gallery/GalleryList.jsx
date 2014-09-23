@@ -94,11 +94,15 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
             var loadingNode;
             if (this.state.isLoading) {
                 loadingNode = (
-                    <div className="text-center text-large" style={{fontSize: "24px"}}>
+                    <div className="text-center text-large" style={{fontSize: "24px", height: "60px"}}>
                         <i className="fa fa-spin fa-circle-o-notch"></i>
                     </div>
                 );
-            } 
+            } else {
+                loadingNode = (
+                    <div style={{height: "60px"}}> </div>
+                );
+            }
             
             var galleryNodes;
             var prevGalleryDate = null;
@@ -133,7 +137,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                         </div>
                     );
                 }, this);
-            } else {
+            } else if (!this.state.isLoading) {
                 galleryNodes = (
                     <h2>No albums found</h2>
                 );
