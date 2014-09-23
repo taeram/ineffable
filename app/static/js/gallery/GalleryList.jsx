@@ -48,7 +48,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
                     // Just in case the current window displays *all* of the current galleries,
                     // manually trigger a next page
-                    this.triggerNextPage();
+                    //this.triggerNextPage();
                 }.bind(this)
             });
         },
@@ -91,8 +91,6 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         },
 
         render: function() {
-            var prevGalleryDate = null;
-            var galleryNodes;
             var loadingNode;
             if (this.state.isLoading) {
                 loadingNode = (
@@ -100,14 +98,18 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                         <i className="fa fa-spin fa-circle-o-notch"></i>
                     </div>
                 );
-            } else if (this.state.data.length > 0) {
+            } 
+            
+            var galleryNodes;
+            var prevGalleryDate = null;
+            if (this.state.data.length > 0) {
                 galleryNodes = this.state.data.map(function (gallery, i) {
                     var galleryDateline = null;
                     var galleryDate = moment(gallery.created).format('MMMM YYYY');
                     if (galleryDate != prevGalleryDate) {
                         prevGalleryDate = galleryDate;
                         galleryDateline = (
-                            <div key={gallery.id + "-date-line"} className="gallery-date">
+                            <div key={"gallery-date-line-" + gallery.id} className="gallery-date">
                                 <hr className="gallery-date-line" />
                                 <span className="gallery-date-text">
                                     <span className="gallery-date-text-bg">
@@ -119,7 +121,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                     }
 
                     return (
-                        <div key={gallery.id + "-gallery"}>
+                        <div key={"gallery-" + gallery.id}>
                             {galleryDateline}
                             <Gallery folder={gallery.folder}
                                     id={gallery.id}

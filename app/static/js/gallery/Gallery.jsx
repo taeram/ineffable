@@ -122,13 +122,13 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
             var divCenterStyle = {"text-align": "center"};
             if (this.state.isDeleting) {
                 photoRowNodes = (
-                    <div style={divCenterStyle} key="gallery-deleting">
+                    <div style={divCenterStyle} key={"gallery-deleting-" + this.props.id}>
                         <i className="fa fa-spinner fa-spin"></i> Deleting...
                     </div>
                 );
             } else if (this.state.loading) {
                 photoRowNodes = (
-                    <div style={divCenterStyle} key="gallery-loading">
+                    <div style={divCenterStyle} key={"gallery-loading-" + this.props.id}>
                         <i className="fa fa-spinner fa-spin"></i>
                     </div>
                 );
@@ -137,7 +137,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                 photoRowNodes = _.map(photoRows, function (photoRow, i) {
                     this.photoNodes = _.map(photoRow, function (item) {
                         return (
-                            <Photo key={item.id + "-photo"}
+                            <Photo key={"gallery-" + this.props.id + "-photo-" + item.id}
                                    folder={this.props.folder}
                                    galleryId={this.props.id}
                                    id={item.id}
@@ -153,14 +153,14 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                     }, this);
 
                     return (
-                        <div key={"gallery-photos-" + i}>
+                        <div key={"gallery-" + this.props.id + "-photos-" + i}>
                             {this.photoNodes}
                         </div>
                     );
                 }, this);
             } else {
                 photoRowNodes = (
-                    <div style={divCenterStyle} key="gallery-no-photos-found">
+                    <div style={divCenterStyle} key={"gallery-" + this.props.id + "-no-photos-found"}>
                         No Photos Found
                     </div>
                 );
@@ -184,7 +184,7 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                 }
 
                 galleryButtonsNode = (
-                    <span>
+                    <span key={"gallery-buttons-" + this.props.id}>
                         <div className="btn-group gallery-heading-buttons">
                             <i className="fa fa-cogs" data-toggle="dropdown"></i>
                             <ul className="dropdown-menu" role="menu">
