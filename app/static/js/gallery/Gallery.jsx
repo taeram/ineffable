@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'underscore', 'gallery-mixin'], function(React, photoPartition, Photo, Lightbox, Modal, _, GalleryMixin) {
+define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'underscore', 'gallery-mixin', 'moment'], function(React, photoPartition, Photo, Lightbox, Modal, _, GalleryMixin, moment) {
 
     var Gallery = React.createClass({
 
@@ -29,16 +29,18 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
             };
         },
 
-        componentWillMount: function() {
+        componentDidMount: function() {
             this.retrieve();
         },
 
         retrieve: function () {
             var success = function(photos) {
-                this.setState({
-                    photos: JSON.parse(photos),
-                    loading: false
-                });
+                if (this.isMounted()) {
+                    this.setState({
+                        photos: JSON.parse(photos),
+                        loading: false
+                    });
+                }
             }.bind(this);
 
             var error = function () {
@@ -120,22 +122,23 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
             var divCenterStyle = {"text-align": "center"};
             if (this.state.isDeleting) {
                 photoRowNodes = (
-                    <div style={divCenterStyle}>
+                    <div style={divCenterStyle} key="gallery-deleting">
                         <i className="fa fa-spinner fa-spin"></i> Deleting...
                     </div>
                 );
             } else if (this.state.loading) {
                 photoRowNodes = (
-                    <div style={divCenterStyle}>
+                    <div style={divCenterStyle} key="gallery-loading">
                         <i className="fa fa-spinner fa-spin"></i>
                     </div>
                 );
             } else if (this.state.photos.length > 0) {
                 var photoRows = photoPartition(this.state.photos, this.idealRowHeight, viewportWidth, photoPaddingX, photoPaddingY);
-                photoRowNodes = _.map(photoRows, function (photoRow) {
+                photoRowNodes = _.map(photoRows, function (photoRow, i) {
                     this.photoNodes = _.map(photoRow, function (item) {
                         return (
-                            <Photo folder={this.props.folder}
+                            <Photo key={item.id + "-photo"}
+                                   folder={this.props.folder}
                                    galleryId={this.props.id}
                                    id={item.id}
                                    height={item.height}
@@ -150,14 +153,14 @@ define('gallery', ['react', 'photo-partition', 'photo', 'lightbox', 'modal', 'un
                     }, this);
 
                     return (
-                        <div>
+                        <div key={"gallery-photos-" + i}>
                             {this.photoNodes}
                         </div>
                     );
                 }, this);
             } else {
                 photoRowNodes = (
-                    <div style={divCenterStyle}>
+                    <div style={divCenterStyle} key="gallery-no-photos-found">
                         No Photos Found
                     </div>
                 );

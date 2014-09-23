@@ -11,7 +11,7 @@ require.config({
         "jpegmeta": "components/jsjpegmeta/jpegmeta",
         "linear-partition": "components/linear-partition/linear_partition.min",
         "moment": "components/momentjs/moment",
-        "react": "components/react/react-with-addons.min",
+        "react": "components/react/react-with-addons",
         "router": "components/routerjs/Router",
         "underscore": "components/underscore/underscore-min",
 

@@ -17,8 +17,8 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         componentWillMount: function() {
             this.retrieve();
 
-            $(window).unbind('resize.gallery-list').bind('resize.gallery-list', _.debounce(this.triggerNextPage.bind(this), 100));
-            $(window).unbind('scroll.gallery-list').bind('scroll.gallery-list', _.debounce(this.triggerNextPage.bind(this), 100));
+            $(window).unbind('resize.gallery-list').bind('resize.gallery-list', _.debounce(this.triggerNextPage, 1000));
+            $(window).unbind('scroll.gallery-list').bind('scroll.gallery-list', _.debounce(this.triggerNextPage, 1000));
         },
 
         retrieve: function () {
@@ -107,7 +107,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                     if (galleryDate != prevGalleryDate) {
                         prevGalleryDate = galleryDate;
                         galleryDateline = (
-                            <div className="gallery-date">
+                            <div key={gallery.id + "-date-line"} className="gallery-date">
                                 <hr className="gallery-date-line" />
                                 <span className="gallery-date-text">
                                     <span className="gallery-date-text-bg">
@@ -119,7 +119,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                     }
 
                     return (
-                        <div>
+                        <div key={gallery.id + "-gallery"}>
                             {galleryDateline}
                             <Gallery folder={gallery.folder}
                                     id={gallery.id}
