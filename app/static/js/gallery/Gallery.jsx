@@ -206,13 +206,19 @@ define('gallery',
                                 <li>
                                     <a onClick={this.showShareModal}>
                                         <i className="fa fa-share"></i>
-                                        Share
+                                        Share this Album
                                     </a>
                                 </li>
                                 <li>
                                     <a href={"/update/" + this.props.id}>
                                         <i className="fa fa-pencil"></i>
-                                        Edit
+                                        Edit Album
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onClick={this.toggleManagingPhotos}>
+                                        <i className="fa fa-camera"></i>
+                                        Edit Photos
                                     </a>
                                 </li>
                                 <li>
@@ -224,20 +230,14 @@ define('gallery',
                                 <li>
                                     <a href={"/verify/" + this.props.id}>
                                         <i className="fa fa-upload"></i>
-                                        Verify Photo Thumbnails
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onClick={this.toggleManagingPhotos}>
-                                        <i className="fa fa-camera"></i>
-                                        Manage Photos
+                                        Verify Thumbnails
                                     </a>
                                 </li>
                                 <li>
                                     <a onClick={this.showDeleteModal}>
-                                        <i className="fa fa-exclamation text-danger"></i>
                                         <span className="text-danger">
-                                            Delete Gallery
+                                            <i className="fa fa-exclamation"></i>
+                                            Delete this Album
                                         </span>
                                     </a>
                                 </li>
