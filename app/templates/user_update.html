@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block body %}
+
+<form class="form form-horizontal col-sm-4 col-sm-offset-4" action="{{ form_action }}" method="post">
+    {{ form.csrf_token }}
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <h3 style="margin-top: 0">Form Errors</h3>
+            <ul class="list-unstyled">
+                {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                    {% for error in field_errors %}
+                        <li>{{ form[field_name].label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name(class="form-control", placeholder="Name", value=user.name) }}
+    </div>
+
+    <div class="form-group">
+        {{ form.role.label }}
+        {{ form.role(class="form-control", placeholder="Role", value=user.role) }}
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">{{ form_submit_button_title }}</button>
+    </div>
+</form>
+{% endblock %}

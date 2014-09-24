@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block body %}
+    <div class="col-xs-6 col-xs-offset-3">
+        <div class="pull-right">
+            <a class="btn btn-success" href="{{ url_for('user_create') }}">
+                <i class="fa fa-plus"></i>
+                Add a User
+            </a>
+        </div>
+
+        <table class="table table-striped">
+            <colgroup>
+                <col />
+                <col style="width: 150px" />
+                <col style="width: 100px"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.role }}</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-danger btn-delete" href="{{ url_for('user_delete', user_id=user.id) }}">
+                                <i class="fa fa-trash-o"></i>
+                                Delete
+                            </a>
+                            <a class="btn btn-info" href="{{ url_for('user_update', user_id=user.id) }}">
+                                <i class="fa fa-pencil"></i>
+                                Edit
+                            </a>
+                            <a class="btn btn-info" href="{{ url_for('user_change_password', user_id=user.id) }}">
+                                <i class="fa fa-lock"></i>
+                                Change Password
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

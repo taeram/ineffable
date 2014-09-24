@@ -2,6 +2,7 @@ import os
 from flask import Flask, \
                   send_from_directory
 from flask.ext.compress import Compress
+from flask.ext.login import current_user
 import subprocess
 import re
 from react import jsx
@@ -85,5 +86,11 @@ else:
         css_path = os.path.join(app.root_path, 'static/css/%s' % filename)
         css = open(css_path, 'r').read()
         return app.response_class(response=css, mimetype='text/css')
+
+@app.context_processor
+def inject_globals():
+    return dict(
+        current_user=current_user
+    )
 
 import views

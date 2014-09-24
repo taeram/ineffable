@@ -32,5 +32,12 @@ define('routes', ['router'], function() {
         });
     });
 
+    // Users list
+    router.route('/users/', function () {
+        $('.btn-delete').on('click', function (e) {
+            return confirm("Are you sure you want to delete this user?");
+        });
+    });
+
     return router;
 });

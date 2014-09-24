@@ -66,6 +66,18 @@ def recreate():
     create()
 
 
+def find_user_all(offset=None, limit=None):
+    """ Get all galleries """
+    query = db.session.query(User).\
+                order_by(db.desc(User.name))
+
+    if offset is not None and limit is not None:
+        query = query.limit(limit).\
+                      offset(offset)
+
+    return query.all()
+
+
 def find_user_by_id(user_id):
     """ Get a user by id """
     try:
@@ -232,10 +244,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.Text, nullable=False)
     role = db.Column(db.Text, nullable=False, default="user")
 
-    def __init__(self, name, password):
+    def __init__(self, name, password, role):
         """ Setup the class """
         self.name = name
         self.password = make_hash(password)
+        self.role = role
 
     def get_role(self):
         return self.role
@@ -243,6 +256,9 @@ class User(db.Model, UserMixin):
     def set_role(self, role):
         self.role = role
         return self
+
+    def set_password(self, password):
+        self.password = make_hash(password)
 
     def get_auth_token(self):
         """ Get an auth token. Used when "remember me" is checked on login """

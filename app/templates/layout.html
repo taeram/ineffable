@@ -11,7 +11,7 @@
             cache_buster: {{ config.CACHE_BUSTER }},
             s3_bucket: '{{ config.AWS_S3_BUCKET }}',
             User: {
-                role: '{{ user.role }}'
+                role: '{{ current_user.role }}'
             }
         };
     </script>
@@ -34,8 +34,12 @@
                 <ul class="nav navbar-nav">
                     {% autoescape false %}
                         {{ navbar_link('home', 'Home', icon='home') }}
-                        {% if user.role != "guest" %}
+                        {% if current_user.role != "guest" %}
                             {{ navbar_link('gallery_create', 'Create an Album', icon='plus', login_required=true) }}
+                            {{ navbar_link('user_change_password', 'Change your Password', icon='lock', login_required=true) }}
+                        {% endif %}
+                        {% if current_user.role == "admin" %}
+                            {{ navbar_link('user_list', 'Users', icon='users', login_required=true) }}
                         {% endif %}
                         {{ navbar_link('login', 'Login', icon='user', anonymous_required=true) }}
                         {{ navbar_link('logout', 'Logout', icon='user', login_required=true) }}
