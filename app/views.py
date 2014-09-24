@@ -42,7 +42,7 @@ def home():
 
     return render_template('index.html', q=search_query)
 
-    
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """ Login page """
@@ -382,7 +382,7 @@ def gallery_post():
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 
-    
+
 @app.route('/rest/gallery/<int:gallery_id>', methods=['DELETE'])
 @login_required
 def gallery_item(gallery_id):

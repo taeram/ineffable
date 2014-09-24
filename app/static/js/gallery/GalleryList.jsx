@@ -100,7 +100,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                     <div style={{height: "60px"}}> </div>
                 );
             }
-            
+
             var galleryNodes;
             var prevGalleryDate = null;
             if (this.state.data.length > 0) {
@@ -129,7 +129,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                                     name={gallery.name}
                                     modified={gallery.modified}
                                     created={gallery.created}
-                                    photos={gallery.photos} 
+                                    photos={gallery.photos}
                                     removeGallery={this.removeGallery} />
                         </div>
                     );

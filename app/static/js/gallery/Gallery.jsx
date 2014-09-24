@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('gallery', 
+define('gallery',
     ['react', 'photo-partition', 'photo', 'lightbox', 'jquery', 'modal', 'underscore', 'gallery-mixin', 'moment'],
     function (React, photoPartition, Photo, Lightbox, $, Modal, _, GalleryMixin, moment ) {
 
