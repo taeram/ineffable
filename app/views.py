@@ -298,6 +298,7 @@ def gallery_upload(gallery_id):
         s3_folder=folder,
         s3_policy=policy,
         s3_signature=signature,
+        page_title="Upload to %s" % gallery.name,
         s3_success_action_status=s3_success_action_status,
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
