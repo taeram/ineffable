@@ -49,13 +49,14 @@ Local development setup:
     source ./.venv/bin/activate
 
     # Install the pip requirements
+    sudo apt-get install postgresql-client postgresql-common libpq-dev python-dev
     pip install -r requirements.txt
 
     # Create the development database (SQLite by default)
     python manage.py database migrate upgrade
     python manage.py database setup
 
-    # Install less.js for on the fly compilation of .less files
+    # Install global npm tools
     npm install -g less
 
     # Export the config variables
