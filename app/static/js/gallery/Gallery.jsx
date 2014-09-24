@@ -193,7 +193,7 @@ define('gallery',
 
                     managingPhotosButton = (
                         <button onClick={this.toggleManagingPhotos} className="btn btn-success btn-xs" style={manageBtnStyle}>
-                            <i className="fa fa-check"></i> Save Changes
+                            <i className="fa fa-check"></i> Finished Editing Photos
                         </button>
                     );
                 }
@@ -201,7 +201,9 @@ define('gallery',
                 galleryButtonsNode = (
                     <span key={"gallery-buttons-" + this.props.id}>
                         <div className="btn-group gallery-heading-buttons">
-                            <i className="fa fa-cogs" data-toggle="dropdown"></i>
+                            <button className="btn btn-default btn-mini btn-dropdown" data-toggle="dropdown">
+                                <i className="fa fa-cogs"></i>
+                            </button>
                             <ul className="dropdown-menu" role="menu">
                                 <li>
                                     <a onClick={this.showShareModal}>
