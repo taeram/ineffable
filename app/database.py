@@ -121,6 +121,16 @@ def find_gallery_by_id(gallery_id):
         return None
 
 
+def find_gallery_by_share_code(share_code):
+    """ Find a single gallery """
+    try:
+        return db.session.query(Gallery).\
+                         filter(Gallery.share_code == share_code).\
+                         one()
+    except NoResultFound:
+        return None
+
+
 class Photo():
 
     """ A photo """
@@ -174,6 +184,7 @@ class Gallery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     folder = db.Column(db.Text, nullable=False, unique=True)
+    share_code = db.Column(db.Text, nullable=False, unique=True)
     modified = db.Column(db.DateTime(timezone=True))
     created = db.Column(db.DateTime(timezone=True))
 
@@ -181,6 +192,7 @@ class Gallery(db.Model):
         """ Setup the class """
         self.name = name
         self.folder = md5.new("%032x" % random.getrandbits(128)).hexdigest()
+        self.share_code = md5.new("%032x" % random.getrandbits(128)).hexdigest()
         self.modified = datetime.now(pytz.utc)
         self.created = created
 
@@ -228,6 +240,7 @@ class Gallery(db.Model):
             "id": self.id,
             "name": self.name,
             "folder": self.folder,
+            "share_code": self.share_code,
             "modified": self.modified.strftime('%Y-%m-%d %H:%M:%S'),
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }

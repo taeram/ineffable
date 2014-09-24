@@ -34,32 +34,38 @@
                 <ul class="nav navbar-nav">
                     {% autoescape false %}
                         {{ navbar_link('home', 'Home', icon='home') }}
-                        {% if current_user.role != "guest" %}
-                            {{ navbar_link('gallery_create', 'Create an Album', icon='plus', login_required=true) }}
-                            {{ navbar_link('user_change_password', 'Change your Password', icon='lock', login_required=true) }}
+                        {% if current_user.role == "share" %}
+                            {{ navbar_link('login', 'Login', icon='user') }}
+                        {% else %}
+                            {% if current_user.role != "guest" %}
+                                {{ navbar_link('gallery_create', 'Create an Album', icon='plus', login_required=true) }}
+                                {{ navbar_link('user_change_password', 'Change your Password', icon='lock', login_required=true) }}
+                            {% endif %}
+                            {% if current_user.role == "admin" %}
+                                {{ navbar_link('user_list', 'Users', icon='users', login_required=true) }}
+                            {% endif %}
+                            {{ navbar_link('login', 'Login', icon='user', anonymous_required=true) }}
+                            {{ navbar_link('logout', 'Logout', icon='user', login_required=true) }}
                         {% endif %}
-                        {% if current_user.role == "admin" %}
-                            {{ navbar_link('user_list', 'Users', icon='users', login_required=true) }}
-                        {% endif %}
-                        {{ navbar_link('login', 'Login', icon='user', anonymous_required=true) }}
-                        {{ navbar_link('logout', 'Logout', icon='user', login_required=true) }}
                     {% endautoescape %}
                 </ul>
 
-                <ul class="nav navbar-nav navbar-right">
-                    <li style="margin-top: 7px">
-                        <form class="form-inline" role="form" action="" method="get">
-                            <div class="input-group">
-                                <input type="search" class="form-control" name="q" id="search" placeholder="Search" value="{{q}}">
-                                <div class="input-group-btn">
-                                    <button type="submit" class="btn btn-default">
-                                        <i class="fa fa-search" style="padding: 0"></i>
-                                    </button>
+                {% if current_user.is_authenticated() and current_user.role != "share" %}
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="margin-top: 7px">
+                            <form class="form-inline" role="form" action="" method="get">
+                                <div class="input-group">
+                                    <input type="search" class="form-control" name="q" id="search" placeholder="Search" value="{{q}}">
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fa fa-search" style="padding: 0"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                    </li>
-                </ul>
+                            </form>
+                        </li>
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -83,6 +89,8 @@
         {% endif %}
         {% block body %}{% endblock %}
     </div>
+
+    {% block javascript%}{% endblock %}
 
     {% if config.GOOGLE_ANALYTICS_ID %}
     <script>

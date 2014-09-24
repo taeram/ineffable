@@ -7,3 +7,13 @@
 <div id="app-lightbox"></div>
 <div id="app-modal"></div>
 {% endblock %}
+
+{% block javascript %}
+    {% autoescape false %}
+        <script>
+            {% if json %}
+                var gallery_json = {{ json }};
+            {% endif %}
+        </script>
+    {% endautoescape %}
+{% endblock %}

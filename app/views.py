@@ -17,6 +17,7 @@ from .forms import LoginForm,\
 from .database import find_user_by_name, \
                       find_gallery_all, \
                       find_gallery_by_id, \
+                      find_gallery_by_share_code, \
                       find_user_by_id,\
                       find_user_all,\
                       db, \
@@ -28,6 +29,7 @@ import json
 import base64
 import hmac
 import hashlib
+from datetime import timedelta
 from url_decode import urldecode
 
 
@@ -41,6 +43,32 @@ def home():
         search_query = ""
 
     return render_template('index.html', q=search_query)
+
+
+@app.route('/s/<string:share_code>')
+def share(share_code):
+    """ Show a shared album """
+    if not current_user.is_authenticated():
+        user = User(
+            name="share",
+            role="share",
+            password="share"
+        )
+        login_user(user)
+        session.permanent = False
+        app.permanent_session_lifetime = timedelta(minutes=1)
+
+    gallery = find_gallery_by_share_code(share_code)
+    if not gallery:
+        abort(404)
+
+    gallery_obj = gallery.to_object()
+    response = {
+        "name": gallery_obj['name'],
+        "folder": gallery_obj['folder']
+    }
+
+    return render_template('index.html', json=json.dumps(response))
 
 
 @app.route("/login", methods=["GET", "POST"])

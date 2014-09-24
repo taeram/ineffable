@@ -32,6 +32,17 @@ define('routes', ['router'], function() {
         });
     });
 
+    // Shared Gallery
+    router.route('/s/:code', function(code) {
+        require(['react', 'gallery'], function (React, Gallery) {
+            // Uses gallery_json from the page
+            React.renderComponent(
+                <Gallery folder={gallery_json.folder} name={gallery_json.name} isShared={true} />,
+                document.getElementById(Config.App.elementId)
+            );
+        });
+    });
+
     // Users list
     router.route('/users/', function () {
         $('.btn-delete').on('click', function (e) {

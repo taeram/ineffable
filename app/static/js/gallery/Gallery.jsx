@@ -115,6 +115,19 @@ define('gallery',
             })
         },
 
+        showShareModal: function () {
+            // Unmount the existing component, if any
+            React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
+
+            React.renderComponent(
+                <Modal
+                    title={"Share " + this.props.name}
+                    content={'<div class="text-center">Share this album:<br /><input class="form-control" type="text" value="' + window.location.origin + '/s/' + this.props.share_code + '"></div>'}
+                    showSubmitButton={false} />,
+                document.getElementById(Config.App.modalElementId)
+            );
+        },
+
         render: function() {
             var viewportWidth = parseInt(Config.App.viewportWidth, 10),
                 photoPaddingX = parseInt(Config.Photo.paddingX, 10),
@@ -171,7 +184,7 @@ define('gallery',
             var galleryDate = moment(this.props.created).format('MMMM Do, YYYY');
 
             var galleryButtonsNode;
-            if (Config.User.role != "guest") {
+            if (!this.props.isShared && Config.User.role != "guest") {
                 var managingPhotosButton;
                 if (this.state.isManagingPhotos) {
                     var manageBtnStyle = {
@@ -190,6 +203,12 @@ define('gallery',
                         <div className="btn-group gallery-heading-buttons">
                             <i className="fa fa-cogs" data-toggle="dropdown"></i>
                             <ul className="dropdown-menu" role="menu">
+                                <li>
+                                    <a onClick={this.showShareModal}>
+                                        <i className="fa fa-share"></i>
+                                        Share
+                                    </a>
+                                </li>
                                 <li>
                                     <a href={"/update/" + this.props.id}>
                                         <i className="fa fa-pencil"></i>

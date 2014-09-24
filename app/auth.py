@@ -17,6 +17,11 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     """ Get a user """
+
+    # Handle users who viewed an album using the share endpoint
+    if user_id == "None":
+        return None
+
     return find_user_by_id(user_id)
 
 

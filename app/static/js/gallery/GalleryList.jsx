@@ -128,6 +128,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
                                     id={gallery.id}
                                     name={gallery.name}
                                     modified={gallery.modified}
+                                    share_code={gallery.share_code}
                                     created={gallery.created}
                                     photos={gallery.photos}
                                     removeGallery={this.removeGallery} />
