@@ -38,16 +38,14 @@ def setup():
     if prompt_bool("Do you want to add an admin user?"):
         name = prompt("Username for admin")
         password = prompt("Password for admin")
-        user = User(name=name, password=password)
-        user.set_role('admin')
+        user = User(name=name, password=password, role='admin')
         db.session.add(user)
         db.session.commit()
 
     if prompt_bool("Create a guest user?"):
         name = prompt("Username for guest")
         password = prompt("Password for guest")
-        user = User(name=name, password=password)
-        user.set_role('guest')
+        user = User(name=name, password=password, role='guest')
         db.session.add(user)
         db.session.commit()
 
