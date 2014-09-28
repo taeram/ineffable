@@ -24,7 +24,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    DEBUG = True
+    DEBUG = False
     TESTING = False
 
 
