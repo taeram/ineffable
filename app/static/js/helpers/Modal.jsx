@@ -20,6 +20,11 @@ define('modal', ['react'], function(React) {
             $(this.getDOMNode()).modal({
                 "show": true
             });
+
+            // Trigger the callback function, if defined
+            if (this.props.onShow) {
+                $(this.getDOMNode()).on('shown.bs.modal', this.props.onShow);
+            }
         },
 
         render: function() {
@@ -31,7 +36,7 @@ define('modal', ['react'], function(React) {
             }
 
             return (
-                <div className="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+                <div className="modal fade" id="modal" tabIndex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">

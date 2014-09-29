@@ -119,10 +119,15 @@ define('gallery',
             // Unmount the existing component, if any
             React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
 
+            var onShow = function () {
+                $('#share-album').select();
+            }
+
             React.renderComponent(
                 <Modal
                     title={"Share " + this.props.name}
-                    content={'<div class="text-center">Share this album:<br /><input class="form-control" type="text" value="' + window.location.origin + '/s/' + this.props.share_code + '"></div>'}
+                    content={'<div class="text-center">Share this album:<br /><input id="share-album" class="form-control" type="text" value="' + window.location.origin + '/s/' + this.props.share_code + '"></div>'}
+                    onShow={onShow}
                     showSubmitButton={false} />,
                 document.getElementById(Config.App.modalElementId)
             );
