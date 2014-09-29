@@ -24,7 +24,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    DEBUG = False
+    DEBUG = getenv('DEBUG', False)
     TESTING = False
 
 

@@ -24,7 +24,8 @@ from .database import find_user_by_name, \
                       Gallery, \
                       Photo, \
                       User
-from .helpers import delete_photo
+from .helpers import delete_photo, \
+                     get_gallery_photos
 import json
 import base64
 import hmac
@@ -62,13 +63,17 @@ def share(share_code):
     if not gallery:
         abort(404)
 
-    gallery_obj = gallery.to_object()
     response = {
-        "name": gallery_obj['name'],
-        "folder": gallery_obj['folder']
+        "name": gallery.name,
+        "folder": gallery.folder
     }
 
-    return render_template('index.html', json=json.dumps(response))
+    og_photo_url = None
+    photos = get_gallery_photos(gallery.folder)
+    if len(photos) > 0:
+        og_photo_url = 'https://%s.s3.amazonaws.com/%s/%s_thumb.jpg' % (app.config['AWS_S3_BUCKET'], gallery.folder, photos[0]['name']);
+
+    return render_template('index.html', json=json.dumps(response), page_title=response['name'], og_photo_url=og_photo_url)
 
 
 @app.route("/login", methods=["GET", "POST"])

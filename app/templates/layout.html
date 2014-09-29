@@ -1,11 +1,20 @@
 <!doctype html>
 <head>
-    <title>{% block title %}{{ config.SITE_NAME }}{% endblock %}</title>
+    <title>
+        {% block title %}{{ page_title }}{% endblock %}
+    </title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-%d.png' % config.CACHE_BUSTER) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-%d.css' % config.CACHE_BUSTER) }}">
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="{{ config.SITE_NAME }}" />
+    <meta property="og:description" content="{{ page_title }}" />
+    <meta property="og:url" content="{{ request.url }}" />
+    <meta property="og:image" content="{{ og_photo_url }}"/>
+    <meta property="og:site_name" content="{{ config.SITE_NAME }}" />
     <script>
         var Config = {
             cache_buster: {{ config.CACHE_BUSTER }},

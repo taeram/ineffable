@@ -90,6 +90,8 @@ else:
 @app.context_processor
 def inject_globals():
     return dict(
+        page_title=app.config['SITE_NAME'],
+        og_photo_url='',
         current_user=current_user
     )
 
