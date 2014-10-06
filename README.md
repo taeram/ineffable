@@ -1,5 +1,6 @@
 Ineffable [![Stories in Ready](https://badge.waffle.io/taeram/ineffable.png?label=ready&title=Ready)](https://waffle.io/taeram/ineffable)
 =========
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/taeram/ineffable?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Ineffable is a minimalist photo gallery.
 
