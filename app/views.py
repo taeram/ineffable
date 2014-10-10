@@ -65,7 +65,8 @@ def share(share_code):
 
     response = {
         "name": gallery.name,
-        "folder": gallery.folder
+        "folder": gallery.folder,
+        "modified": int(gallery.modified.strftime('%s'))
     }
 
     og_photo_url = None
