@@ -18,7 +18,7 @@ class Config(object):
     SECRET_KEY = getenv('SECRET_KEY')
     SEND_FILE_MAX_AGE_DEFAULT = 365 * 86400
     SITE_NAME = getenv('SITE_NAME', 'Ineffable')
-    SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL').replace('mysql2:', 'mysql:')
     SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)
     THUMBD_DESCRIPTIONS = getenv('THUMBD_DESCRIPTIONS')
 
