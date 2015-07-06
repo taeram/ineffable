@@ -13,6 +13,7 @@
     "grunt-react": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-less": "*",
+    "grunt-contrib-watch": "*",
     "react-tools": "*",
     "uglify-js": "*"
   },

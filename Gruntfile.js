@@ -43,13 +43,24 @@ module.exports = function(grunt) {
           dest: 'app/static/js/'
         }]
       }
-    }
+    },
 
+    watch: {
+      less: {
+        files: ['app/static/css/**/*.less'],
+        tasks: ['less']
+      },
+      react: {
+        files: ['app/static/js//**/*.jsx'],
+        tasks: ['react']
+      }
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-react');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // default task
   grunt.registerTask('default', [
