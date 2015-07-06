@@ -60,7 +60,7 @@ define('gallery',
          * @param DOM photo The photo to display
          */
         onClick: function (photoEl, photoId) {
-            React.renderComponent(
+            React.render(
                 <Lightbox photoId={photoId} photo={photoEl} photos={this.state.photos} folder={this.props.folder} />,
                 document.getElementById(Config.App.lightboxElementId)
             );
@@ -70,7 +70,7 @@ define('gallery',
             // Unmount the existing component, if any
             React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
 
-            React.renderComponent(
+            React.render(
                 <Modal
                     title={"Delete " + this.props.name + "?"}
                     content={"Are you sure you want to delete the " + this.props.name + " gallery?"}
@@ -123,7 +123,7 @@ define('gallery',
                 $('#share-album').select();
             }
 
-            React.renderComponent(
+            React.render(
                 <Modal
                     title={"Share " + this.props.name}
                     content={'<div class="text-center">Share this album:<br /><input id="share-album" class="form-control" type="text" value="' + window.location.origin + '/s/' + this.props.share_code + '"></div>'}
@@ -139,7 +139,7 @@ define('gallery',
                 photoPaddingY = parseInt(Config.Photo.paddingY, 10);
 
             var photoRowNodes;
-            var divCenterStyle = {"text-align": "center"};
+            var divCenterStyle = {"textAlign": "center"};
             if (this.state.isDeleting) {
                 photoRowNodes = (
                     <div style={divCenterStyle} key={"gallery-deleting-" + this.props.id}>

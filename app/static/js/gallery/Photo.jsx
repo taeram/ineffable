@@ -34,7 +34,7 @@ define('photo', ['react', 'modal', 'photo-mixin', 'unveil'], function(React, Mod
                 </div>
             );
 
-            React.renderComponent(
+            React.render(
                 <Modal
                     title={"Delete Photo?"}
                     content={modalContentNode}

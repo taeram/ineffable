@@ -13,7 +13,7 @@
     "jsjpegmeta": "https://github.com/taeram/jsjpegmeta.git#1.*",
     "linear-partition": "https://github.com/taeram/linear-partition.git#1.*",
     "momentjs": "2.*",
-    "react": "0.11.*",
+    "react": "0.13.3",
     "requirejs": "2.*",
     "routerjs": "https://github.com/haithembelhaj/RouterJs.git",
     "underscore": "1.*",

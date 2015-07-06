@@ -63,6 +63,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
         triggerNextPage: function () {
             // Don't bother triggering if there are no more pages
             if (!this.state.hasMorePages) {
+                clearInterval(this.nextPageInterval);
                 $(window).unbind('resize.gallery-list');
                 $(window).unbind('scroll.gallery-list');
                 return;

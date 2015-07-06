@@ -6,7 +6,7 @@ define('routes', ['router'], function() {
     // Gallery List
     router.route('/', function() {
         require(['react', 'gallery-list'], function (React, GalleryList) {
-            React.renderComponent(
+            React.render(
                 <GalleryList url="/rest/gallery" />,
                 document.getElementById(Config.App.elementId)
             );
@@ -16,9 +16,9 @@ define('routes', ['router'], function() {
     // Verify a Gallery
     router.route('/verify/:id', function(gallery_id) {
         require(['react', 'gallery-verify'], function (React, GalleryVerify) {
-            React.renderComponent(
+            React.render(
                 <GalleryVerify url="/rest/gallery" id={gallery_id} />,
-                document.getElementById(Config.App.elementId)
+                document.getElementById(Config.App.elementId) 
             );
         });
     });
@@ -36,7 +36,7 @@ define('routes', ['router'], function() {
     router.route('/s/:code', function(code) {
         require(['react', 'gallery'], function (React, Gallery) {
             // Uses gallery_json from the page
-            React.renderComponent(
+            React.render(
                 <Gallery folder={gallery_json.folder} name={gallery_json.name} modified={gallery_json.modified} isShared={true} />,
                 document.getElementById(Config.App.elementId)
             );
