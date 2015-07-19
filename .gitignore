@@ -60,3 +60,5 @@ Vagrantfile
 
 # Bower
 app/static/components/
+.pip/
+app/static/js/**/*.js
