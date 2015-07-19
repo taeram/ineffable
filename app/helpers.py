@@ -4,6 +4,10 @@ from boto.sqs.message import RawMessage
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import json
+import re
+
+# Common regular expressions
+is_gif = re.compile(r'(\.gif)$', re.IGNORECASE)
 
 
 class IneffableQueue(object):
@@ -85,10 +89,18 @@ ineffable_storage = IneffableStorage()
 
 def generate_thumbnail(photo_path):
     """ Generate a thumbnail from this photo """
+
     message = {
         "original": photo_path,
         "descriptions": json.loads(app.config['THUMBD_DESCRIPTIONS'])
     }
+
+    # If the original is a .gif, we will use the original .gif as the display version
+    if is_gif.search(photo_path):
+        for i,thumb in enumerate(message['descriptions']):
+            if thumb['suffix'] == 'display':
+                del message['descriptions'][i]
+
     ineffable_queue.write(json.dumps(message))
 
 
@@ -133,8 +145,10 @@ def delete_photo(gallery_folder, photo_id):
             key = ineffable_storage.get_key("%s/%s.%s" % (gallery_folder, photo['name'], photo['ext']))
             key.delete()
 
-            key = ineffable_storage.get_key("%s/%s_display.jpg" % (gallery_folder, photo['name']))
-            key.delete()
+            # .gif files use the original as their display version, so skip them here
+            if (photo['ext'] != 'gif'):
+                key = ineffable_storage.get_key("%s/%s_display.jpg" % (gallery_folder, photo['name']))
+                key.delete()
 
             key = ineffable_storage.get_key("%s/%s_thumb.jpg" % (gallery_folder, photo['name']))
             key.delete()
