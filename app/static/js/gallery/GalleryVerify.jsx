@@ -112,10 +112,10 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
             for (var i=0; i < this.state.photos.length; i++) {
                 var photo = this.state.photos[i];
                 var thumbUrl = this.photoUrl('thumb', photo.ext, this.state.gallery.folder, photo.name);
-                this.testPhotoExists(thumbUrl);
+                this.testPhotoExists(thumbUrl, photo);
 
                 var displayUrl = this.photoUrl('display', photo.ext, this.state.gallery.folder, photo.name);
-                this.testPhotoExists(displayUrl);
+                this.testPhotoExists(displayUrl, photo);
             }
         },
 
@@ -136,7 +136,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
                 }.bind(this),
                 error: function() {
                     this.hasMissingPhotos = true;
-                    this.triggerPhotoRender(basename(photoUrl));
+                    this.triggerPhotoRender(photo);
 
                     this.state.messages.push({
                         name: basename(photoUrl),
@@ -149,12 +149,10 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
             });
         },
 
-        triggerPhotoRender: function(filename) {
-            filename = filename.replace(/_thumb/, "").replace(/_display/, '');
-
+        triggerPhotoRender: function(photo) {
             var data = {
-                name: filename.match(/^(.+?)\./)[1],
-                ext: filename.match(/^.+?\.(.+)$/)[1],
+                name: photo.name,
+                ext: photo.ext,
                 gallery_id: this.props.id
             };
 
@@ -186,7 +184,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
             }
 
             return (
-                <div>
+                <div key={this.state.gallery.name}>
                     <h2>{this.state.gallery.name}</h2>
                     <ul className="list-unstyled">
                         {messageNodes}
