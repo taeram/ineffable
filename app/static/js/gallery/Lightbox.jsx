@@ -127,7 +127,7 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
             if (photoDisplayUrl.match(/\.webm$/)) {
                 photoNode = (
                     <div className="lightbox-video" key={"photo-" + this.state.index} style={{width: (this.state.video.width || "auto"), height: (this.state.video.height || "auto") }}>
-                        <video ref="video" preload="auto" autoPlay="autoplay" muted="muted" loop="loop">
+                        <video poster={photoThumbUrl} ref="video" preload="auto" autoPlay="autoplay" muted="muted" loop="loop">
                             <source src={photoDisplayUrl} type="video/webm" />
                         </video>
                     </div>
