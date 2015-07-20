@@ -17,7 +17,11 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
             return {
                 index: _.indexOf(this.props.photos, this.props.photo),
                 isLoaded: false,
-                slideshow: false
+                slideshow: false,
+                video: {
+                    width: false,
+                    height: false
+                }
             };
         },
 
@@ -35,7 +39,11 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
             if (this.state.index + 1 < this.props.photos.length) {
                 this.setState({
                     index: this.state.index + 1,
-                    isLoaded: false
+                    isLoaded: false,
+                    video: {
+                        width: false,
+                        height: false
+                    }
                 });
             } else {
                 this.slideshow();
@@ -47,7 +55,11 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
             if (this.state.index - 1 >= 0) {
                 this.setState({
                     index: this.state.index - 1,
-                    isLoaded: false
+                    isLoaded: false,
+                    video: {
+                        width: false,
+                        height: false
+                    }
                 });
             }
         },
@@ -77,17 +89,50 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
             }
         },
 
+        setVideoDimensions: function () {
+            // Add an explicit width and height to videos after they've loaded, so they appear properly centered
+            var photo = this.props.photos[this.state.index];
+            var photoDisplayUrl = this.photoUrl('display', photo.ext, this.props.folder, photo.name);
+            if (photoDisplayUrl.match(/\.webm$/)) {
+                $('video').on('loadeddata', function () {
+                    this.setState({
+                        video: {
+                            width: $('video').width(),
+                            height: $('video').height()
+                        }
+                    });
+                }.bind(this));
+            }
+        },
+
+        componentDidUpdate: function () {
+            this.setVideoDimensions();
+        },
+
+        componentDidMount: function () {
+            this.setVideoDimensions();
+        },
+
         render: function() {
             var style = {
                 lineHeight: window.innerHeight + 'px'
             };
 
             var photo = this.props.photos[this.state.index];
+            var photoThumbUrl = this.photoUrl('thumb', photo.ext, this.props.folder, photo.name);
             var photoDisplayUrl = this.photoUrl('display', photo.ext, this.props.folder, photo.name);
             var photoOriginalUrl = this.photoUrl('original', photo.ext, this.props.folder, photo.name);
 
             var photoNode = null;
-            if (!this.state.isLoaded) {
+            if (photoDisplayUrl.match(/\.webm$/)) {
+                photoNode = (
+                    <div className="lightbox-video" key={"photo-" + this.state.index} style={{width: (this.state.video.width || "auto"), height: (this.state.video.height || "auto") }}>
+                        <video ref="video" preload="auto" autoPlay="autoplay" muted="muted" loop="loop">
+                            <source src={photoDisplayUrl} type="video/webm" />
+                        </video>
+                    </div>
+                );
+            } else if (!this.state.isLoaded) {
                 var img = new Image() ;
                 img.src = photoDisplayUrl;
                 img.onload = this.isImageLoaded;

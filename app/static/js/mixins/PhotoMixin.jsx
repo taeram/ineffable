@@ -6,7 +6,8 @@ define('photo-mixin', ['react'], function(React) {
         photoUrl: function(type, ext, folder, name) {
             // If it's a .gif, just use the original
             if (ext == 'gif' && type == 'display') {
-                postfix = '';
+                ext = 'webm';
+                postfix = '_display';
             } else {
                 ext = 'jpg';
                 if (type == 'original') {

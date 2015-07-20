@@ -95,11 +95,16 @@ def generate_thumbnail(photo_path):
         "descriptions": json.loads(app.config['THUMBD_DESCRIPTIONS'])
     }
 
-    # If the original is a .gif, we will use the original .gif as the display version
+    # If the original is a .gif, convert it to a .webm, and use that webm
+    # as the original and display versions
     if is_gif.search(photo_path):
         for i,thumb in enumerate(message['descriptions']):
             if thumb['suffix'] == 'display':
-                del message['descriptions'][i]
+                message['descriptions'][i] = {
+                    "suffix": "display",
+                    "format": "webm",
+                    "strategy": "ffmpeg -y -i %(localPaths[0])s -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis %(convertedPath)s"
+                }
 
     ineffable_queue.write(json.dumps(message))
 
@@ -145,10 +150,13 @@ def delete_photo(gallery_folder, photo_id):
             key = ineffable_storage.get_key("%s/%s.%s" % (gallery_folder, photo['name'], photo['ext']))
             key.delete()
 
-            # .gif files use the original as their display version, so skip them here
-            if (photo['ext'] != 'gif'):
-                key = ineffable_storage.get_key("%s/%s_display.jpg" % (gallery_folder, photo['name']))
-                key.delete()
+            # .gif files use a .webm as their display photo
+            if (photo['ext'] == 'gif'):
+                display_ext = 'webm';
+            else:
+                display_ext = 'jpg'
+            key = ineffable_storage.get_key("%s/%s_display.%s" % (gallery_folder, photo['name'], display_ext))
+            key.delete()
 
             key = ineffable_storage.get_key("%s/%s_thumb.jpg" % (gallery_folder, photo['name']))
             key.delete()

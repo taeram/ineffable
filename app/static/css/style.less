@@ -177,13 +177,19 @@
     width: 100%;
 }
 
-.lightbox-photo {
+.lightbox-photo,
+.lightbox-video {
     display: inline-block;
     height: auto;
     max-height: 100%;
     max-width: 100%;
     vertical-align: middle;
     width: auto;
+}
+
+.lightbox-video {
+    position: relative;
+    line-height: 0;
 }
 
 .lightbox-nav {
