@@ -95,8 +95,8 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
                 $('video').on('loadeddata', function () {
                     this.setState({
                         video: {
-                            width: $('video').width(),
-                            height: $('video').height()
+                            maxWidth: $('video').width(),
+                            maxHeight: $('video').height()
                         }
                     });
                 }.bind(this));
