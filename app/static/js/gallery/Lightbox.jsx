@@ -25,6 +25,22 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
             };
         },
 
+        componentDidMount: function () {
+            Mousetrap.bind('right', this.next);
+            Mousetrap.bind('left', this.prev);
+
+            this.setVideoDimensions();
+        },
+
+        componentDidUpdate: function () {
+            this.setVideoDimensions();
+        },
+
+        componentWillUnmount: function () {
+            Mousetrap.unbind('right');
+            Mousetrap.unbind('left');
+        },
+
         close: function () {
             React.unmountComponentAtNode(
                 document.getElementById(Config.App.lightboxElementId)
@@ -94,38 +110,20 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
             if (photoDisplayUrl.match(/\.webm$/)) {
                 $('video').on('loadeddata', function () {
                     this.setState({
+                        isLoaded: true,
                         video: {
-                            maxWidth: $('video').width(),
-                            maxHeight: $('video').height()
+                            width: $('video').width(),
+                            height: $('video').height()
                         }
                     });
+                    $('video').unbind('loadeddata');
                 }.bind(this));
-
-                // Play the video on first touch
-                // Retrieved on 2015-07-20 from https://stackoverflow.com/a/24917996/27810
-                window.addEventListener('touchstart', function videoStart(e) {
-                    e.stopPropagation();
-
-                    document.querySelector('video').play();
-                    this.removeEventListener('touchstart', videoStart);
-                });
             }
         },
 
-        componentDidUpdate: function () {
-            this.setVideoDimensions();
-        },
-
-        componentDidMount: function () {
-            Mousetrap.bind('right', this.next);
-            Mousetrap.bind('left', this.prev);
-
-            this.setVideoDimensions();
-        },
-
-        componentWillUnmount: function () {
-            Mousetrap.unbind('right');
-            Mousetrap.unbind('left');
+        playVideo: function (e) {
+            e.stopPropagation();
+            document.querySelector('video').play();
         },
 
         render: function() {
@@ -140,9 +138,36 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
 
             var photoNode = null;
             if (photoDisplayUrl.match(/\.webm$/)) {
+
+                var videoStyle;
+                if (this.state.isLoaded) {
+                    var width = this.state.video.width;
+                    var height = this.state.video.height;
+
+                    var maxWidth = $(window).width();
+                    if (width > maxWidth) {
+                        width = maxWidth;
+                    }
+
+                    var maxHeight = $(window).height();
+                    if (height > maxHeight) {
+                        height = maxHeight;
+                    }
+
+                    videoStyle = {
+                        width: width,
+                        height: height
+                    };
+                } else {
+                    videoStyle = {
+                        width: "auto",
+                        height: "auto"
+                    };
+                }
+
                 photoNode = (
-                    <div className="lightbox-video" key={"photo-" + this.state.index} style={{width: (this.state.video.width || "auto"), height: (this.state.video.height || "auto") }}>
-                        <video poster={photoThumbUrl} ref="video" preload="auto" autoPlay="autoplay" muted="muted" loop="loop">
+                    <div className="lightbox-video" key={"photo-" + this.state.index}>
+                        <video onClick={this.playVideo} poster={photoThumbUrl} ref="video" preload="auto" autoPlay="autoplay" muted="muted" loop="loop" style={videoStyle}>
                             <source src={photoDisplayUrl} type="video/webm" />
                         </video>
                     </div>
