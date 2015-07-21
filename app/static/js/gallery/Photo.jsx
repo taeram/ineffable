@@ -25,19 +25,10 @@ define('photo', ['react', 'modal', 'photo-mixin', 'unveil'], function(React, Mod
             // Unmount the existing component, if any
             React.unmountComponentAtNode(document.getElementById(Config.App.modalElementId));
 
-            var thumbUrl = this.photoUrl('thumb', this.props.ext, this.props.folder, this.props.name);
-
-            var modalContentNode = (
-                <div>
-                    Are you sure you want to delete this photo?
-                    <img src={thumbUrl} style={{padding: "10px"}} />
-                </div>
-            );
-
             React.render(
                 <Modal
                     title={"Delete Photo?"}
-                    content={modalContentNode}
+                    content={"Are you sure you want to delete this photo?"}
                     submitButtonText="Delete"
                     submitButtonClass="btn-danger"
                     onClickSubmit={this.deletePhoto} />,

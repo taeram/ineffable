@@ -193,7 +193,7 @@ define('gallery',
                 var managingPhotosButton;
                 if (this.state.isManagingPhotos) {
                     var manageBtnStyle = {
-                        "margin-left": "15px"
+                        "marginLeft": "15px"
                     };
 
                     managingPhotosButton = (
