@@ -108,10 +108,15 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap'],
         },
 
         componentDidMount: function () {
-            Mousetrap.bind('right', this.next.bind(this));
-            Mousetrap.bind('left', this.prev.bind(this));
+            Mousetrap.bind('right', this.next);
+            Mousetrap.bind('left', this.prev);
 
             this.setVideoDimensions();
+        },
+
+        componentWillUnmount: function () {
+            Mousetrap.unbind('right');
+            Mousetrap.unbind('left');
         },
 
         render: function() {
