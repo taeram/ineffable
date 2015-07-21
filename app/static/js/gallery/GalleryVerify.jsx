@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'photo-mixin', 'basename', 'in_array'], function(React, $, _, GalleryMixin, PhotoMixin, basename, in_array) {
+define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'photo-mixin', 'basename', 'in_array', 'classnames'], function(React, $, _, GalleryMixin, PhotoMixin, basename, in_array, classnames) {
 
     var GalleryVerify = React.createClass({
 
@@ -171,7 +171,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
             var messageNodes;
             if (this.state.messages.length > 0) {
                 messageNodes = this.state.messages.map(function(photo, i) {
-                    var liClassName = React.addons.classSet({
+                    var liClassName = classnames({
                         'text-success': photo.exists,
                         'text-danger': !photo.exists
                     })

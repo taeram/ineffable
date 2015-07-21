@@ -6,6 +6,7 @@ require.config({
     paths: {
         // Dependencies
         "bootstrap": "components/bootstrap/dist/js/bootstrap.min",
+        "classnames": "components/classnames/dedupe",
         "history": "components/history.js/scripts/bundled/html4%2Bhtml5/native.history",
         "jquery": "components/jquery/dist/jquery.min",
         "jpegmeta": "components/jsjpegmeta/jpegmeta",

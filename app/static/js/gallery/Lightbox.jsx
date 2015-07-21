@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap'], function(React, HandleResizeMixin, PhotoMixin, Mousetrap) {
+define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 'classnames'], function(React, HandleResizeMixin, PhotoMixin, Mousetrap, classnames) {
 
     var Lightbox = React.createClass({
 
@@ -154,20 +154,20 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap'],
                 );
             }
 
-            var slideshowBtnClass = React.addons.classSet({
+            var slideshowBtnClass = classnames({
                 'btn': true,
                 'btn-xs': true,
                 'btn-success': this.state.slideshow,
                 'btn-default': !this.state.slideshow
             });
 
-            var prevBtnClass = React.addons.classSet({
+            var prevBtnClass = classnames({
                 'lightbox-nav': true,
                 'lightbox-nav-left': true,
                 'hidden': (this.state.index === 0)
             });
 
-            var nextBtnClass = React.addons.classSet({
+            var nextBtnClass = classnames({
                 'lightbox-nav': true,
                 'lightbox-nav-right': true,
                 'hidden': (this.state.index == this.props.photos.length - 1)
