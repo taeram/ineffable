@@ -20,7 +20,8 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
                 slideshow: false,
                 video: {
                     width: false,
-                    height: false
+                    height: false,
+                    isPlaying: false
                 }
             };
         },
@@ -58,7 +59,8 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
                     isLoaded: false,
                     video: {
                         width: false,
-                        height: false
+                        height: false,
+                        isPlaying: false
                     }
                 });
             }
@@ -72,7 +74,8 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
                     isLoaded: false,
                     video: {
                         width: false,
-                        height: false
+                        height: false,
+                        isPlaying: false
                     }
                 });
             }
@@ -124,6 +127,7 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
         playVideo: function (e) {
             e.stopPropagation();
             document.querySelector('video').play();
+            this.setState({ video: { isPlaying: true } });
         },
 
         render: function() {
