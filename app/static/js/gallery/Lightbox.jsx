@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(React, HandleResizeMixin, PhotoMixin) {
+define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap'], function(React, HandleResizeMixin, PhotoMixin, Mousetrap) {
 
     var Lightbox = React.createClass({
 
@@ -45,8 +45,6 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
                         height: false
                     }
                 });
-            } else {
-                this.slideshow();
             }
         },
 
@@ -110,6 +108,9 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin'], function(Rea
         },
 
         componentDidMount: function () {
+            Mousetrap.bind('right', this.next.bind(this));
+            Mousetrap.bind('left', this.prev.bind(this));
+
             this.setVideoDimensions();
         },
 
