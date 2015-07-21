@@ -102,6 +102,7 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
                 }.bind(this));
 
                 // Play the video on first touch
+                // Retrieved on 2015-07-20 from https://stackoverflow.com/a/24917996/27810
                 window.addEventListener('touchstart', function videoStart(e) {
                     e.stopPropagation();
 
