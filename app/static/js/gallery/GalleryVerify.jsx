@@ -178,7 +178,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'pho
                     var message = photo.name + (photo.exists ? " found" : " not found, rendering...");
 
                     return (
-                        <li className={liClassName}>{message}</li>
+                        <li key={message} className={liClassName}>{message}</li>
                     );
                 });
             }
