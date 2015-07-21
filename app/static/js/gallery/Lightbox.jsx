@@ -100,6 +100,14 @@ define('lightbox', ['react', 'handle-resize-mixin', 'photo-mixin', 'mousetrap', 
                         }
                     });
                 }.bind(this));
+
+                // Play the video on first touch
+                window.addEventListener('touchstart', function videoStart(e) {
+                    e.stopPropagation();
+
+                    document.querySelector('video').play();
+                    this.removeEventListener('touchstart', videoStart);
+                });
             }
         },
 
