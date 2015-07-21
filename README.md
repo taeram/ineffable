@@ -34,6 +34,7 @@ Amazon S3
     <CORSRule>
         <AllowedOrigin>*</AllowedOrigin>
         <AllowedMethod>GET</AllowedMethod>
+        <AllowedMethod>HEAD</AllowedMethod>
     </CORSRule>
 </CORSConfiguration>
 ```
