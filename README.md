@@ -50,7 +50,7 @@ Local development setup:
     source ./.venv/bin/activate
 
     # Install the pip requirements
-    sudo apt-get install postgresql-client postgresql-common libpq-dev python-dev
+    sudo apt-get install postgresql-client postgresql-common libpq-dev python-dev mysql-client libmysqld-dev
     pip install -r requirements.txt
 
     # Create the development database (SQLite by default)
