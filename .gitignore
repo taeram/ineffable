@@ -1,7 +1,8 @@
 # Project
-/app/static/js/*.js
+/app/static/js/**/*.js
 /app/static/js/.module-cache/
-/app/static/css/*.css
+/app/static/css/**/*.css
+/.env
 
 # Python
 *.py[cod]

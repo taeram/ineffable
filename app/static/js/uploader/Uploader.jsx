@@ -1,258 +1,165 @@
 define('uploader',
-[
-    "jquery",
-    "angular",
-    "underscore",
-    "number_format",
-    "dirname",
-    "jquery-serialize-object",
-    "bootstrap",
-    "jpegmeta"
-], function(
-    $,
-    angular,
-    _,
-    number_format,
-    dirname
-) {
-    'use strict';
+    ["react", "classnames", "jquery", "number_format", "underscore", "s3-uploader", "jquery-serialize-object", "jpegmeta"],
+    function (React, classnames, $, number_format, _, S3Uploader, noop1, noop2) {
 
-    // Declare app level module
-    angular.module('uploaderApp', ['uploaderApp.controllers', 'uploaderApp.directives', 'uploaderApp.services']);
+    var Uploader = React.createClass({
 
-    /* Directives */
-    angular.module('uploaderApp.directives', []).
-        directive('fileChange', [function() {
-            // Add a directive so we can trigger change events on file inputs
-            // Retrieved on 2013-07-28 from http://jsfiddle.net/neilsarkar/vQzKJ/
+        getInitialState: function() {
             return {
-                link: function(scope, element, attrs) {
-                    element[0].onchange = function() {
-                        scope[attrs.fileChange](element[0]);
-                    };
-                }
+                files: []
             };
-        }
-    ]);
+        },
 
-    /* Services */
-    var files = [];
-    angular.module('uploaderApp.services', []).
-        factory('notify', ['$window', function($window) {
-            return function($scope, file) {
-                getImageAttributes(file, function (file) {
-                    // Tell the backend this file has been uploaded
-                    $scope.uploadQueue.add(file);
-                });
-            };
-        }
-    ]);
+        componentDidMount: function () {
+            // Warn if user tries to navigate away while files are uploading
+            $(window).on("beforeunload", this.onUnload);
 
-    function getImageAttributes(file, callback) {
-        // Get the width, height and aspect ratio of the image
-        var image = new Image();
-        image.onload = function() {
-            file.width = this.width;
-            file.height = this.height;
-            file.aspect_ratio = (this.width / this.height);
+            // On the Add Files button make sure the <input /> is the same size as the <button>
+            var inputFile = $('.input-file');
+            $(inputFile).css({
+                height: $(inputFile).parent().css('height'),
+                width: $(inputFile).parent().css('width'),
+                marginTop: '-' + $(inputFile).parent().css('paddingTop'),
+                marginLeft: '-' + $(inputFile).parent().css('paddingLeft')
+            });
+        },
 
-            callback(file);
-        };
-        image.onerror = function() {
-            file.width = null;
-            file.height = null;
-            file.aspect_ratio = null;
-
-            callback(file);
-        };
-
-        var url = window.URL || window.webkitURL;
-        image.src = url.createObjectURL(file);
-    }
-
-    /* Controllers */
-
-    /**
-     * The uploader controller
-     *
-     * @param Scope $scope The Angular.js scope
-     */
-    angular.module('uploaderApp.controllers', [])
-        .controller('UploaderCtrl', ['$scope', 'notify', function($scope, $uploadCompleteCallback) {
-
-        // Start watching for files which have finished uploading
-        $scope.uploadQueue = new UploadQueue($scope);
-
-        // Initialize our variables
-        $scope.files = [];
-
-        // Fit the input box the same size as its button
-        var inputFile = $('.input-file');
-        $(inputFile).css({
-            height: $(inputFile).parent().css('height'),
-            width: $(inputFile).parent().css('width'),
-            marginTop: '-' + $(inputFile).parent().css('paddingTop'),
-            marginLeft: '-' + $(inputFile).parent().css('paddingLeft')
-        });
-        $(inputFile).attr('multiple', 'multiple');
+        onUnload: function () {
+            if (this.state.files.length > 0 && this.getUploadProgressPercent() > 0 && this.getUploadProgressPercent() < 100) {
+                return "There are still files uploading.";
+            }
+        },
 
         /**
          * Get the total number of bytes to upload
          *
          * @return integer
          */
-        $scope.getBytesTotal = function () {
+        getBytesTotal: function () {
             var bytesTotal = 0;
-            for (var i=0; i < $scope.files.length; i++) {
-                if ($scope.files[i].isTooBig) {
+            for (var i=0; i < this.state.files.length; i++) {
+                if (this.state.files[i].isTooBig) {
                     continue;
                 }
 
-                bytesTotal += $scope.files[i].size;
+                bytesTotal += this.state.files[i].size;
             }
 
             return bytesTotal;
-        };
+        },
 
         /**
          * Get the total number of bytes uploaded
          *
          * @return integer
          */
-        $scope.getBytesUploaded = function () {
+        getBytesUploaded: function () {
             var bytesUploaded = 0;
-            for (var i=0; i < $scope.files.length; i++) {
-                if ($scope.files[i].bytesUploaded !== undefined) {
-                    bytesUploaded += $scope.files[i].bytesUploaded;
+            for (var i=0; i < this.state.files.length; i++) {
+                if (this.state.files[i].bytesUploaded !== undefined) {
+                    bytesUploaded += this.state.files[i].bytesUploaded;
                 }
             }
 
             return bytesUploaded;
-        };
+        },
 
         /**
          * Return the upload progress as a percentage
          *
          * @return integer
          */
-        $scope.getUploadProgress = function () {
-            var bytesTotal = $scope.getBytesTotal();
-            var bytesUploaded = $scope.getBytesUploaded();
+        getUploadProgressPercent: function () {
+            var bytesTotal = this.getBytesTotal();
+            var bytesUploaded = this.getBytesUploaded();
 
             return (bytesUploaded / bytesTotal) * 100;
-        };
+        },
 
         /**
          * Get the number of files left to upload
          *
          * @return integer
          */
-        $scope.getFilesToUpload = function () {
-            return _.filter($scope.files, function (file) {
+        getUploadQueueSize: function () {
+            return _.filter(this.state.files, function (file) {
                 return !file.isUploaded && !file.isUploadError && !file.isTooBig;
             }).length;
-        };
+        },
 
-        /**
-         * Add one or more files to the upload queue
-         *
-         * @param DOM element The file upload element
-         */
-        $scope.addFiles = function(element) {
-            if ($scope.getUploadProgress() > 0) {
+        onClickAddFiles: function (element) {
+            if (this.getUploadProgressPercent() > 0) {
                 // Clear previously uploaded files
-                $scope.files = [];
+                this.setState({files: []});
             }
 
-            $scope.$apply(function() {
-                // Add the files to the list
-                for (var i=0; i < element.files.length; i++) {
-                    var file = element.files[i];
-                    if (file.size > Config.max_upload_size) {
-                        file.isTooBig = true;
-                    } else {
-                        file.isTooBig = false;
+            // Add the files to the list
+            var newFiles = $(element.target).context.files;
+            for (var i=0; i < newFiles.length; i++) {
+                var file = newFiles[i];
+
+                if (file.size > Config.max_upload_size) {
+                    file.isTooBig = true;
+                } else {
+                    file.isTooBig = false;
+                }
+                file.progress = 0;
+                file.isUploaded = false;
+                file.isUploadError = false;
+                file.remoteUrl = null;
+                file.thumbnailUrl = null;
+                file.dateCreated = null;
+
+                // Get the EXIF information for this file
+                var fileReader = new FileReader();
+                fileReader.onloadend = function (file, e) {
+                    var result = e.currentTarget.result;
+                    try {
+                        var meta = new JpegMeta.JpegFile(result, file.name);
+                        file.dateCreated = meta.exif.DateTimeOriginal.value;
+                    } catch (exception) {
+                        // console.log("No EXIF info found in: " + file.name);
                     }
-                    file.sizeFormatted = number_format(file.size);
-                    file.progress = 0;
-                    file.url = null;
-                    file.isUploaded = false;
-                    file.isUploadError = false;
+                }.bind(this, file)
+                fileReader.readAsBinaryString(file);
 
-                    // Get the EXIF information for this file
-                    var fileReader = new FileReader();
-                    fileReader.onloadend = function () {
-                        var dateCreated;
-                        try {
-                            var meta = new JpegMeta.JpegFile(this.result, this.file.name);
-                            dateCreated = meta.exif.DateTimeOriginal.value;
-                        } catch (exception) {
-                            console.log("No EXIF info found in this file");
-                            dateCreated = null;
-                        }
+                // Get the width, height and aspect ratio of the image
+                var image = new Image();
+                image.onload = function(file, e) {
+                    var img = e.path[0];
+                    file.width = img.width;
+                    file.height = img.height;
+                    file.aspect_ratio = (img.width / img.height);
+                }.bind(this, file);
+                image.onerror = function(file, e) {
+                    file.width = null;
+                    file.height = null;
+                    file.aspect_ratio = null;
+                }.bind(this, file);
+                var url = window.URL || window.webkitURL;
+                image.src = url.createObjectURL(file);
 
-                        // Add the created date to this file in the scope
-                        for (var i in this.$scope.files) {
-                            if (this.$scope.files[i].name == this.file.name) {
-                                this.$scope.files[i].created = dateCreated;
-                                break;
-                            }
-                        }
-                    };
+                this.state.files.push(file);
+            }
 
-                    fileReader.file = file;
-                    fileReader.$scope = $scope;
-                    fileReader.readAsBinaryString(file);
-
-                    $scope.files.push(file);
-                }
-
-                $scope.files = _.uniq($scope.files);
+            // Ensure there are no duplicate file names
+            this.state.files = _.uniq(this.state.files, false, function (file) {
+                return file.name;
             });
-        };
 
-        /**
-         * Clear all files from the upload queue
-         */
-        $scope.clearFiles = function () {
-            // Abort any pending uploads
-            for (var i=0; i < $scope.files.length; i++) {
-                if ($scope.files[i].xhr !== undefined) {
-                    $scope.files[i].xhr.abort();
-                }
-            }
+            this.setState({files: this.state.files});
+        },
 
-            $scope.files = [];
-        };
-
-        /**
-         * Remove a single file from the upload queue
-         *
-         * @param File file The file to remove
-         */
-        $scope.removeFile = function (file) {
-            if (file.xhr !== undefined) {
-                file.xhr.abort();
-            }
-
-            $scope.files = _.without($scope.files, file);
-        };
-
-        /**
-         * Upload the files in the queue
-         *
-         * @params Event $event The DOM event
-         */
-        $scope.uploadFiles = function ($event) {
-            $event.preventDefault();
+        onClickStartUpload: function (e) {
+            e.preventDefault();
 
             // Get the form data as a key => value array
             var formObject = $('.form-upload').serializeObject();
             var formUrl = $('.form-upload').attr('action');
             var formMethod = $('.form-upload').attr('method');
 
-            for (var i=0; i < $scope.files.length; i++) {
-                var file = $scope.files[i];
+            for (var i=0; i < this.state.files.length; i++) {
+                var file = this.state.files[i];
 
                 // Don't upload the same file twice
                 if (file.isUploaded === true) {
@@ -264,173 +171,206 @@ define('uploader',
                     continue;
                 }
 
-                var u = new Uploader($scope, $uploadCompleteCallback, file, formObject, formUrl, formMethod);
+                var u = new S3Uploader(file, formObject, formUrl, formMethod, this.onFileUploadProgress, this.onFileUploadComplete);
                 u.send();
             }
-        };
-    }]);
+        },
 
-    /**
-     * The upload queue class
-     */
-    function UploadQueue($scope) {
-        this.$scope = $scope;
-        this.queue = [];
-        this.sending = false;
-        this.interval = 1000; // milliseconds
+        onClickCancelUpload: function () {
+            // Abort any pending uploads
+            for (var i=0; i < this.state.files.length; i++) {
+                if (this.state.files[i].xhr !== undefined) {
+                    this.state.files[i].xhr.abort();
+                }
+            }
 
-        setInterval(this.watch.bind(this), this.interval);
-    }
+            this.setState({files: []});
+        },
 
-    UploadQueue.prototype.watch = function () {
-        // Only send one at a time
-        if (this.sending) {
-            return;
-        }
+        onClickRemoveFile: function (file) {
+            // Abort the file upload, if it's in progress
+            if (file.xhr !== undefined) {
+                file.xhr.abort();
+            }
 
-        // Send the next photo in the queue
-        if (this.queue.length > 0) {
-            this.sending = true;
-            this.photo = this.queue.shift();
-            var matches = this.photo.name.match(/^(.+?)\.([a-z]*)/i, '');
+            var files = _.without(this.state.files, file);
+            this.setState({files: files});
+        },
+
+        onFileUploadComplete: function (file, isSuccess, s3folder, remoteUrl) {
+            // Update the file object
+            file.isUploaded = isSuccess;
+            file.isUploadError = !isSuccess;
+            file.remoteUrl = remoteUrl;
+            file.folder = s3folder;
+
+            // Set the file object back in the state
+            var i = _.find(this.state.files, function (f) {
+                return f.name == file.name;
+            })
+            var files = this.state.files;
+            files[i] = file;
+            this.setState({files: files});
+
+            // POST the file information to the backend
+            var matches = file.name.match(/^(.+?)\.([a-z]*)/i, '');
             var fileName = matches[1];
             var fileExt = matches[2];
             var data = {
                 name: fileName,
                 ext: fileExt,
-                aspect_ratio: this.photo.aspect_ratio,
+                aspect_ratio: file.aspect_ratio,
                 gallery_id: Config.gallery_id,
-                created: this.photo.created
+                created: file.dateCreated
             };
 
-            $.post('/rest/photo/', data, function (result) {
-                this.sending = false;
+            $.post('/rest/photo/', data);
+        },
 
-                // Start polling for the thumbnail
-                this.pollThumbnailUrl(this.photo);
-            }.bind(this));
-        }
-    };
+        onFileUploadProgress: function (file, bytesLoaded) {
+            file.bytesUploaded = bytesLoaded;
+            file.progress = Math.round((bytesLoaded / file.size) * 100);
 
-    UploadQueue.prototype.add = function (photo) {
-        this.queue.push(photo);
-    };
+            var i = _.find(this.state.files, function (f) {
+                return f.name == file.name;
+            })
+            var files = this.state.files;
+            files[i] = file;
+            this.setState({files: files});
+        },
 
-    /**
-     * Start polling the thumbnail url to see if it has been created yet.
-     *
-     * Once the thumbnail has been created, update angular.js with the url to the
-     * thumbnail so it can be added to the view template.
-     *
-     * @param object photo The photo
-     */
-    UploadQueue.prototype.pollThumbnailUrl = function (photo) {
-        var matches = photo.name.match(/^(.+?)\.([a-z]*)/i, '');
-        var fileName = matches[1];
-        var fileExt = matches[2];
-
-        var photoUrl = photo.url.replace('.' + fileExt, '_thumb.jpg');
-
-        $.ajax({
-            url: photoUrl,
-            type: 'HEAD',
-            error: function() {
-                // 403/404'd, so we haven't found the thumbnail yet, keep waiting
-                setTimeout(this.pollThumbnailUrl.bind(this, photo), 1000);
-            }.bind(this),
-            success: function() {
-                // Found the thumbnail, update the page!
-                this.$scope.$apply(function() {
-                    photo.imgUrl = photoUrl;
-                }.bind(this));
-            }.bind(this)
-        });
-    };
-
-    /**
-     * The uploader class
-     *
-     * @param Scope $scope The Angular.js scope
-     * @param function $uploadCompleteCallback The upload complete callback function
-     * @param File file The file to upload
-     * @param object formObject The form fields in a key => value object
-     * @param string formUrl The url to upload the file to
-     * @param string formMethod The form method
-     */
-    function Uploader($scope, $uploadCompleteCallback, file, formObject, formUrl, formMethod) {
-        this.file = file;
-        this.formObject = formObject;
-        this.formUrl = formUrl;
-        this.formMethod = formMethod;
-        this.$scope = $scope;
-        this.$uploadCompleteCallback = $uploadCompleteCallback;
-    }
-
-    /**
-     * Upload the file
-     */
-    Uploader.prototype.send = function () {
-        var $this = this;
-        var xhr = new XMLHttpRequest();
-        this.file.xhr = xhr;
-
-        /**
-         * Update the upload progress for this file
-         *
-         * @param Event e The event
-         */
-        var uploadProgress = function(e) {
-            var percent = Math.round((e.loaded / e.total) * 100);
-            $this.$scope.$apply(function() {
-                $this.file.bytesUploaded = e.loaded;
-                $this.file.progress = percent;
-            });
-        };
-        xhr.upload.addEventListener("progress", uploadProgress, false);
-
-        /**
-         * Triggered when the upload is complete
-         *
-         * @param Event e The event
-         */
-        var uploadComplete = function(e) {
-            if (e.target.status == 201) {
-                // Extract the path to the file
-                var imagePath = $(e.target.responseXML).find('Key').text();
-                var folder;
-                if (imagePath.match(/\//)) {
-                    folder = dirname(imagePath);
-                } else {
-                    folder = '';
-                }
-
-                var url = $(e.target.responseXML).find('Location').text();
-
-                $this.$scope.$apply(function() {
-                    $this.file.isUploaded = true;
-                    $this.file.url = url;
-                    $this.file.folder = folder;
-
-                    // Trigger the upload complete callback
-                    $this.$uploadCompleteCallback($this.$scope, $this.file);
+        render: function() {
+            var uploadProgressBar;
+            if (this.getUploadProgressPercent() > 0) {
+                var uploadProgressBarClass = classnames({
+                    'progress-bar': true,
+                    'progress-bar-success': this.getUploadQueueSize() == 0
                 });
-            } else {
-                $this.$scope.$apply(function() {
-                    $this.file.isUploadError = true;
-                });
+                uploadProgressBar = (
+                    <div className="progress progress-striped">
+                        <div className={ uploadProgressBarClass } style={{ width: this.getUploadProgressPercent() + "%" }} ></div>
+                    </div>
+                );
             }
-        };
-        xhr.addEventListener("load", uploadComplete, false);
 
-        // Assemble the form data
-        var form = new FormData();
-        for (var j in this.formObject) {
-            form.append(j, this.formObject[j]);
+            var filesTable;
+            if (this.state.files.length > 0) {
+                var fileNodes = this.state.files.map(function(file) {
+                    var fileName;
+                    if (file.isUploaded) {
+                        var thumbnailNode;
+                        if (file.thumbnailUrl) {
+                            thumbnailNode = (
+                                <span style={{ paddingRight: "5px" }}>
+                                    <img className="img-thumbnail" src={file.thumbnailUrl}/>
+                                </span>
+                            );
+                        }
+
+                        fileName = (
+                            <span>
+                                { thumbnailNode }
+                                <a href={file.remoteUrl} target="_blank">{ file.name }</a>
+                            </span>
+                        );
+                    } else {
+                        fileName = (
+                            <span>{ file.name }</span>
+                        );
+                    }
+
+                    var fileProgressBarClass = classnames({
+                        'progress-bar': true,
+                        'progress-bar-info': !file.isUploaded && !file.isUploadError,
+                        'progress-bar-success': file.isUploaded && !file.isUploadError,
+                        'progress-bar-danger': file.isUploadError
+                    });
+
+                    var fileSize;
+                    if (file.isTooBig) {
+                        fileSize = (
+                            <span data-toggle="tooltip" className="text-danger">File too large</span>
+                        );
+                    } else {
+                        fileSize = (
+                            <span>{ number_format(file.size) }</span>
+                        );
+                    }
+
+                    return (
+                        <tr key={ file.name }>
+                            <td style={{ whiteSpace: "nowrap" }}>
+                                { fileName }
+                            </td>
+                            <td>
+                                <div className="progress progress-striped">
+                                    <div style={{ width: file.progress + "%"}} className={ fileProgressBarClass }></div>
+                                </div>
+                            </td>
+                            <td>
+                                { fileSize }
+                            </td>
+                            <td>
+                                <button disabled={ file.isUploaded } type="button" onClick={ this.onClickRemoveFile.bind(this, file) } className="btn btn-icon btn-danger">
+                                    <i className="fa fa-trash-o"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    );
+                }.bind(this));
+
+                var filesTable = (
+                    <table className="table table-striped">
+                        <colgroup>
+                            <col/>
+                            <col style={{ width: "100%" }} />
+                            <col style={{ width: "100px" }}/>
+                            <col style={{ width: "12px" }}/>
+                        </colgroup>
+                        <caption>{ this.getUploadQueueSize() } Files in the Queue
+                            { uploadProgressBar }
+                        </caption>
+                        <thead>
+                            <th>Name</th>
+                            <th>Upload Progress</th>
+                            <th>Size (bytes)</th>
+                            <th>&nbsp;</th>
+                        </thead>
+                        <tbody>
+                            { fileNodes }
+                        </tbody>
+                    </table>
+                )
+            }
+
+            return (
+                <div className="uploader">
+                    <form action={"https://" + Config.s3_bucket + ".s3.amazonaws.com/"} method="POST" encType="multipart/form-data" className="form-upload">
+                        <input type="hidden" name="key" value={ Config.s3_folder + "${filename}" }/>
+                        <input type="hidden" name="AWSAccessKeyId" value={ Config.aws_access_key_id }/>
+                        <input type="hidden" name="acl" value={ Config.s3_acl }/>
+                        <input type="hidden" name="policy" value={ Config.s3_policy }/>
+                        <input type="hidden" name="signature" value={ Config.s3_signature }/>
+                        <input type="hidden" name="success_action_status" value={ Config.s3_success_action_status } />
+
+                        <div className="btn btn-success">
+                            <input type="file" name="file" className="input-file" multiple="multiple" accept="image/*" onChange={ this.onClickAddFiles }/>
+                            <i className="fa fa-plus"></i>Add files...
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" onClick={ this.onClickStartUpload } disabled={ this.state.files.length == 0 || this.getUploadProgressPercent() >= 100 }>
+                            <i className="fa fa-upload"></i>Start upload
+                        </button>
+                        <button type="reset" className="btn btn-warning" onClick={ this.onClickCancelUpload } disabled={ this.state.files.length == 0 }>
+                            <i className="fa fa-ban"></i>Cancel upload
+                        </button>
+
+                        { filesTable }
+                    </form>
+                </div>
+            );
         }
-        form.append('file', this.file);
+    });
 
-        // Super cEvin Attack Mode Go!
-        xhr.open(this.formMethod, this.formUrl, true);
-        xhr.send(form);
-    };
+    return Uploader;
 });

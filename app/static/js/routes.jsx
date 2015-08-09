@@ -18,17 +18,18 @@ define('routes', ['router'], function() {
         require(['react', 'gallery-verify'], function (React, GalleryVerify) {
             React.render(
                 <GalleryVerify url="/rest/gallery" id={gallery_id} />,
-                document.getElementById(Config.App.elementId) 
+                document.getElementById(Config.App.elementId)
             );
         });
     });
 
     // Photo Uploader
     router.route('/upload/:id', function(id) {
-        require(['uploader'], function () {
-            // Resume bootstrapping
-            // http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
-            angular.resumeBootstrap();
+        require(['react', 'uploader'], function (React, Uploader) {
+            React.render(
+                <Uploader />,
+                document.getElementById(Config.App.uploaderId)
+            )
         });
     });
 

@@ -5,26 +5,24 @@ require.config({
     urlArgs: "d=" + parseInt(Config.cache_buster, 10),
     paths: {
         // Dependencies
+        "basename": "components/phpjs/functions/filesystem/basename",
         "bootstrap": "components/bootstrap/dist/js/bootstrap.min",
         "classnames": "components/classnames/dedupe",
+        "dirname": "components/phpjs/functions/filesystem/dirname",
         "history": "components/history.js/scripts/bundled/html4%2Bhtml5/native.history",
-        "jquery": "components/jquery/dist/jquery.min",
+        "in_array": "components/phpjs/functions/array/in_array",
         "jpegmeta": "components/jsjpegmeta/jpegmeta",
+        "jquery-serialize-object": "components/jquery-serialize-object/jquery.serialize-object.compiled",
+        "jquery": "components/jquery/dist/jquery.min",
         "linear-partition": "components/linear-partition/linear_partition.min",
         "moment": "components/momentjs/moment",
         "mousetrap": "components/mousetrap/mousetrap.min",
+        "number_format": "components/phpjs/functions/strings/number_format",
         "react": "components/react/react-with-addons",
         "router": "components/routerjs/Router",
         "underscore": "components/underscore/underscore-min",
         "unveil": "components/unveil/jquery.unveil",
-
-        // Angular deps for uploader. To be refactored to use React instead
-        "angular": "components/angular/angular.min",
-        "jquery-serialize-object": "components/jquery-serialize-object/jquery.serialize-object.compiled",
-        "dirname": "components/phpjs/functions/filesystem/dirname",
-        "number_format": "components/phpjs/functions/strings/number_format",
-        "in_array": "components/phpjs/functions/array/in_array",
-        "basename": "components/phpjs/functions/filesystem/basename",
+        "urldecode": "components/phpjs/functions/url/urldecode",
 
         // App
         "gallery": "js/gallery/Gallery",
@@ -39,6 +37,7 @@ require.config({
 
         // Helpers
         "photo-partition": "js/helpers/photo-partition",
+        "s3-uploader": "js/helpers/s3-uploader",
 
         // Mixins
         "handle-resize-mixin": "js/mixins/HandleResizeMixin",
@@ -82,6 +81,9 @@ require.config({
         },
         'unveil': {
             deps: ['jquery']
+        },
+        'urldecode': {
+            exports: 'urldecode'
         }
     }
 });
@@ -100,6 +102,9 @@ Config.App = {
 
     // The DOM id of the Modal container
     modalElementId: 'app-modal',
+
+    // The DOM id of the Uploader container
+    uploaderId: 'uploader',
 
     // Horizontal padding of the app container. Required for partitioning.
     paddingX: 15,
