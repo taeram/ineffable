@@ -44,6 +44,7 @@ nosetests.xml
 
 # Virtualenv
 .venv
+.virtualenv
 
 # Test scripts
 test.sh
