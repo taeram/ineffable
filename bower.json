@@ -14,7 +14,7 @@
     "phpjs": "https://github.com/kvz/phpjs.git",
     "react": "0.13.3",
     "requirejs": "2.*",
-    "routerjs": "https://github.com/haithembelhaj/RouterJs.git",
+    "routerjs": "https://github.com/taeram/routerjs.git",
     "underscore": "1.*",
     "unveil": "https://github.com/taeram/unveil.git#1.1.*"
   }
