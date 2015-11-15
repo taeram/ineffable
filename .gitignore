@@ -64,3 +64,6 @@ Vagrantfile
 app/static/components/
 .pip/
 app/static/js/**/*.js
+
+# Application
+/logs/

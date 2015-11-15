@@ -2,7 +2,7 @@ from os import getenv, \
                path
 from time import time
 from datetime import timedelta
-
+APP_DIR = path.dirname(path.realpath(__file__))
 
 class Config(object):
     AWS_ACCESS_KEY_ID = getenv('AWS_ACCESS_KEY_ID')
@@ -21,6 +21,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL').replace('mysql2:', 'mysql:')
     SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)
     THUMBD_DESCRIPTIONS = getenv('THUMBD_DESCRIPTIONS')
+    LOG_DIR = "%s/logs" % APP_DIR
 
 
 class ProductionConfig(Config):

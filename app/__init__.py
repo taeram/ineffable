@@ -18,6 +18,12 @@ if os.getenv('FLASK_ENV') == 'production':
 else:
     app.config.from_object('config.DevelopmentConfig')
 
+import logging
+from logging import FileHandler
+file_handler = FileHandler(filename="%s/ineffable.log" % app.config['LOG_DIR'])
+file_handler.setLevel(logging.WARNING)
+app.logger.addHandler(file_handler)
+
 import auth
 import filters
 
