@@ -1,9 +1,11 @@
-from app import db
+from app import app, db
 import pytz
 from datetime import datetime
 import md5
-from app.controllers.helpers.photo import generate_thumbnail
-from app.controllers.helpers.photo import delete_photo as helper_delete_photo
+import re
+import json
+from app.controllers.helpers.storage import ineffable_storage
+from app.controllers.helpers.queue import ineffable_queue
 from .user import User
 from urllib import unquote
 
@@ -36,19 +38,54 @@ class Photo(db.Model):
     def generate_thumbnail(self):
         """ Generate a thumbnail for this photo """
         photo_path = "%s/%s.%s" % (self.gallery.folder, self.name, self.ext)
-        generate_thumbnail(photo_path)
+
+        message = {
+            "original": photo_path,
+            "descriptions": json.loads(app.config['THUMBD_DESCRIPTIONS'])
+        }
+
+        # If the original is a .gif, convert it to a .webm, and use that webm
+        # as the original and display versions
+        is_gif = re.compile(r'(\.gif)$', re.IGNORECASE)
+        if is_gif.search(photo_path):
+            for i,thumb in enumerate(message['descriptions']):
+                if thumb['suffix'] == 'display':
+                    message['descriptions'][i] = {
+                        "suffix": "display",
+                        "format": "webm",
+                        "strategy": "ffmpeg -y -i %(localPaths[0])s -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis %(convertedPath)s"
+                    }
+
+        ineffable_queue.write(json.dumps(message))
 
     def save(self):
         db.session.add(self)
         db.session.commit()
 
     def delete(self):
-
+        """ Delete the photo """
         # Delete the photo from s3
-        helper_delete_photo(self.gallery.folder, self.name, self.ext)
+        self.delete_from_storage()
 
         db.session.delete(self)
         db.session.commit()
+
+    def delete_from_storage(self):
+        """ Delete a photo from s3 """
+
+        key = ineffable_storage.get_key("%s/%s.%s" % (self.gallery.folder, self.name, self.ext))
+        key.delete()
+
+        # .gif files use a .webm as their display photo
+        if (self.ext == 'gif'):
+            display_ext = 'webm';
+        else:
+            display_ext = 'jpg'
+        key = ineffable_storage.get_key("%s/%s_display.%s" % (self.gallery.folder, self.name, display_ext))
+        key.delete()
+
+        key = ineffable_storage.get_key("%s/%s_thumb.jpg" % (self.gallery.folder, self.name))
+        key.delete()
 
     def to_object(self):
         """ Get this class as an object """
