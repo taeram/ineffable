@@ -1,1 +1,1 @@
-concurrency: web=1,migrate=0
+concurrency: web=1

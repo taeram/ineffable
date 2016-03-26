@@ -19,7 +19,7 @@ from app.models.user import User
 def users_login():
     """ Login page """
     if current_user.is_authenticated():
-        return redirect(url_for('index_home'))
+        return redirect(url_for('gallery_home'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -29,7 +29,7 @@ def users_login():
         elif login_user(user, remember=form.remember.data):
             # Enable session expiration only if user hasn't chosen to be remembered.
             session.permanent = not form.remember.data
-            return redirect(request.args.get('next') or url_for('index_home'))
+            return redirect(request.args.get('next') or url_for('gallery_home'))
     elif form.errors:
         flash('Invalid username or password', 'danger')
 

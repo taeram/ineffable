@@ -15,8 +15,8 @@ class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     ext = db.Column(db.String(32), nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey(User.id))
-    gallery_id = db.Column(db.Integer, db.ForeignKey('gallery.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    gallery_id = db.Column(db.Integer, db.ForeignKey('gallery.id'), nullable=False)
     aspect_ratio = db.Column(db.Float, nullable=False)
     created = db.Column(db.DateTime(timezone=True))
 
@@ -46,9 +46,6 @@ class Photo(db.Model):
 
         # Delete the photo from s3
         helper_delete_photo(self.gallery.folder, self.name, self.ext)
-
-        # Update the gallery modified date
-        self.gallery.update_modified()
 
         db.session.delete(self)
         db.session.commit()

@@ -55,12 +55,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('home') }}">{{ config.SITE_NAME }}</a>
+                <a class="navbar-brand" href="{{ url_for('gallery_home') }}">{{ config.SITE_NAME }}</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     {% autoescape false %}
-                        {{ navbar_link('home', 'Home', icon='home') }}
+                        {{ navbar_link('gallery_home', 'Home', icon='home') }}
                         {% if current_user.role == "share" %}
                             {{ navbar_link('users_login', 'Login', icon='user') }}
                         {% else %}

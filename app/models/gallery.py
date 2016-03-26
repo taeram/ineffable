@@ -34,14 +34,6 @@ class Gallery(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def delete(self):
-        """ Delete a gallery and all its photos """
-        for photo in self.photos:
-            photo.delete()
-
-        db.session.delete(self)
-        db.session.commit()
-
     def to_object(self):
         """ Get it as an object """
 
@@ -66,6 +58,10 @@ class Gallery(db.Model):
         db.session.commit()
 
     def delete(self):
+        """ Delete a gallery and all its photos """
+        for photo in self.photos:
+            photo.delete()
+
         db.session.delete(self)
         db.session.commit()
 

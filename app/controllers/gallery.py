@@ -22,7 +22,7 @@ from url_decode import urldecode
 
 @app.route('/', methods=['GET'])
 @login_required
-def home():
+def gallery_home():
     """ Home page """
     if request.args.get('q'):
         search_query = request.args.get('q')
@@ -100,7 +100,7 @@ def gallery_update(gallery_id):
             gallery.created = form.date.data
             gallery.save()
 
-            return redirect(url_for('home'))
+            return redirect(url_for('gallery_home'))
 
     return render_template('gallery/update.html',
         form=form,
@@ -280,5 +280,8 @@ def photo_delete(gallery_id, photo_id):
     response = []
     if not photo.delete():
         response = ["error"]
+
+    # Update the gallery modified date
+    photo.gallery.update_modified()
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
