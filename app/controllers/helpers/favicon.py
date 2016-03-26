@@ -8,6 +8,12 @@ def controller_helper_favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon/favicon-32x32.png', mimetype='image/png')
 
 
+@app.route('/static/favicon-<int:cachebuster>.png', methods=['GET'])
+def handle_cachebusted_favicon(cachebuster):
+    """ Handle a cachebusted favicon request """
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
+
+
 @app.route('/apple-touch-icon-precomposed.png')
 def controller_helper_favicon_apple():
     """ Return the favicon """
