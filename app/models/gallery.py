@@ -5,6 +5,7 @@ import md5
 import random
 from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
+from .photo import Photo
 
 
 class Gallery(db.Model):
@@ -43,6 +44,10 @@ class Gallery(db.Model):
 
     def to_object(self):
         """ Get it as an object """
+
+        photos = db.session.query(Photo).\
+                            order_by(db.asc(Photo.created), db.desc(Photo.name))
+
         gallery = {
             "id": self.id,
             "name": self.name,
@@ -50,7 +55,7 @@ class Gallery(db.Model):
             "share_code": self.share_code,
             "modified": self.modified.strftime('%Y-%m-%d %H:%M:%S'),
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S'),
-            "photos": [photo.to_object() for photo in self.photos]
+            "photos": [photo.to_object() for photo in photos]
         }
 
         return gallery
