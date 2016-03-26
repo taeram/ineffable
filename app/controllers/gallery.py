@@ -239,15 +239,10 @@ def gallery_item(gallery_id):
     if not gallery:
         abort(404)
 
-    if request.method == 'GET':
-        response = gallery.to_object()
-    elif request.method == 'DELETE':
-        # Delete all photos from the gallery
-        gallery.delete()
-
-        # Delete the gallery from the database
-        gallery.delete()
-        response = []
+    if not gallery.delete():
+        response = ['Error']
+    else:
+        reponse = []
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')
 

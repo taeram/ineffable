@@ -20,12 +20,12 @@ class Photo(db.Model):
     aspect_ratio = db.Column(db.Float, nullable=False)
     created = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self, name, ext, aspect_ratio, user, gallery, created=None):
+    def __init__(self, name, ext, aspect_ratio, owner, gallery, created=None):
         """ Setup the class """
         self.name = unquote(name)
         self.ext = ext
         self.aspect_ratio = aspect_ratio
-        self.owner_id = user.id
+        self.owner_id = owner.id
         self.gallery_id = gallery.id
 
         if created is not None and len(created) > 0:

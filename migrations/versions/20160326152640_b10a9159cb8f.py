@@ -15,7 +15,7 @@ import sqlalchemy as sa
 import json
 import re
 
-from app.controllers.helpers.gallery import ineffable_storage
+from app.controllers.helpers.storage import ineffable_storage
 
 def get_gallery_photos(gallery_folder):
     """ Get the list of photos in a gallery """

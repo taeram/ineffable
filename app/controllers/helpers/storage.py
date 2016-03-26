@@ -40,15 +40,4 @@ class IneffableStorage(object):
 
         return key
 
-
 ineffable_storage = IneffableStorage()
-
-
-def delete_gallery(gallery_folder):
-    """ Delete a gallery and all its photos """
-    bucket = ineffable_storage.get_bucket()
-    photos = bucket.list(gallery_folder)
-    for photo in photos:
-        photo.delete()
-
-    return True

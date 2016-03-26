@@ -178,7 +178,7 @@ define('gallery',
                                     </a>
                                 </li>
                                 <li>
-                                    <a href={"/update/" + this.props.id}>
+                                    <a href={"/gallery/update/" + this.props.id}>
                                         <i className="fa fa-pencil"></i>
                                         Edit Album
                                     </a>
@@ -190,13 +190,13 @@ define('gallery',
                                     </a>
                                 </li>
                                 <li>
-                                    <a href={"/upload/" + this.props.id}>
+                                    <a href={"/gallery/upload/" + this.props.id}>
                                         <i className="fa fa-upload"></i>
                                         Upload Photos
                                     </a>
                                 </li>
                                 <li>
-                                    <a href={"/verify/" + this.props.id}>
+                                    <a href={"/gallery/verify/" + this.props.id}>
                                         <i className="fa fa-upload"></i>
                                         Verify Thumbnails
                                     </a>
