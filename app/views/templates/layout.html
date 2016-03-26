@@ -41,6 +41,7 @@
         var Config = {
             cache_buster: {{ config.CACHE_BUSTER }},
             s3_bucket: '{{ config.AWS_S3_BUCKET }}',
+            galleries_per_page: {{ config.GALLERIES_PER_PAGE }},
             User: {
                 role: '{{ current_user.role }}'
             }

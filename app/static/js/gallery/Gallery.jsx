@@ -1,12 +1,10 @@
 /** @jsx React.DOM */
 
 define('gallery',
-    ['react', 'photo-partition', 'photo', 'lightbox', 'jquery', 'modal', 'underscore', 'gallery-mixin', 'moment'],
-    function (React, photoPartition, Photo, Lightbox, $, Modal, _, GalleryMixin, moment ) {
+    ['react', 'photo-partition', 'photo', 'lightbox', 'jquery', 'modal', 'underscore', 'moment'],
+    function (React, photoPartition, Photo, Lightbox, $, Modal, _, moment ) {
 
     var Gallery = React.createClass({
-
-        mixins: [GalleryMixin],
 
         /**
          * The ideal row height
@@ -15,43 +13,12 @@ define('gallery',
          */
         idealRowHeight: 100,
 
-        /**
-         * A list of all photo elements
-         *
-         * @var DOM
-         */
-        photos: null,
-
         getInitialState: function() {
             return {
-                photos: [],
-                loading: true,
+                photos: this.props.photos,
                 isDeleting: false,
                 isManagingPhotos: false
             };
-        },
-
-        componentDidMount: function() {
-            this.retrieve();
-        },
-
-        retrieve: function () {
-            var success = function(photos) {
-                if (this.isMounted()) {
-                    this.setState({
-                        photos: JSON.parse(photos),
-                        loading: false
-                    });
-                }
-            }.bind(this);
-
-            var error = function () {
-                this.setState({
-                    loading: false
-                });
-            }.bind(this);
-
-            this.retrievePhotos(this.props.folder, this.props.modified, success, error);
         },
 
         /**
@@ -144,12 +111,6 @@ define('gallery',
                 photoRowNodes = (
                     <div style={divCenterStyle} key={"gallery-deleting-" + this.props.id}>
                         <i className="fa fa-spinner fa-spin"></i> Deleting...
-                    </div>
-                );
-            } else if (this.state.loading) {
-                photoRowNodes = (
-                    <div style={divCenterStyle} key={"gallery-loading-" + this.props.id}>
-                        <i className="fa fa-spinner fa-spin"></i>
                     </div>
                 );
             } else if (this.state.photos.length > 0) {

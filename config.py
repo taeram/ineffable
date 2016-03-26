@@ -12,7 +12,7 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
     AWS_SQS_QUEUE = getenv('AWS_SQS_QUEUE')
     CACHE_BUSTER = int(path.getmtime(__file__))
-    DEBUG = getenv('DEBUG', False)
+    GALLERIES_PER_PAGE=5
     GOOGLE_ANALYTICS_ID = getenv('GOOGLE_ANALYTICS_ID', False)
     LOG_DIR = "%s/logs" % APP_DIR
     MAX_UPLOAD_SIZE = getenv('MAX_UPLOAD_SIZE')
@@ -27,9 +27,10 @@ class Config(object):
     THUMBD_DESCRIPTIONS = getenv('THUMBD_DESCRIPTIONS')
 
 class ProductionConfig(Config):
-    pass
+    DEBUG = getenv('DEBUG', False)
 
 class DevelopmentConfig(Config):
+    CACHE_BUSTER = time()
     DEBUG = True
 
 class TestingConfig(Config):

@@ -44,27 +44,6 @@ class IneffableStorage(object):
 ineffable_storage = IneffableStorage()
 
 
-def get_gallery_photos(gallery_folder):
-    """ Get the list of photos in a gallery """
-    key = ineffable_storage.get_key("%s/photos.json" % gallery_folder)
-
-    try:
-        gallery_json = key.get_contents_as_string()
-    except Exception as e:
-        return []
-
-    return json.loads(gallery_json)
-
-
-def save_gallery_photos(gallery_folder, photos):
-    """ Save the list of photos in a gallery """
-    key = ineffable_storage.get_key("%s/photos.json" % gallery_folder)
-    key.set_contents_from_string(json.dumps(photos))
-    key.make_public()
-
-    return True
-
-
 def delete_gallery(gallery_folder):
     """ Delete a gallery and all its photos """
     bucket = ineffable_storage.get_bucket()

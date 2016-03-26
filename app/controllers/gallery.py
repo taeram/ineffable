@@ -13,7 +13,6 @@ from app.models.gallery import Gallery
 from app.models.photo import Photo
 from app.models.user import User
 from app.controllers.helpers.photo import delete_photo
-from app.controllers.helpers.gallery import get_gallery_photos
 import json
 import base64
 import hmac
@@ -51,21 +50,10 @@ def share(share_code):
     if not gallery:
         abort(404)
 
-    response = {
-        "name": gallery.name,
-        "folder": gallery.folder,
-        "modified": int(gallery.modified.strftime('%s'))
-    }
-
-    og_photo_url = None
-    photos = get_gallery_photos(gallery.folder)
-    if len(photos) > 0:
-        og_photo_url = 'https://%s.s3.amazonaws.com/%s/%s_thumb.jpg' % (app.config['AWS_S3_BUCKET'], gallery.folder, photos[0]['name']);
-
-    return render_template('gallery/index.html', json=json.dumps(response), page_title=response['name'], og_photo_url=og_photo_url)
+    return render_template('gallery/index.html', json=json.dumps(gallery.to_object()), page_title=response['name'], og_photo_url=og_photo_url)
 
 
-@app.route('/create/', methods=['GET', 'POST'])
+@app.route('/gallery/create/', methods=['GET', 'POST'])
 @login_required
 def gallery_create():
     """ Create a gallery """
@@ -90,7 +78,7 @@ def gallery_create():
     )
 
 
-@app.route('/update/<int:gallery_id>', methods=['GET', 'POST'])
+@app.route('/gallery/update/<int:gallery_id>', methods=['GET', 'POST'])
 @login_required
 def gallery_update(gallery_id):
     """ Updated a gallery """
@@ -122,7 +110,7 @@ def gallery_update(gallery_id):
         form_submit_button_title="Update"
     )
 
-@app.route('/upload/<int:gallery_id>')
+@app.route('/gallery/upload/<int:gallery_id>')
 @login_required
 def gallery_upload(gallery_id):
     """ Upload photos to a gallery """
@@ -163,7 +151,7 @@ def gallery_upload(gallery_id):
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
 
-@app.route('/verify/<int:gallery_id>')
+@app.route('/gallery/verify/<int:gallery_id>')
 @login_required
 def gallery_verify(gallery_id):
     """ Verify all thumbnails have been created for a gallery """
@@ -172,7 +160,7 @@ def gallery_verify(gallery_id):
 
     return render_template('gallery/index.html')
 
-@app.route('/verify/thumbnail/', methods=['POST'])
+@app.route('/gallery/verify/thumbnail/', methods=['POST'])
 @login_required
 def photo_thumbnail():
     """ Add a photo to a gallery """
@@ -206,7 +194,7 @@ def gallery_index():
     else:
         search_query = None
 
-    limit = 5
+    limit = app.config['GALLERIES_PER_PAGE']
     offset = (page_num - 1) * limit
     galleries = Gallery.find_all(offset=offset, limit=limit, search_query=search_query)
 
@@ -276,8 +264,8 @@ def photo_post():
         name=urldecode(request.form['name']),
         ext=request.form['ext'],
         aspect_ratio=float(request.form['aspect_ratio']),
-        gallery_id=request.form['gallery_id'],
-        owner_id=int(current_user.id),
+        gallery=Gallery.find_by_id(request.form['gallery_id']),
+        owner=current_user,
         created=request.form['created']
     )
 
@@ -288,7 +276,7 @@ def photo_post():
     photo.generate_thumbnail()
 
     # Update the gallery modified date
-    photo.gallery.updateModified()
+    photo.gallery.update_modified()
 
     return app.response_class(response=json.dumps(photo.to_object()), mimetype='application/json')
 
@@ -309,6 +297,6 @@ def photo_delete(gallery_id, photo_id):
         response = ["error"]
 
     # Update the gallery modified date
-    gallery.updateModified()
+    gallery.update_modified()
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')

@@ -1,7 +1,7 @@
 from app import app
 import boto.sqs
 from boto.sqs.message import RawMessage
-from .gallery import ineffable_storage, get_gallery_photos, save_gallery_photos
+from .gallery import ineffable_storage
 import re
 import json
 

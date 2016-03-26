@@ -5,9 +5,7 @@ import md5
 import random
 from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
-from app.controllers.helpers.gallery import save_gallery_photos, \
-                                            get_gallery_photos, \
-                                            delete_gallery
+from app.controllers.helpers.gallery import delete_gallery
 
 
 class Gallery(db.Model):
@@ -15,9 +13,10 @@ class Gallery(db.Model):
     """ A gallery of photos """
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, nullable=False)
-    folder = db.Column(db.Text, nullable=False, unique=True)
-    share_code = db.Column(db.Text, nullable=False, unique=True)
+    name = db.Column(db.String(255), nullable=False)
+    folder = db.Column(db.String(32), nullable=False, unique=True)
+    share_code = db.Column(db.String(255), nullable=False, unique=True)
+    photos = db.relationship('Photo', backref="gallery", lazy="dynamic")
     modified = db.Column(db.DateTime(timezone=True))
     created = db.Column(db.DateTime(timezone=True))
 
@@ -31,13 +30,9 @@ class Gallery(db.Model):
 
     def get_photos(self):
         """ Get the photos for this gallery """
-        return get_gallery_photos(self.folder)
+        return self.photos
 
-    def set_photos(self, photos):
-        """ Set the photos for the gallery """
-        return save_gallery_photos(self.folder, photos)
-
-    def updateModified(self):
+    def update_modified(self):
         """ Update the modified time of the gallery """
         self.modified = datetime.now(pytz.utc).replace(tzinfo=None)
         db.session.add(self)
@@ -75,7 +70,8 @@ class Gallery(db.Model):
             "folder": self.folder,
             "share_code": self.share_code,
             "modified": self.modified.strftime('%Y-%m-%d %H:%M:%S'),
-            "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
+            "created": self.created.strftime('%Y-%m-%d %H:%M:%S'),
+            "photos": [photo.to_object() for photo in self.photos]
         }
 
         return gallery

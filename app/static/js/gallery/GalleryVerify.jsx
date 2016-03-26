@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 
-define('gallery-verify', ['react', 'jquery', 'underscore', 'gallery-mixin', 'photo-mixin', 'basename', 'in_array', 'classnames'], function(React, $, _, GalleryMixin, PhotoMixin, basename, in_array, classnames) {
+define('gallery-verify', ['react', 'jquery', 'underscore', 'photo-mixin', 'basename', 'in_array', 'classnames'], function(React, $, _, PhotoMixin, basename, in_array, classnames) {
 
     var GalleryVerify = React.createClass({
 
-        mixins: [GalleryMixin, PhotoMixin],
+        mixins: [PhotoMixin],
 
         /**
          * Does this gallery have any missing photos?

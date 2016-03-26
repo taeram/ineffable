@@ -14,6 +14,8 @@ if getenv('FLASK_ENV') == 'production':
 else:
     app.config.from_object('config.DevelopmentConfig')
 
+app.debug = app.config['DEBUG']
+
 # Logging
 import logging
 from logging import FileHandler
