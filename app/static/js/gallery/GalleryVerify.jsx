@@ -65,7 +65,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'photo-mixin', 'basen
                     }
                 }
 
-                window.location.href = "/verify/" + nextAlbumId + "?all" + window.location.hash;
+                window.location.href = "/gallery/verify/" + nextAlbumId + "?all" + window.location.hash;
             }
         },
 
@@ -75,29 +75,14 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'photo-mixin', 'basen
                 url: this.props.url + '/' + this.props.id,
                 success: function(response) {
                     this.state.gallery = response;
+
                     this.setState({
                         isLoading: true,
-                        gallery: this.state.gallery
+                        gallery: this.state.gallery,
+                        photos: this.state.gallery.photos
                     });
 
-                    // Get the photos for this gallery
-                    var success = function(response) {
-                        this.state.photos = JSON.parse(response);
-                        this.setState({
-                            photos: this.state.photos,
-                            isLoading: false
-                        });
-
-                        this.parsePhotos();
-                    }.bind(this);
-
-                    var error = function () {
-                        this.setState({
-                            isLoading: false
-                        });
-                    }.bind(this);
-
-                    this.retrievePhotos(response.folder, response.modified, success, error);
+                    this.parsePhotos();
                 }.bind(this),
                 error: function () {
                     this.setState({
@@ -151,8 +136,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'photo-mixin', 'basen
 
         triggerPhotoRender: function(photo) {
             var data = {
-                name: photo.name,
-                ext: photo.ext,
+                id: photo.id,
                 gallery_id: this.props.id
             };
 
@@ -162,7 +146,7 @@ define('gallery-verify', ['react', 'jquery', 'underscore', 'photo-mixin', 'basen
             }
             this.renderedPhotos.push(data.name);
 
-            $.post('/verify/thumbnail/', data, function () {
+            $.post('/gallery/verify/thumbnail/', data, function () {
                 this.parsedPhotos += 2;
             }.bind(this));
         },

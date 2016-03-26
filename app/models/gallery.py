@@ -45,8 +45,9 @@ class Gallery(db.Model):
     def to_object(self):
         """ Get it as an object """
 
-        photos = db.session.query(Photo).\
-                            order_by(db.asc(Photo.created), db.desc(Photo.name))
+        photos = db.session.query(Photo)\
+                           .filter(Photo.gallery_id == self.id)\
+                           .order_by(db.asc(Photo.created), db.desc(Photo.name))
 
         gallery = {
             "id": self.id,

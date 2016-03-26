@@ -166,16 +166,7 @@ def photo_thumbnail():
     if current_user.role == "guest":
         abort(404)
 
-    photo = Photo(
-        name=urldecode(request.form['name']),
-        ext=request.form['ext'],
-        gallery_id=request.form['gallery_id'],
-        aspect_ratio=1.0,
-        owner_id=1,
-        created="2000:01:01 00:00:00"
-    )
-
-    # Tell the thumbnail daemon to generate a thumbnail for this photo
+    photo = Photo.find_by_id(request.form['id'])
     photo.generate_thumbnail()
 
     return app.response_class(response="[]", mimetype='application/json')
