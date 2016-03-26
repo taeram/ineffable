@@ -12,7 +12,6 @@ from app.forms.gallery import GalleryForm
 from app.models.gallery import Gallery
 from app.models.photo import Photo
 from app.models.user import User
-from app.controllers.helpers.photo import delete_photo
 import json
 import base64
 import hmac
@@ -288,15 +287,12 @@ def photo_delete(gallery_id, photo_id):
     if current_user.role == "guest":
         abort(404)
 
-    gallery = Gallery.find_by_id(gallery_id)
-    if not gallery:
+    photo = Photo.find_by_id(photo_id)
+    if not photo:
         abort(404)
 
     response = []
-    if not delete_photo(gallery.folder, photo_id):
+    if not photo.delete():
         response = ["error"]
-
-    # Update the gallery modified date
-    gallery.update_modified()
 
     return app.response_class(response=json.dumps(response), mimetype='application/json')

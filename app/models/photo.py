@@ -3,6 +3,7 @@ import pytz
 from datetime import datetime
 import md5
 from app.controllers.helpers.photo import generate_thumbnail
+from app.controllers.helpers.photo import delete_photo as helper_delete_photo
 from .user import User
 from urllib import unquote
 
@@ -42,6 +43,13 @@ class Photo(db.Model):
         db.session.commit()
 
     def delete(self):
+
+        # Delete the photo from s3
+        helper_delete_photo(self.gallery.folder, self.name, self.ext)
+
+        # Update the gallery modified date
+        self.gallery.update_modified()
+
         db.session.delete(self)
         db.session.commit()
 
@@ -54,3 +62,13 @@ class Photo(db.Model):
             "aspect_ratio": self.aspect_ratio,
             "created": self.created.strftime('%Y-%m-%d %H:%M:%S')
         }
+
+    @staticmethod
+    def find_by_id(photo_id):
+        """ Find a single photo """
+        try:
+            return db.session.query(Photo).\
+                             filter(Photo.id == photo_id).\
+                             one()
+        except NoResultFound:
+            return None

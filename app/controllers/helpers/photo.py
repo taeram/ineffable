@@ -70,27 +70,19 @@ def generate_thumbnail(photo_path):
     ineffable_queue.write(json.dumps(message))
 
 
-def delete_photo(gallery_folder, photo_id):
+def delete_photo(gallery_folder, photo_name, photo_ext):
     """ Delete a photo from a gallery """
-    photos = get_gallery_photos(gallery_folder)
 
-    remaining_photos = []
-    for photo in photos:
-        if photo['id'] == photo_id:
-            key = ineffable_storage.get_key("%s/%s.%s" % (gallery_folder, photo['name'], photo['ext']))
-            key.delete()
+    key = ineffable_storage.get_key("%s/%s.%s" % (gallery_folder, photo_name, photo_ext))
+    key.delete()
 
-            # .gif files use a .webm as their display photo
-            if (photo['ext'] == 'gif'):
-                display_ext = 'webm';
-            else:
-                display_ext = 'jpg'
-            key = ineffable_storage.get_key("%s/%s_display.%s" % (gallery_folder, photo['name'], display_ext))
-            key.delete()
+    # .gif files use a .webm as their display photo
+    if (photo_ext == 'gif'):
+        display_ext = 'webm';
+    else:
+        display_ext = 'jpg'
+    key = ineffable_storage.get_key("%s/%s_display.%s" % (gallery_folder, photo_name, display_ext))
+    key.delete()
 
-            key = ineffable_storage.get_key("%s/%s_thumb.jpg" % (gallery_folder, photo['name']))
-            key.delete()
-        else:
-            remaining_photos.append(photo)
-
-    return save_gallery_photos(gallery_folder, remaining_photos)
+    key = ineffable_storage.get_key("%s/%s_thumb.jpg" % (gallery_folder, photo_name))
+    key.delete()
