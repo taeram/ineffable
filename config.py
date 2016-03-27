@@ -11,7 +11,7 @@ class Config(object):
     AWS_S3_BUCKET = getenv('AWS_S3_BUCKET')
     AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
     AWS_SQS_QUEUE = getenv('AWS_SQS_QUEUE')
-    CACHE_BUSTER = int(path.getmtime(__file__))
+    CACHE_BUSTER = time()
     GALLERIES_PER_PAGE=5
     GOOGLE_ANALYTICS_ID = getenv('GOOGLE_ANALYTICS_ID', False)
     LOG_DIR = "%s/logs" % APP_DIR
@@ -30,7 +30,6 @@ class ProductionConfig(Config):
     DEBUG = getenv('DEBUG', False)
 
 class DevelopmentConfig(Config):
-    CACHE_BUSTER = time()
     DEBUG = True
 
 class TestingConfig(Config):
