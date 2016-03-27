@@ -10,7 +10,6 @@ class Config(object):
     AWS_REGION = getenv('AWS_REGION')
     AWS_S3_BUCKET = getenv('AWS_S3_BUCKET')
     AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
-    AWS_SQS_QUEUE = getenv('AWS_SQS_QUEUE')
     CACHE_BUSTER = time()
     GALLERIES_PER_PAGE=5
     GOOGLE_ANALYTICS_ID = getenv('GOOGLE_ANALYTICS_ID', False)
@@ -24,7 +23,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL', 'sqlite:///' + path.dirname(__file__) + '/app/app.db').replace('mysql2:', 'mysql:')
     SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)
     TESTING = False
-    THUMBD_DESCRIPTIONS = getenv('THUMBD_DESCRIPTIONS')
+    LAMBDA_INSTRUCTIONS = getenv('LAMBDA_INSTRUCTIONS')
 
 class ProductionConfig(Config):
     DEBUG = getenv('DEBUG', False)

@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, APP_DIR)
 
 # Manually pass variables set in Apache using SetEnv to Flask
-setenv_variables = ['AWS_ACCESS_KEY_ID', 'AWS_REGION', 'AWS_S3_BUCKET', 'AWS_SECRET_ACCESS_KEY', 'AWS_SQS_QUEUE', 'DATABASE_URL', 'FLASK_ENV', 'MAX_UPLOAD_SIZE', 'SECRET_KEY', 'SITE_NAME', 'THUMBD_DESCRIPTIONS']
+setenv_variables = ['AWS_ACCESS_KEY_ID', 'AWS_REGION', 'AWS_S3_BUCKET', 'AWS_SECRET_ACCESS_KEY', 'DATABASE_URL', 'FLASK_ENV', 'MAX_UPLOAD_SIZE', 'SECRET_KEY', 'SITE_NAME', 'LAMBDA_INSTRUCTIONS']
 def application(environ, start_response):
     for key in setenv_variables:
         os.environ[key] = environ.get(key, '')

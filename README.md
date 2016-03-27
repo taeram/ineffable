@@ -10,8 +10,6 @@ You'll need the following:
 * A [Heroku](https://www.heroku.com/) account, if you want to deploy to Heroku.
 * An [Amazon AWS](http://aws.amazon.com/) account, including your AWS Access Key and Secret Key
 * An [Amazon S3](http://aws.amazon.com/s3/) bucket, for storing the images
-* An [Amazon SQS](http://aws.amazon.com/sqs/) queue, for the thumbnail daemon
-* A deployed copy of [thumbd](https://github.com/bcoe/thumbd) (the thumbnail daemon)
 
 Setup
 =====
@@ -65,10 +63,9 @@ Local development setup:
            AWS_SECRET_ACCESS_KEY=secret \
            AWS_REGION=us-east-1 \
            AWS_S3_BUCKET=my-photo-bucket \
-           AWS_SQS_QUEUE=abcdef \
            MAX_UPLOAD_SIZE=10485760 \
            SECRET_KEY=secret_key \
-           THUMBD_DESCRIPTIONS='[
+           LAMBDA_INSTRUCTIONS='[
               {
                 "height": 200,
                 "width": 200,
@@ -111,10 +108,9 @@ Heroku setup:
                       AWS_SECRET_ACCESS_KEY=secret \
                       AWS_REGION=us-east-1 \
                       AWS_S3_BUCKET=my-photo-bucket \
-                      AWS_SQS_QUEUE=abcdef \
                       MAX_UPLOAD_SIZE=10485760 \
                       SECRET_KEY=secret_key \
-                      THUMBD_DESCRIPTIONS='[
+                      LAMBDA_INSTRUCTIONS='[
                         {
                           "height": 200,
                           "width": 200,

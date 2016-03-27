@@ -27,7 +27,6 @@ require.config({
         // App
         "gallery": "js/gallery/Gallery",
         "gallery-list": "js/gallery/GalleryList",
-        "gallery-verify": "js/gallery/GalleryVerify",
         "lightbox": "js/gallery/Lightbox",
         "modal": "js/helpers/Modal",
         "photo": "js/gallery/Photo",

@@ -131,7 +131,7 @@ def gallery_upload(gallery_id):
             {"acl": s3_acl},
             {"success_action_status": s3_success_action_status},
             ["content-length-range", 0, app.config['MAX_UPLOAD_SIZE']],
-            {"x-amz-meta-instructions": app.config['THUMBD_DESCRIPTIONS']}
+            {"x-amz-meta-instructions": app.config['LAMBDA_INSTRUCTIONS']}
         ]
     }
 
@@ -148,30 +148,9 @@ def gallery_upload(gallery_id):
         s3_signature=signature,
         page_title="Upload to %s" % gallery.name,
         s3_success_action_status=s3_success_action_status,
-        x_amz_meta_instructions=app.config['THUMBD_DESCRIPTIONS'],
+        x_amz_meta_instructions=app.config['LAMBDA_INSTRUCTIONS'],
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
-
-@app.route('/gallery/verify/<int:gallery_id>')
-@login_required
-def gallery_verify(gallery_id):
-    """ Verify all thumbnails have been created for a gallery """
-    if current_user.role == "guest":
-        abort(404)
-
-    return render_template('gallery/index.html')
-
-@app.route('/gallery/verify/thumbnail/', methods=['POST'])
-@login_required
-def photo_thumbnail():
-    """ Add a photo to a gallery """
-    if current_user.role == "guest":
-        abort(404)
-
-    photo = Photo.find_by_id(request.form['id'])
-    photo.generate_thumbnail()
-
-    return app.response_class(response="[]", mimetype='application/json')
 
 @app.route('/rest/gallery/', methods=['GET'])
 @login_required
@@ -258,9 +237,6 @@ def photo_post():
 
     # Save the updated photos JSON for this gallery
     photo.save()
-
-    # Tell the thumbnail daemon to generate a thumbnail for this photo
-    photo.generate_thumbnail()
 
     # Update the gallery modified date
     photo.gallery.update_modified()

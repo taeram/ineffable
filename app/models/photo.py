@@ -5,7 +5,6 @@ import md5
 import re
 import json
 from app.controllers.helpers.storage import ineffable_storage
-from app.controllers.helpers.queue import ineffable_queue
 from .user import User
 from urllib import unquote
 
@@ -34,29 +33,6 @@ class Photo(db.Model):
             self.created = datetime.strptime(created, '%Y:%m:%d %H:%M:%S')
         else:
             self.created = datetime.now(pytz.utc)
-
-    def generate_thumbnail(self):
-        """ Generate a thumbnail for this photo """
-        photo_path = "%s/%s.%s" % (self.gallery.folder, self.name, self.ext)
-
-        message = {
-            "original": photo_path,
-            "descriptions": json.loads(app.config['THUMBD_DESCRIPTIONS'])
-        }
-
-        # If the original is a .gif, convert it to a .webm, and use that webm
-        # as the original and display versions
-        is_gif = re.compile(r'(\.gif)$', re.IGNORECASE)
-        if is_gif.search(photo_path):
-            for i,thumb in enumerate(message['descriptions']):
-                if thumb['suffix'] == 'display':
-                    message['descriptions'][i] = {
-                        "suffix": "display",
-                        "format": "webm",
-                        "strategy": "ffmpeg -y -i %(localPaths[0])s -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis %(convertedPath)s"
-                    }
-
-        ineffable_queue.write(json.dumps(message))
 
     def save(self):
         db.session.add(self)
