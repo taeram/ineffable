@@ -56,7 +56,7 @@ def upgrade():
                 name=p['name'],
                 ext=p['ext'],
                 aspect_ratio=p['aspect_ratio'],
-                user=User.find_by_id(p['owner_id']),
+                owner=User.find_by_id(p['owner_id']),
                 gallery=g
             )
             photo.save()
