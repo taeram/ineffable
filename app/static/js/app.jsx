@@ -41,13 +41,9 @@ require.config({
 
         // Mixins
         "handle-resize-mixin": "js/mixins/HandleResizeMixin",
-        "gallery-mixin": "js/mixins/GalleryMixin",
         "photo-mixin": "js/mixins/PhotoMixin"
     },
     shim: {
-        'angular': {
-            exports: 'angular'
-        },
         'basename': {
             exports: 'basename'
         },
@@ -87,10 +83,6 @@ require.config({
         }
     }
 });
-
-// Defer loading angular
-// http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
-window.name = "NG_DEFER_BOOTSTRAP!";
 
 // Configure the application
 Config.App = {

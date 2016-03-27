@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+{% block body %}
+
+<input type="hidden" id="login_redirect" name="login[redirect]" parent_class="col-sm-9" class="form-control"><input type="hidden" id="login__token" name="login[_token]" parent_class="col-sm-9" class="form-control" value="b3a0363bd117e48d7e818012077d3353cbde5ff3"></form>
+
+<form class="form form-vertical col-sm-4 col-sm-offset-4" action="{{ url_for('users_login', next=request.args.next) }}" method="post">
+    <h1>Sign In</h1>
+    {{ form.csrf_token }}
+
+    {{ form.username(class="form-control input-lg", placeholder="Username") }}
+
+    <div style="margin-top:7px">
+        {{ form.password(class="form-control input-lg", placeholder="Password") }}
+    </div>
+
+    <div class="checkbox text-right">
+        <label>
+            <input type="checkbox" name="remember"> Remember me
+        </label>
+    </div>
+
+    <div class="form-group text-right">
+        <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-sign-in"></i> Sign In</button>
+    </div>
+</form>
+{% endblock %}

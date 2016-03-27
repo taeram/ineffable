@@ -43,7 +43,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resiz
 
                     this.setState({
                         isLoading: false,
-                        hasMorePages: (response.length > 0),
+                        hasMorePages: (data.length == parseInt(Config.galleries_per_page)),
                         data: data
                     });
                 }.bind(this)

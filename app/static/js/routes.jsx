@@ -14,7 +14,7 @@ define('routes', ['router'], function() {
     });
 
     // Verify a Gallery
-    router.route('/verify/:id', function(gallery_id) {
+    router.route('/gallery/verify/:id', function(gallery_id) {
         require(['react', 'gallery-verify'], function (React, GalleryVerify) {
             React.render(
                 <GalleryVerify url="/rest/gallery" id={gallery_id} />,
@@ -24,7 +24,7 @@ define('routes', ['router'], function() {
     });
 
     // Photo Uploader
-    router.route('/upload/:id', function(id) {
+    router.route('/gallery/upload/:id', function(id) {
         require(['react', 'uploader'], function (React, Uploader) {
             React.render(
                 <Uploader />,

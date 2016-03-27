@@ -5,7 +5,7 @@
 {% block body %}
     <div class="col-xs-6 col-xs-offset-3">
         <div class="pull-right">
-            <a class="btn btn-success" href="{{ url_for('user_create') }}">
+            <a class="btn btn-success" href="{{ url_for('users_create') }}">
                 <i class="fa fa-plus"></i>
                 Add a User
             </a>
@@ -30,15 +30,15 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.role }}</td>
                         <td class="text-nowrap">
-                            <a class="btn btn-danger btn-delete" href="{{ url_for('user_delete', user_id=user.id) }}">
+                            <a class="btn btn-danger btn-delete" href="{{ url_for('users_delete', user_id=user.id) }}">
                                 <i class="fa fa-trash-o"></i>
                                 Delete
                             </a>
-                            <a class="btn btn-info" href="{{ url_for('user_update', user_id=user.id) }}">
+                            <a class="btn btn-info" href="{{ url_for('users_update', user_id=user.id) }}">
                                 <i class="fa fa-pencil"></i>
                                 Edit
                             </a>
-                            <a class="btn btn-info" href="{{ url_for('user_change_password', user_id=user.id) }}">
+                            <a class="btn btn-info" href="{{ url_for('users_change_password', user_id=user.id) }}">
                                 <i class="fa fa-lock"></i>
                                 Change Password
                             </a>

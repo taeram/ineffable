@@ -6,6 +6,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/favicon/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/favicon/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/favicon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/favicon/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/favicon/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/favicon/apple-touch-icon-120x120.png">
+    <link rel="icon" type="image/png" href="/static/favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/static/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/static/favicon/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/static/favicon/manifest.json">
+    <link rel="mask-icon" href="/static/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/static/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/static/favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-%d.png' % config.CACHE_BUSTER) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-%d.css' % config.CACHE_BUSTER) }}">
     <meta property="og:locale" content="en_US" />
@@ -19,6 +36,7 @@
         var Config = {
             cache_buster: {{ config.CACHE_BUSTER }},
             s3_bucket: '{{ config.AWS_S3_BUCKET }}',
+            galleries_per_page: {{ config.GALLERIES_PER_PAGE }},
             User: {
                 role: '{{ current_user.role }}'
             }
@@ -37,24 +55,24 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('home') }}">{{ config.SITE_NAME }}</a>
+                <a class="navbar-brand" href="{{ url_for('gallery_home') }}">{{ config.SITE_NAME }}</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     {% autoescape false %}
-                        {{ navbar_link('home', 'Home', icon='home') }}
+                        {{ navbar_link('gallery_home', 'Home', icon='home') }}
                         {% if current_user.role == "share" %}
-                            {{ navbar_link('login', 'Login', icon='user') }}
+                            {{ navbar_link('users_login', 'Login', icon='user') }}
                         {% else %}
                             {% if current_user.role != "guest" %}
                                 {{ navbar_link('gallery_create', 'Create an Album', icon='plus', login_required=true) }}
-                                {{ navbar_link('user_change_password', 'Change your Password', icon='lock', login_required=true) }}
+                                {{ navbar_link('users_change_password', 'Change your Password', icon='lock', login_required=true) }}
                             {% endif %}
                             {% if current_user.role == "admin" %}
-                                {{ navbar_link('user_list', 'Users', icon='users', login_required=true) }}
+                                {{ navbar_link('users_list', 'Users', icon='users', login_required=true) }}
                             {% endif %}
-                            {{ navbar_link('login', 'Login', icon='user', anonymous_required=true) }}
-                            {{ navbar_link('logout', 'Logout', icon='user', login_required=true) }}
+                            {{ navbar_link('users_login', 'Login', icon='user', anonymous_required=true) }}
+                            {{ navbar_link('users_logout', 'Logout', icon='user', login_required=true) }}
                         {% endif %}
                     {% endautoescape %}
                 </ul>

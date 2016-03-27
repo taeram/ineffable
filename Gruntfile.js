@@ -8,11 +8,16 @@ module.exports = function(grunt) {
       production: {
         options: {
           paths: ["app/static/css"],
-          cleancss: true
+          cleancss: true,
+          plugins: [
+            (new (require('less-plugin-clean-css'))({
+              advanced: true,
+              compatibility: 'ie8'
+            }))
+          ]
         },
         files: {
-          "app/static/css/style.css": "app/static/css/style.less",
-          "app/static/css/uploader.css": "app/static/css/uploader.less"
+          "app/static/css/style.css": "app/static/css/style.less"
         }
       }
     },
@@ -51,16 +56,16 @@ module.exports = function(grunt) {
         tasks: ['less']
       },
       react: {
-        files: ['app/static/js//**/*.jsx'],
+        files: ['app/static/js/**/*.jsx'],
         tasks: ['react']
       }
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-react');
 
   // default task
   grunt.registerTask('default', [

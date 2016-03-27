@@ -11,8 +11,9 @@
     "grunt": "*",
     "grunt-cli": "*",
     "grunt-react": "*",
-    "grunt-contrib-uglify": "*",
     "grunt-contrib-less": "*",
+    "less-plugin-clean-css": "*",
+    "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "react-tools": "*",
     "uglify-js": "*"
