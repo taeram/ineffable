@@ -66,7 +66,14 @@ define('s3-uploader', ['jquery', 'dirname', 'urldecode'], function($, dirname, u
         // Assemble the form data
         var form = new FormData();
         for (var j in this.formObject) {
-            form.append(j, this.formObject[j]);
+            var key = j;
+            if (key.match(/^x_amz_meta_/)) {
+                // jQuery Serialize Object doesn't handle names with dashes, so replace the underscores with dashes
+                // so that our aws metadata key pairs are valid
+                key = key.replace(/_/g, '-');
+            }
+
+            form.append(key, this.formObject[j]);
         }
         form.append('file', this.file);
 

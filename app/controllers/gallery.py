@@ -130,7 +130,8 @@ def gallery_upload(gallery_id):
             ["starts-with", "$key", folder],
             {"acl": s3_acl},
             {"success_action_status": s3_success_action_status},
-            ["content-length-range", 0, app.config['MAX_UPLOAD_SIZE']]
+            ["content-length-range", 0, app.config['MAX_UPLOAD_SIZE']],
+            {"x-amz-meta-instructions": app.config['THUMBD_DESCRIPTIONS']}
         ]
     }
 
@@ -147,6 +148,7 @@ def gallery_upload(gallery_id):
         s3_signature=signature,
         page_title="Upload to %s" % gallery.name,
         s3_success_action_status=s3_success_action_status,
+        x_amz_meta_instructions=app.config['THUMBD_DESCRIPTIONS'],
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
 

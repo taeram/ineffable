@@ -13,6 +13,7 @@
         Config.s3_policy = '{{ s3_policy }}';
         Config.s3_signature = '{{ s3_signature }}';
         Config.s3_success_action_status = '{{ s3_success_action_status }}';
+        Config.x_amz_meta_instructions = '{{ x_amz_meta_instructions|safe }}';
     </script>
 {% endblock %}
 
