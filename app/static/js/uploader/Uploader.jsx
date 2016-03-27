@@ -352,6 +352,7 @@ define('uploader',
                         <input type="hidden" name="policy" value={ Config.s3_policy }/>
                         <input type="hidden" name="signature" value={ Config.s3_signature }/>
                         <input type="hidden" name="success_action_status" value={ Config.s3_success_action_status } />
+                        <input type="hidden" name="x_amz_meta_instructions" value={ Config.x_amz_meta_instructions } />
 
                         <div className="btn btn-success">
                             <input type="file" name="file" className="input-file" multiple="multiple" accept="image/*" onChange={ this.onClickAddFiles }/>

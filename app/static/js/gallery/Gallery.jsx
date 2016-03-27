@@ -196,12 +196,6 @@ define('gallery',
                                     </a>
                                 </li>
                                 <li>
-                                    <a href={"/gallery/verify/" + this.props.id}>
-                                        <i className="fa fa-upload"></i>
-                                        Verify Thumbnails
-                                    </a>
-                                </li>
-                                <li>
                                     <a onClick={this.showDeleteModal}>
                                         <span className="text-danger">
                                             <i className="fa fa-exclamation"></i>

@@ -12,7 +12,7 @@ require.config({
         "history": "components/history.js/scripts/bundled/html4%2Bhtml5/native.history",
         "in_array": "components/phpjs/functions/array/in_array",
         "jpegmeta": "components/jsjpegmeta/jpegmeta",
-        "jquery-serialize-object": "components/jquery-serialize-object/jquery.serialize-object.compiled",
+        "jquery-serialize-object": "components/jquery-serialize-object/dist/jquery.serialize-object.min",
         "jquery": "components/jquery/dist/jquery.min",
         "linear-partition": "components/linear-partition/linear_partition.min",
         "moment": "components/momentjs/moment",
@@ -27,7 +27,6 @@ require.config({
         // App
         "gallery": "js/gallery/Gallery",
         "gallery-list": "js/gallery/GalleryList",
-        "gallery-verify": "js/gallery/GalleryVerify",
         "lightbox": "js/gallery/Lightbox",
         "modal": "js/helpers/Modal",
         "photo": "js/gallery/Photo",
