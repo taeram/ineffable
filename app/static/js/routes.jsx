@@ -28,7 +28,7 @@ define('routes', ['router'], function() {
         require(['react', 'gallery'], function (React, Gallery) {
             // Uses gallery_json from the page
             React.render(
-                <Gallery folder={gallery_json.folder} name={gallery_json.name} modified={gallery_json.modified} isShared={true} />,
+                <Gallery folder={gallery_json.folder} name={gallery_json.name} photos={gallery_json.photos} modified={gallery_json.modified} isShared={true} />,
                 document.getElementById(Config.App.elementId)
             );
         });

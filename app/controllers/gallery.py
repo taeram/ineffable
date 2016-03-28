@@ -49,7 +49,13 @@ def share(share_code):
     if not gallery:
         abort(404)
 
-    return render_template('gallery/index.html', json=json.dumps(gallery.to_object()), page_title=response['name'], og_photo_url=og_photo_url)
+    # Add the open graph thumbnail image tag
+    og_photo_url = False
+    gallery_object = gallery.to_object()
+    if len(gallery_object['photos']) > 0:
+        og_photo_url = 'https://%s.s3.amazonaws.com/%s/%s_thumb.jpg' % (app.config['AWS_S3_BUCKET'], gallery_object['folder'], gallery_object['photos'][0]['name']);
+
+    return render_template('gallery/index.html', json=json.dumps(gallery_object), page_title=gallery.name, og_photo_url=og_photo_url)
 
 
 @app.route('/gallery/create/', methods=['GET', 'POST'])

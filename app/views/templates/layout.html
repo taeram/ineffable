@@ -30,7 +30,7 @@
     <meta property="og:title" content="{{ config.SITE_NAME }}" />
     <meta property="og:description" content="{{ page_title }}" />
     <meta property="og:url" content="{{ request.url }}" />
-    <meta property="og:image" content="{{ og_photo_url }}"/>
+    {% if og_photo_url %}<meta property="og:image" content="{{ og_photo_url }}"/>{% endif %}
     <meta property="og:site_name" content="{{ config.SITE_NAME }}" />
     <script>
         var Config = {
