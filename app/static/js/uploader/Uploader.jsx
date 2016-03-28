@@ -4,6 +4,8 @@ define('uploader',
 
     var Uploader = React.createClass({
 
+        hasBeforeUnloadTrigger: false,
+
         getInitialState: function() {
             return {
                 files: []
@@ -11,9 +13,6 @@ define('uploader',
         },
 
         componentDidMount: function () {
-            // Warn if user tries to navigate away while files are uploading
-            $(window).on("beforeunload", this.onUnload);
-
             // On the Add Files button make sure the <input /> is the same size as the <button>
             var inputFile = $('.input-file');
             $(inputFile).css({
@@ -22,12 +21,6 @@ define('uploader',
                 marginTop: '-' + $(inputFile).parent().css('paddingTop'),
                 marginLeft: '-' + $(inputFile).parent().css('paddingLeft')
             });
-        },
-
-        onUnload: function () {
-            if (this.state.files.length > 0 && this.getUploadProgressPercent() > 0 && this.getUploadProgressPercent() < 100) {
-                return "There are still files uploading.";
-            }
         },
 
         /**
@@ -251,6 +244,20 @@ define('uploader',
                         <div className={ uploadProgressBarClass } style={{ width: this.getUploadProgressPercent() + "%" }} ></div>
                     </div>
                 );
+            }
+
+            // Warn if user tries to navigate away while files are pending upload
+            if (!this.hasBeforeUnloadTrigger && this.state.files.length > 0) {
+                $(window).on('beforeunload', function() {
+                    return "Are you sure you want to navigate away?";
+                }.bind(this));
+                this.hasBeforeUnloadTrigger = true;
+            }
+
+            // Allow the user to navigate away from the page
+            if (this.hasBeforeUnloadTrigger && (this.state.files.length == 0 || this.getUploadProgressPercent() >= 100)) {
+                $(window).off('beforeunload');
+                this.hasBeforeUnloadTrigger = false;
             }
 
             var filesTable;
