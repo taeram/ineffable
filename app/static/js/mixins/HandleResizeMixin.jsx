@@ -14,7 +14,6 @@ define('handle-resize-mixin', ['react', 'underscore'], function(React, _) {
 
         componentDidMount: function() {
             window.addEventListener('resize', this.handleResize);
-            setTimeout(this.handleResize, 500);
         },
 
         componentWillUnmount: function() {
