@@ -3,6 +3,7 @@ import pytz
 from datetime import datetime
 import md5
 import random
+from app.controllers.helpers.storage import ineffable_storage
 from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 from .photo import Photo
@@ -61,6 +62,12 @@ class Gallery(db.Model):
         """ Delete a gallery and all its photos """
         for photo in self.photos:
             photo.delete()
+
+        # Ensure there are no leftover files in the bucket
+        bucket = ineffable_storage.get_bucket()
+        files = bucket.list(self.folder)
+        for f in files:
+            f.delete()
 
         db.session.delete(self)
         db.session.commit()
