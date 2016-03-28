@@ -216,7 +216,7 @@ define('gallery',
             // If this is the first render, jiggle things after render to ensure the partitioning lines up
             if (this.isFirstRender) {
                 this.isFirstRender = false;
-                setTimeout(this.handleResize, 200);
+                setTimeout(this.render.bind(this), 200);
             }
 
             return (
