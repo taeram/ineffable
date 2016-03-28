@@ -11,7 +11,7 @@ define('gallery',
          *
          * @var integer
          */
-        idealRowHeight: 100,
+        idealRowHeight: 200,
 
         getInitialState: function() {
             return {

@@ -1,13 +1,6 @@
 /** @jsx React.DOM */
 
-define('photo-partition',
-[
-    "linear-partition",
-    "underscore"
-], function(
-    linear_partition,
-    _
-) {
+define('photo-partition', ["linear-partition", "underscore"], function(linear_partition, _) {
 
     /**
      * Ideal photo distribution
