@@ -11,7 +11,7 @@ class Config(object):
     AWS_S3_BUCKET = getenv('AWS_S3_BUCKET')
     AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
     CACHE_BUSTER = time()
-    GALLERIES_PER_PAGE=5
+    GALLERIES_PER_PAGE = getenv('GALLERIES_PER_PAGE', 5)
     GOOGLE_ANALYTICS_ID = getenv('GOOGLE_ANALYTICS_ID', False)
     LOG_DIR = "%s/logs" % APP_DIR
     MAX_UPLOAD_SIZE = getenv('MAX_UPLOAD_SIZE')
