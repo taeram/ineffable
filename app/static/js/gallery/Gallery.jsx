@@ -103,9 +103,18 @@ define('gallery',
         },
 
         render: function() {
-            var viewportWidth = parseInt(Config.App.viewportWidth, 10),
+            var viewportWidth = parseInt(Config.App.getViewportWidth(), 10),
                 photoPaddingX = parseInt(Config.Photo.paddingX, 10),
                 photoPaddingY = parseInt(Config.Photo.paddingY, 10);
+
+            // Reload once after the first render to force the photo partitioning to work correctly
+            if (this.isFirstRender) {
+                this.isFirstRender = false;
+                setTimeout(function () {
+                    this.setState({'reload': 'now'});
+                    $("img").unveil();
+                }.bind(this), 10);
+            }
 
             var photoRowNodes;
             var divCenterStyle = {"textAlign": "center"};
@@ -211,12 +220,6 @@ define('gallery',
                         {managingPhotosButton}
                     </span>
                 );
-            }
-
-            // If this is the first render, jiggle things after render to ensure the partitioning lines up
-            if (this.isFirstRender) {
-                this.isFirstRender = false;
-                setTimeout(this.render.bind(this), 200);
             }
 
             return (

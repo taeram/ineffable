@@ -7,7 +7,6 @@ define('handle-resize-mixin', ['react', 'underscore'], function(React, _) {
      */
     var HandleResizeMixin = {
         handleResize: _.debounce(function(e) {
-            console.log('resize', this)
                 this.setState({windowWidth: window.innerWidth});
             },
             200

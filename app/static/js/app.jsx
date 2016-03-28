@@ -101,7 +101,9 @@ Config.App = {
     paddingX: 15,
 
     // Calculated value
-    viewportWidth: 0
+    getViewportWidth: function () {
+        return $('#' + Config.App.elementId).width() - Config.App.paddingX;
+    }
 };
 
 // Configure the photos
@@ -116,13 +118,6 @@ Config.Photo = {
 require(['react', 'routes', 'jquery', 'underscore', 'bootstrap'], function (React,  router, $, _, bs) {
     // Setup React
     React.initializeTouchEvents(true);
-
-    // Initialize the Config
-    var initializeConfig = function () {
-        Config.App.viewportWidth = $('#' + Config.App.elementId).width() - Config.App.paddingX;
-    };
-    $(window).resize(_.debounce(initializeConfig, 100));
-    initializeConfig();
 
     // Start the router
     router.start(window.location.pathname);
