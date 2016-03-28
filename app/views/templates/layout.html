@@ -23,8 +23,8 @@
     <meta name="msapplication-config" content="/static/favicon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-%d.png' % config.CACHE_BUSTER) }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-%d.css' % config.CACHE_BUSTER) }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-%d.png' % cache_buster) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-%d.css' % cache_buster) }}">
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="{{ config.SITE_NAME }}" />
@@ -34,14 +34,14 @@
     <meta property="og:site_name" content="{{ config.SITE_NAME }}" />
     <script>
         var Config = {
-            cache_buster: {% if config.DEBUG %}{{ timestamp }}{% else %}{{ config.CACHE_BUSTER }}{% endif %},
+            cache_buster: {{ cache_buster }},
             s3_bucket: '{{ config.AWS_S3_BUCKET }}',
             User: {
                 role: '{{ current_user.role }}'
             }
         };
     </script>
-    <script data-main="{{ url_for('static', filename='js/app-%d.js' % config.CACHE_BUSTER) }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
+    <script data-main="{{ url_for('static', filename='js/app-%d.js' % cache_buster) }}" src="{{ url_for('static', filename='components/requirejs/require.js') }}"></script>
     {% block head %}{% endblock %}
 </head>
 <body>

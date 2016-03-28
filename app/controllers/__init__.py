@@ -35,9 +35,14 @@ def unauthorized_handler():
 # Global variables
 @app.context_processor
 def inject_globals():
+    if app.config['DEBUG']:
+        cache_buster = int(time())
+    else:
+        cache_buster = int(app.config['CACHE_BUSTER'])
+
     return dict(
         page_title=app.config['SITE_NAME'],
         og_photo_url='',
         current_user=current_user,
-        timestamp=int(time())
+        cache_buster=cache_buster
     )
