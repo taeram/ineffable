@@ -7,7 +7,7 @@ define('routes', ['router'], function() {
     router.route('/', function() {
         require(['react', 'gallery-list'], function (React, GalleryList) {
             React.render(
-                <GalleryList url="/rest/gallery" />,
+                <GalleryList url="/rest/gallery" galleries={galleries_json} hasMorePages={has_more_pages} pageNum={page_num}/>,
                 document.getElementById(Config.App.elementId)
             );
         });

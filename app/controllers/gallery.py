@@ -27,9 +27,28 @@ def gallery_home():
     if request.args.get('q'):
         search_query = request.args.get('q')
     else:
-        search_query = ""
+        search_query = None
 
-    return render_template('gallery/index.html', q=search_query)
+    if request.args.get('page'):
+        page_num = int(request.args.get('page'))
+    else:
+        page_num = 1
+
+    limit = app.config['GALLERIES_PER_PAGE']
+    offset = (page_num - 1) * limit
+    galleries = Gallery.find_all(offset=offset, limit=limit, search_query=search_query)
+    galleries_json = [gallery.to_object() for gallery in galleries]
+    if len(galleries) == limit:
+        has_more_pages = "true"
+    else:
+        has_more_pages = "false"
+
+    return render_template('gallery/index.html',
+        q=search_query,
+        galleries_json=json.dumps(galleries_json),
+        has_more_pages=has_more_pages,
+        page_num=page_num
+    )
 
 
 @app.route('/s/<string:share_code>')
@@ -55,7 +74,11 @@ def share(share_code):
     if len(gallery_object['photos']) > 0:
         og_photo_url = 'https://%s.s3.amazonaws.com/%s/%s_thumb.jpg' % (app.config['AWS_S3_BUCKET'], gallery_object['folder'], gallery_object['photos'][0]['name']);
 
-    return render_template('gallery/index.html', json=json.dumps(gallery_object), page_title=gallery.name, og_photo_url=og_photo_url)
+    return render_template('gallery/index.html',
+        shared_gallery_json=json.dumps(gallery_object),
+        page_title=gallery.name,
+        og_photo_url=og_photo_url
+    )
 
 
 @app.route('/gallery/create/', methods=['GET', 'POST'])
@@ -157,39 +180,6 @@ def gallery_upload(gallery_id):
         x_amz_meta_instructions=app.config['LAMBDA_INSTRUCTIONS'],
         max_upload_size=app.config['MAX_UPLOAD_SIZE']
     )
-
-@app.route('/rest/gallery/', methods=['GET'])
-@login_required
-def gallery_index():
-    """ List all galleries """
-    if not request.args.get('page'):
-        abort(500)
-    page_num = int(request.args.get('page'))
-
-    if request.args.get('q'):
-        search_query = request.args.get('q')
-    else:
-        search_query = None
-
-    limit = app.config['GALLERIES_PER_PAGE']
-    offset = (page_num - 1) * limit
-    galleries = Gallery.find_all(offset=offset, limit=limit, search_query=search_query)
-
-    response = []
-    for gallery in galleries:
-        response.append(gallery.to_object())
-
-    return app.response_class(response=json.dumps(response), mimetype='application/json')
-
-@app.route('/rest/gallery/<int:gallery_id>', methods=['GET'])
-@login_required
-def gallery_get(gallery_id):
-    """ Get a gallery """
-    gallery = Gallery.find_by_id(gallery_id)
-    if not gallery:
-        abort(404)
-
-    return app.response_class(response=json.dumps(gallery.to_object()), mimetype='application/json')
 
 @app.route('/rest/gallery/', methods=['POST'])
 @login_required

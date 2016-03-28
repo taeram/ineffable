@@ -7,6 +7,7 @@ from flask import flash, \
 from flask.ext.compress import Compress
 from flask.ext.login import current_user, \
                             LoginManager
+from time import time
 
 __all__ = [
     "gallery",
@@ -37,5 +38,6 @@ def inject_globals():
     return dict(
         page_title=app.config['SITE_NAME'],
         og_photo_url='',
-        current_user=current_user
+        current_user=current_user,
+        timestamp=int(time())
     )

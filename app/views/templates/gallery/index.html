@@ -9,11 +9,15 @@
 {% endblock %}
 
 {% block javascript %}
-    {% autoescape false %}
-        <script>
-            {% if json %}
-                var gallery_json = {{ json }};
-            {% endif %}
-        </script>
-    {% endautoescape %}
+{% autoescape false %}
+<script>
+    {% if galleries_json %}
+        var galleries_json = {{ galleries_json }};
+        var has_more_pages = {{ has_more_pages }};
+        var page_num = {{ page_num }};
+    {% elif shared_gallery_json %}
+        var gallery_json = {{ shared_gallery_json }};
+    {% endif %}
+</script>
+{% endautoescape %}
 {% endblock %}

@@ -2,6 +2,7 @@ from app import app
 from flask import request, \
                   url_for
 from flask.ext.login import current_user
+from time import time
 
 
 @app.context_processor

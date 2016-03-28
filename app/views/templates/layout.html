@@ -34,9 +34,8 @@
     <meta property="og:site_name" content="{{ config.SITE_NAME }}" />
     <script>
         var Config = {
-            cache_buster: {{ config.CACHE_BUSTER }},
+            cache_buster: {% if config.DEBUG %}{{ timestamp }}{% else %}{{ config.CACHE_BUSTER }}{% endif %},
             s3_bucket: '{{ config.AWS_S3_BUCKET }}',
-            galleries_per_page: {{ config.GALLERIES_PER_PAGE }},
             User: {
                 role: '{{ current_user.role }}'
             }
