@@ -1,10 +1,12 @@
 /** @jsx React.DOM */
 
 define('gallery',
-    ['react', 'photo-partition', 'photo', 'lightbox', 'jquery', 'modal', 'underscore', 'moment'],
-    function (React, photoPartition, Photo, Lightbox, $, Modal, _, moment ) {
+    ['react', 'photo-partition', 'photo', 'lightbox', 'jquery', 'modal', 'underscore', 'moment', 'handle-resize-mixin'],
+    function (React, photoPartition, Photo, Lightbox, $, Modal, _, moment, HandleResizeMixin ) {
 
     var Gallery = React.createClass({
+
+        mixins: [HandleResizeMixin],
 
         /**
          * The ideal row height
