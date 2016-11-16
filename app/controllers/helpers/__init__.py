@@ -1,1 +1,1 @@
-__all__ = ["cachebuster", "favicon"]
+__all__ = ["cachebuster", "favicon", "letsencrypt"]
