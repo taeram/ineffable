@@ -1,3 +1,6 @@
+# Lets Encrypt
+.well-known
+
 # Project
 /app/static/js/**/*.js
 /app/static/js/.module-cache/
@@ -22,3 +25,6 @@ Vagrantfile
 # Bower
 /app/static/components/
 /app/static/js/**/*.js
+
+# VirtualEnv
+.virtualenv
