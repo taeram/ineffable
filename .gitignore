@@ -1,3 +1,6 @@
+# Lets Encrypt
+.well-known
+
 # Project
 /app/static/js/**/*.js
 /app/static/js/.module-cache/
