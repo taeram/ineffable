@@ -1,9 +1,8 @@
 /** @jsx React.DOM */
 
-define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'handle-resize-mixin', 'gallery'], function(React, $, moment, _, HandleResizeMixin, Gallery) {
+define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'gallery'], function(React, $, moment, _, Gallery) {
 
     var GalleryList = React.createClass({
-        mixins: [HandleResizeMixin],
 
         getInitialState: function() {
             return {

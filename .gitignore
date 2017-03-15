@@ -6,6 +6,7 @@
 /app/static/js/.module-cache/
 /app/static/css/**/*.css
 /app/static/components/
+/app/static/.well-known/
 /logs/*.log
 /.env
 
@@ -21,6 +22,9 @@ Vagrantfile
 
 # Node.js
 /node_modules/
+
+# Virtualenv
+/.virtualenv
 
 # Bower
 /app/static/components/
