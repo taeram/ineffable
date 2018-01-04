@@ -61,11 +61,17 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'gallery'], f
                 );
             }
 
+            var searchQueryString = '';
+            var searchQuery = $('#search').val();
+            if (searchQuery !== '') {
+              searchQueryString = '&q=' + searchQuery;
+            }
+
             var newerPageNode;
             if (this.props.pageNum > 1) {
                 newerPageNode = (
                     <li>
-                        <a href={"/?page=" + (this.props.pageNum - 1) }>&laquo; Newer</a>
+                        <a href={"/?page=" + (this.props.pageNum - 1) + searchQueryString }>&laquo; Newer</a>
                     </li>
                 )
             }
@@ -74,7 +80,7 @@ define('gallery-list', ['react', 'jquery', 'moment', 'underscore', 'gallery'], f
             if (this.props.hasMorePages) {
                 olderPageNode = (
                     <li>
-                        <a href={"/?page=" + (this.props.pageNum + 1) }>Older &raquo;</a>
+                        <a href={"/?page=" + (this.props.pageNum + 1) + searchQueryString }>Older &raquo;</a>
                     </li>
                 )
             }
