@@ -27,7 +27,7 @@ def gallery_home():
     if request.args.get('q'):
         search_query = request.args.get('q')
     else:
-        search_query = None
+        search_query = ""
 
     if request.args.get('page'):
         page_num = int(request.args.get('page'))
