@@ -5,7 +5,7 @@ Flask-Migrate==1.5.0
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.0
 Flask-WTF==0.12
-Flask==0.10.1
+Flask>=0.12.3
 MySQL-python==1.2.5
 PyReact==0.5.2
 pytz==2014.7
