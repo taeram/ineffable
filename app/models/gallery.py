@@ -18,8 +18,8 @@ class Gallery(db.Model):
     folder = db.Column(db.String(32), nullable=False, unique=True)
     share_code = db.Column(db.String(255), nullable=False, unique=True)
     photos = db.relationship('Photo', backref="gallery", lazy="dynamic")
-    modified = db.Column(db.DateTime(timezone=True))
-    created = db.Column(db.DateTime(timezone=True))
+    modified = db.Column(db.DateTime(timezone=False))
+    created = db.Column(db.DateTime(timezone=False))
 
     def __init__(self, name, created):
         """ Setup the class """

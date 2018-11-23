@@ -19,7 +19,7 @@ class Photo(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     gallery_id = db.Column(db.Integer, db.ForeignKey('gallery.id'), nullable=False)
     aspect_ratio = db.Column(db.Float, nullable=False)
-    created = db.Column(db.DateTime(timezone=True))
+    created = db.Column(db.DateTime(timezone=False))
 
     def __init__(self, name, ext, aspect_ratio, owner, gallery, created=None):
         """ Setup the class """
