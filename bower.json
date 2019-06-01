@@ -11,7 +11,7 @@
     "linear-partition": "https://github.com/taeram/linear-partition.git#1.*",
     "momentjs": "2.*",
     "mousetrap": "~1.5.*",
-    "phpjs": "https://github.com/kvz/phpjs.git",
+    "phpjs": "https://github.com/taeram/phpjs.git",
     "react": "0.13.3",
     "requirejs": "2.*",
     "routerjs": "https://github.com/taeram/routerjs.git",

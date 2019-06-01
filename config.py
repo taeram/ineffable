@@ -3,17 +3,16 @@ from os import getenv, \
 from time import time
 from datetime import timedelta
 
-APP_DIR = path.dirname(path.realpath(__file__))
-
 class Config(object):
     AWS_ACCESS_KEY_ID = getenv('AWS_ACCESS_KEY_ID')
     AWS_REGION = getenv('AWS_REGION')
     AWS_S3_BUCKET = getenv('AWS_S3_BUCKET')
     AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
     CACHE_BUSTER = time()
+    DEBUG = getenv('DEBUG', False)
     GALLERIES_PER_PAGE = getenv('GALLERIES_PER_PAGE', 5)
     GOOGLE_ANALYTICS_ID = getenv('GOOGLE_ANALYTICS_ID', False)
-    LOG_DIR = "%s/logs" % APP_DIR
+    LAMBDA_INSTRUCTIONS = getenv('LAMBDA_INSTRUCTIONS')
     MAX_UPLOAD_SIZE = getenv('MAX_UPLOAD_SIZE')
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
     REMEMBER_COOKIE_DURATION = timedelta(days=30)
@@ -22,14 +21,5 @@ class Config(object):
     SITE_NAME = getenv('SITE_NAME', 'Ineffable')
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL', 'sqlite:///' + path.dirname(__file__) + '/app/app.db').replace('mysql2:', 'mysql:')
     SQLALCHEMY_ECHO = getenv('SQLALCHEMY_ECHO', False)
+    SQLALCHEMY_POOL_RECYCLE = 60
     TESTING = False
-    LAMBDA_INSTRUCTIONS = getenv('LAMBDA_INSTRUCTIONS')
-
-class ProductionConfig(Config):
-    DEBUG = getenv('DEBUG', False)
-
-class DevelopmentConfig(Config):
-    DEBUG = True
-
-class TestingConfig(Config):
-    TESTING = True

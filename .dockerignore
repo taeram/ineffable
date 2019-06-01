@@ -1,0 +1,5 @@
+*.pyc
+\.git
+__pycache__
+/app/static/components/
+/node_modules/
